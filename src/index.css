@@ -1,0 +1,29 @@
+img:hover {
+  opacity: 0.7;
+}
+
+#profile-dropdown > .dropdown-toggle::after {
+  display: none;
+}
+
+#profile-dropdown .dropdown-menu {
+  min-width: 230px;
+}
+
+button.btn-outline-secondary {
+  border-radius: 50%;
+}
+
+#profile-dropdown > .dropdown-toggle::after {
+  display: none;
+}
+
+#profile-dropdown .dropdown-menu {
+  min-width: 200px;
+}
+
+button.btn-outline-secondary {
+  width: 36px;
+  height: 36px;
+}
+

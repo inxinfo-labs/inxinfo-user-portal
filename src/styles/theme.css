@@ -1,0 +1,21 @@
+:root {
+  --bg-color: #ffffff;
+  --text-color: #1e293b;
+  --header-bg: #ffffff;
+  --border-color: #e5e7eb;
+  --primary-color: #2563eb;
+}
+
+[data-theme="dark"] {
+  --bg-color: #0f172a;
+  --text-color: #e5e7eb;
+  --header-bg: #020617;
+  --border-color: #1e293b;
+  --primary-color: #38bdf8;
+}
+
+/* Global */
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
