@@ -1,28 +1,28 @@
-import { Routes, Route, Navigate } from "react-router-dom";
-import AuthRoutes from "./AuthRoutes";
-import UserRoutes from "./UserRoutes";
-import MainLayout from "../components/layout/MainLayout";
+import { Routes, Route } from "react-router-dom";
+import { lazy, Suspense } from "react";
+import PublicLayout from "../components/layout/PublicLayout";
+import PrivateLayout from "../components/layout/PrivateLayout";
+import Loader from "../shared/components/Loader";
+
+const Landing = lazy(() => import("../features/landing/Landing"));
+const AuthRoutes = lazy(() => import("../features/auth/auth.routes"));
+const UserRoutes = lazy(() => import("../features/user/user.routes"));
+
+
 
 export default function AppRoutes() {
   return (
-    <Routes>
+    <Suspense fallback={<Loader />}>
+      <Routes>
+        <Route element={<PublicLayout />}>
+          <Route path="/" element={<Landing />} />
+          <Route path="/auth/*" element={<AuthRoutes />} />
+        </Route>
 
-      {/* Root */}
-      <Route path="/" element={<Navigate to="/auth/login" />} />
-
-      {/* Auth */}
-      <Route path="/auth/*" element={<AuthRoutes />} />
-
-      {/* User (Protected + Layout) */}
-      <Route
-        path="/user/*"
-        element={
-          <MainLayout>
-            <UserRoutes />
-          </MainLayout>
-        }
-      />
-
-    </Routes>
+        <Route element={<PrivateLayout />}>
+          <Route path="/user/*" element={<UserRoutes />} />
+        </Route>
+      </Routes>
+    </Suspense>
   );
 }

@@ -1,21 +1,19 @@
+/* Custom Bootstrap Variables */
 :root {
-  --bg-color: #ffffff;
-  --text-color: #1e293b;
-  --header-bg: #ffffff;
-  --border-color: #e5e7eb;
-  --primary-color: #2563eb;
+  --bs-primary: #0d6efd;
+  --bs-secondary: #6c757d;
+  --bs-success: #198754;
+  --bs-font-sans-serif: "Inter", system-ui, sans-serif;
 }
 
-[data-theme="dark"] {
-  --bg-color: #0f172a;
-  --text-color: #e5e7eb;
-  --header-bg: #020617;
-  --border-color: #1e293b;
-  --primary-color: #38bdf8;
+/* Dark Theme */
+[data-bs-theme="dark"] {
+  --bs-body-bg: #0f172a;
+  --bs-body-color: #e5e7eb;
+  --bs-primary: #38bdf8;
 }
 
-/* Global */
-body {
-  background-color: var(--bg-color);
-  color: var(--text-color);
+/* Cards */
+.card {
+  border-radius: 14px;
 }
