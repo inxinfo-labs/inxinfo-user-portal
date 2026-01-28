@@ -2,11 +2,10 @@ import { useEffect, useState, useContext } from "react";
 import { Card, Form, Button, Row, Col, Image } from "react-bootstrap";
 import api from "../../services/api";
 import { AuthContext } from "../../context/AuthContext";
-import { useNavigate } from "react-router-dom";
 
 const UpdateProfile = () => {
   const { user, avatar } = useContext(AuthContext);
-  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
   const [form, setForm] = useState({
     name: "",
@@ -33,99 +32,91 @@ const UpdateProfile = () => {
   const submit = async (e) => {
     e.preventDefault();
     try {
+      setLoading(true);
       await api.put("/user/profile", form);
       alert("Profile updated successfully!");
-      navigate("/user/profile"); // go back to profile page
     } catch {
       alert("Failed to update profile");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="container mt-4">
-      <Card className="shadow-sm">
-        <Card.Body>
-          <h3 className="mb-4 text-center">Update Profile</h3>
+    <Card className="border-0">
+      <Card.Body>
+        <div className="text-center mb-3">
+          <Image src={avatar} roundedCircle width={100} height={100} />
+        </div>
 
-          <div className="text-center mb-3">
-            <Image src={avatar} roundedCircle width={120} height={120} />
-          </div>
+        <Form onSubmit={submit}>
+          <Row className="mb-3">
+            <Col>
+              <Form.Label>Name</Form.Label>
+              <Form.Control
+                value={form.name}
+                onChange={(e) => setForm({ ...form, name: e.target.value })}
+                required
+              />
+            </Col>
 
-          {/* <Button
-            className="w-100 mb-3"
-            onClick={() => navigate("/user/profile/pic")}
-          >
-            Change Profile Picture
-          </Button> */}
+            <Col>
+              <Form.Label>Mobile</Form.Label>
+              <Form.Control
+                value={form.mobileNumber}
+                onChange={(e) =>
+                  setForm({ ...form, mobileNumber: e.target.value })
+                }
+              />
+            </Col>
+          </Row>
 
-          <Form onSubmit={submit}>
-            <Row className="mb-3">
-              <Col>
-                <Form.Label>Name</Form.Label>
-                <Form.Control
-                  type="text"
-                  value={form.name}
-                  required
-                  onChange={(e) => setForm({ ...form, name: e.target.value })}
-                />
-              </Col>
-              <Col>
-                <Form.Label>Mobile Number</Form.Label>
-                <Form.Control
-                  type="text"
-                  value={form.mobileNumber}
-                  onChange={(e) => setForm({ ...form, mobileNumber: e.target.value })}
-                />
-              </Col>
-            </Row>
+          <Row className="mb-3">
+            <Col>
+              <Form.Label>DOB</Form.Label>
+              <Form.Control
+                type="date"
+                value={form.dob}
+                onChange={(e) => setForm({ ...form, dob: e.target.value })}
+              />
+            </Col>
 
-            <Row className="mb-3">
-              <Col>
-                <Form.Label>Date of Birth</Form.Label>
-                <Form.Control
-                  type="date"
-                  value={form.dob}
-                  onChange={(e) => setForm({ ...form, dob: e.target.value })}
-                />
-              </Col>
-              <Col>
-                <Form.Label>Gender</Form.Label>
-                <Form.Select
-                  value={form.gender}
-                  onChange={(e) => setForm({ ...form, gender: e.target.value })}
-                >
-                  <option value="MALE">MALE</option>
-                  <option value="FEMALE">FEMALE</option>
-                </Form.Select>
-              </Col>
-            </Row>
+            <Col>
+              <Form.Label>Gender</Form.Label>
+              <Form.Select
+                value={form.gender}
+                onChange={(e) => setForm({ ...form, gender: e.target.value })}
+              >
+                <option>MALE</option>
+                <option>FEMALE</option>
+              </Form.Select>
+            </Col>
+          </Row>
 
-            <Row className="mb-3">
-              <Col>
-                <Form.Label>Country</Form.Label>
-                <Form.Control
-                  type="text"
-                  value={form.country}
-                  onChange={(e) => setForm({ ...form, country: e.target.value })}
-                />
-              </Col>
-              <Col>
-                <Form.Label>Location</Form.Label>
-                <Form.Control
-                  type="text"
-                  value={form.location}
-                  onChange={(e) => setForm({ ...form, location: e.target.value })}
-                />
-              </Col>
-            </Row>
+          <Row className="mb-3">
+            <Col>
+              <Form.Label>Country</Form.Label>
+              <Form.Control
+                value={form.country}
+                onChange={(e) => setForm({ ...form, country: e.target.value })}
+              />
+            </Col>
 
-            <Button variant="primary" type="submit" className="w-100">
-              Update Profile
-            </Button>
-          </Form>
-        </Card.Body>
-      </Card>
-    </div>
+            <Col>
+              <Form.Label>Location</Form.Label>
+              <Form.Control
+                value={form.location}
+                onChange={(e) => setForm({ ...form, location: e.target.value })}
+              />
+            </Col>
+          </Row>
+
+          <Button type="submit" className="w-100" disabled={loading}>
+            {loading ? "Updating..." : "Update Profile"}
+          </Button>
+        </Form>
+      </Card.Body>
+    </Card>
   );
 };
 

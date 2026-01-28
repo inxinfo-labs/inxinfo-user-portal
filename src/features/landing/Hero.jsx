@@ -1,19 +1,23 @@
-import { Link } from "react-router-dom";
+// Hero.jsx
+import { Container, Row, Col, Button } from "react-bootstrap";
 
-export default function Hero() {
+export default function Hero({ onOpenModal }) {
   return (
-    <section className="text-center p-5">
-      <h1 className="display-4 fw-bold">INXINFO Labs</h1>
-      <p className="lead">Build. Learn. Deploy.</p>
+    <section id="home" className="py-5 bg-light">
+      <Container>
+        <Row className="align-items-center">
+          <Col md={6}>
+            <h1 className="display-4 fw-bold">INXINFO Labs</h1>
+            <p className="lead text-muted">
+              Enterprise-ready SaaS platforms and cloud-native solutions.
+            </p>
 
-      <div className="mt-4">
-        <Link to="/auth/login" className="btn btn-primary me-3">
-          Login
-        </Link>
-        <Link to="/auth/register" className="btn btn-outline-primary">
-          Register
-        </Link>
-      </div>
+            <Button variant="primary" size="lg" onClick={onOpenModal}>
+              Talk to Sales
+            </Button>
+          </Col>
+        </Row>
+      </Container>
     </section>
   );
 }

@@ -17,3 +17,7 @@
 .card {
   border-radius: 14px;
 }
+
+html {
+  scroll-behavior: smooth;
+}

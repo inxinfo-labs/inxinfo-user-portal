@@ -29,14 +29,14 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const login = (token) => {
-    localStorage.setItem("accessToken", token);
-    setToken(token);
+  const login = (newToken) => {
+    localStorage.setItem("accessToken", newToken);
+    setToken(newToken);
     loadAvatar();
   };
 
   const logout = () => {
-    localStorage.clear();
+    localStorage.removeItem("accessToken");
     setToken(null);
     setUser(null);
     setAvatar(null);

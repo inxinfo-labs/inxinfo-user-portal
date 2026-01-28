@@ -1,49 +1,96 @@
-import { Card, Container, Row, Col } from "react-bootstrap";
+import { Card, Container, Row, Col, Form, Button } from "react-bootstrap";
+import { useState } from "react";
 
 export default function Contact() {
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    message: "",
+  });
+
+  const submit = (e) => {
+    e.preventDefault();
+    alert("Thank you! We will get back to you shortly.");
+    setForm({ name: "", email: "", message: "" });
+  };
+
   return (
-    <Container className="mt-4">
-      <Card className="shadow-sm p-4">
-        <h2 className="mb-3">Contact INXINFO Labs</h2>
+    <section id="contact" className="py-5 bg-light">
+      <Container>
+        <Card className="shadow-sm p-4">
+          <Row>
+            {/* LEFT INFO */}
+            <Col md={5} className="mb-4">
+              <h3 className="fw-bold mb-3">Contact INXINFO Labs</h3>
+              <p className="text-muted">
+                Reach out for partnerships, consulting, SaaS development,
+                or innovation initiatives.
+              </p>
 
-        <Row className="mb-4">
-          <Col md={6}>
-            <p>
-              We’d love to hear from you. Reach out to us for partnerships,
-              consulting, product development, or innovation initiatives.
-            </p>
+              <p>
+                📧 <strong>Email:</strong>{" "}
+                <a href="mailto:satish.prasad@inxinfo.com">
+                  satish.prasad@inxinfo.com
+                </a>
+              </p>
 
-            <p>
-              📧 <strong>Email:</strong>{" "}
-              <a href="mailto:satish.prasad@inxinfo.com">
-                satish.prasad@inxinfo.com
-              </a>
-            </p>
+              <p>
+                🌐 <strong>Website:</strong>{" "}
+                <a href="https://inxinfo.com" target="_blank" rel="noreferrer">
+                  inxinfo.com
+                </a>
+              </p>
 
-            <p>
-              🌐 <strong>Website:</strong>{" "}
-              <a href="https://inxinfo.com" target="_blank" rel="noreferrer">
-                inxinfo.com
-              </a>
-            </p>
+              <p>📍 <strong>Location:</strong> Bangalore, India</p>
+            </Col>
 
-            <p>
-              📍 <strong>Location:</strong> Bangalore, India
-            </p>
-          </Col>
+            {/* RIGHT FORM */}
+            <Col md={7}>
+              <Form onSubmit={submit}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Name</Form.Label>
+                  <Form.Control
+                    required
+                    value={form.name}
+                    onChange={(e) =>
+                      setForm({ ...form, name: e.target.value })
+                    }
+                  />
+                </Form.Group>
 
-          <Col md={6}>
-            <iframe
-              title="INXINFO Labs Location"
-              src="https://www.google.com/maps?q=Bangalore&output=embed"
-              width="100%"
-              height="300"
-              loading="lazy"
-              style={{ borderRadius: "8px", border: 0 }}
-            />
-          </Col>
-        </Row>
-      </Card>
-    </Container>
+                <Form.Group className="mb-3">
+                  <Form.Label>Email</Form.Label>
+                  <Form.Control
+                    type="email"
+                    required
+                    value={form.email}
+                    onChange={(e) =>
+                      setForm({ ...form, email: e.target.value })
+                    }
+                  />
+                </Form.Group>
+
+                <Form.Group className="mb-3">
+                  <Form.Label>Message</Form.Label>
+                  <Form.Control
+                    as="textarea"
+                    rows={4}
+                    required
+                    value={form.message}
+                    onChange={(e) =>
+                      setForm({ ...form, message: e.target.value })
+                    }
+                  />
+                </Form.Group>
+
+                <Button type="submit" variant="primary">
+                  Send Message
+                </Button>
+              </Form>
+            </Col>
+          </Row>
+        </Card>
+      </Container>
+    </section>
   );
 }

@@ -18,21 +18,21 @@ const UploadProfilePic = () => {
       return;
     }
 
-   try{
-     const formData = new FormData();
-    formData.append("file", file);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
 
-    await api.post("/user/profile-pic", formData);
-    await refreshAvatar(); //  GLOBAL UPDATE
+      await api.post("/user/profile-pic", formData);
+      await refreshAvatar(); //  GLOBAL UPDATE
 
-    alert("Profile picture updated");
-    setFile(null);
-    setPreview(null);
-    navigate("/user/profile"); //Redirect to profile page
-   }catch(err){
-    console.log(err);
-    alert("Failed to upload profile picture");
-   }
+      alert("Profile picture updated");
+      setFile(null);
+      setPreview(null);
+      navigate("/user/profile"); //Redirect to profile page
+    } catch (err) {
+      console.log(err);
+      alert("Failed to upload profile picture");
+    }
   };
 
   return (
@@ -57,7 +57,7 @@ const UploadProfilePic = () => {
           }}
         />
 
-        <Button className="w-100" onClick={upload}>
+        <Button className="w-100" onClick={upload} disabled={!file}>
           Upload
         </Button>
       </Card.Body>

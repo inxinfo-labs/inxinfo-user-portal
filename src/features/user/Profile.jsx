@@ -1,14 +1,13 @@
-import { Card, Row, Col, Button, Image } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
-import { useContext } from "react";
+import { useState, useContext } from "react";
+import { Card, Nav } from "react-bootstrap";
 import { AuthContext } from "../../context/AuthContext";
-
-
-
+import ViewProfile from "./ViewProfile";
+import UpdateProfile from "./UpdateProfile";
+import UploadProfilePic from "./UploadProfilePic";
 
 function Profile() {
-  const { user, avatar } = useContext(AuthContext);
-  const navigate = useNavigate();
+  const { user } = useContext(AuthContext);
+  const [activeTab, setActiveTab] = useState("view");
 
   if (!user) return <div className="text-center mt-5 spinner-border" />;
 
@@ -16,31 +15,24 @@ function Profile() {
     <div className="container mt-4">
       <Card className="shadow-sm">
         <Card.Body>
-          <Row className="align-items-center">
-            <Col md={3} className="text-center">
-              <Image
-                src={avatar}
-                roundedCircle
-                width={120}
-                height={120}
-              />
-              
-            </Col>
+          <h4 className="mb-3">Profile Settings</h4>
 
-            <Col md={9}>
-              <h4>{user.name}</h4>
-              <p className="text-muted">{user.email}</p>
-            </Col>
-          </Row>
-
-          <hr />
-
-          <Button
-            variant="outline-secondary"
-            onClick={() => navigate("/user/profile/update")}
+          {/* SETTINGS TABS */}
+          <Nav
+            variant="tabs"
+            activeKey={activeTab}
+            onSelect={(k) => setActiveTab(k)}
+            className="mb-4"
           >
-            Edit Profile
-          </Button>
+            <Nav.Item>
+              <Nav.Link eventKey="view">Profile</Nav.Link>
+            </Nav.Item>
+          </Nav>
+
+          {/* TAB CONTENT */}
+          {activeTab === "view" && <ViewProfile />}
+          {activeTab === "edit" && <UpdateProfile />}
+          {activeTab === "pic" && <UploadProfilePic />}
         </Card.Body>
       </Card>
     </div>

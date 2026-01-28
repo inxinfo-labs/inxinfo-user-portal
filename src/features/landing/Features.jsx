@@ -14,7 +14,7 @@ export default function Features() {
       <Row className="g-4">
         {featureData.map((f, i) => (
           <Col md={3} key={i}>
-            <Card className="shadow-sm text-center p-4 h-100 hover-shadow-lg transition">
+           <Card className="shadow-sm text-center p-4 h-100 border-0">
               <div className="text-primary fs-1 mb-3">{f.icon}</div>
               <h5>{f.title}</h5>
             </Card>

@@ -14,9 +14,8 @@ export default function Landing() {
       <CTA onOpenModal={() => setModalOpen(true)} />
 
       <Modal open={modalOpen} onClose={() => setModalOpen(false)}>
-        <h3 className="text-xl font-bold mb-4">Talk to Sales</h3>
+        <h3 className="fw-bold mb-3">Talk to Sales</h3>
         <p>We’d love to discuss your enterprise needs.</p>
-        {/* You can insert a contact form here */}
       </Modal>
     </>
   );

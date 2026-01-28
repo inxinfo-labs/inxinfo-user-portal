@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { Card, Button, Form, Spinner, Row, Col } from "react-bootstrap";
 import { useNavigate, Link } from "react-router-dom";
 import api from "../../services/api";
+import { AuthContext } from "../../context/AuthContext";
 
 export default function Login({ embedded = false }) {
+  const { login } = useContext(AuthContext); // AuthContext
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -15,9 +17,9 @@ export default function Login({ embedded = false }) {
 
     try {
       const res = await api.post("/auth/login", { email, password });
-      localStorage.setItem("accessToken", res.data.accessToken);
-      navigate("/user/home");
-    } catch {
+      login(res.data.accessToken); // Update AuthContext
+      navigate("/user/home"); // ✅ redirect to Home immediately
+    } catch (err) {
       alert("Invalid credentials");
     } finally {
       setLoading(false);
@@ -29,26 +31,16 @@ export default function Login({ embedded = false }) {
       <Col md={10} lg={8}>
         <Card className="shadow border-0 overflow-hidden">
           <Row className="g-0">
-            {/* LEFT BRAND */}
             {!embedded && (
-              <Col
-                md={6}
-                className="bg-primary text-white p-5 d-flex flex-column justify-content-center"
-              >
+              <Col md={6} className="bg-primary text-white p-5 d-flex flex-column justify-content-center">
                 <h2 className="fw-bold">INXINFO Labs</h2>
-                <p className="mt-3">
-                  Innovation Nexus for Information
-                </p>
-                <p className="opacity-75">
-                  Connecting innovation with information for next-gen solutions.
-                </p>
+                <p className="mt-3">Innovation Nexus for Information</p>
+                <p className="opacity-75">Connecting innovation with information for next-gen solutions.</p>
               </Col>
             )}
 
-            {/* RIGHT FORM */}
             <Col md={embedded ? 12 : 6} className="p-5">
               <h4 className="mb-4 fw-semibold">Sign in to your account</h4>
-
               <Form onSubmit={submit}>
                 <Form.Group className="mb-3">
                   <Form.Label>Email</Form.Label>
@@ -72,11 +64,7 @@ export default function Login({ embedded = false }) {
                   />
                 </Form.Group>
 
-                <Button
-                  type="submit"
-                  className="w-100"
-                  disabled={loading}
-                >
+                <Button type="submit" className="w-100" disabled={loading}>
                   {loading ? <Spinner size="sm" /> : "Login"}
                 </Button>
               </Form>

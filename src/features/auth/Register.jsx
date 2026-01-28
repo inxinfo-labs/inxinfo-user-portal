@@ -1,14 +1,14 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { Card, Button, Form, Spinner, Row, Col } from "react-bootstrap";
 import { useNavigate, Link } from "react-router-dom";
 import api from "../../services/api";
+import { AuthContext } from "../../context/AuthContext";
 
 export default function Register() {
-  const [form, setForm] = useState({
-    name: "",
-    email: "",
-    password: "",
-  });
+  const { login } = useContext(AuthContext);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -17,11 +17,11 @@ export default function Register() {
     setLoading(true);
 
     try {
-      await api.post("/auth/register", form);
-      alert("Registration successful. Please login.");
-      navigate("/auth/login");
+      const res = await api.post("/auth/register", { name, email, password });
+      login(res.data.accessToken); // ✅ log in immediately
+      navigate("/user/home"); // ✅ redirect to Home immediately
     } catch (err) {
-      alert(err.response?.data?.message || "Registration failed");
+      alert("Registration failed");
     } finally {
       setLoading(false);
     }
@@ -32,33 +32,20 @@ export default function Register() {
       <Col md={10} lg={8}>
         <Card className="shadow border-0 overflow-hidden">
           <Row className="g-0">
-            {/* LEFT BRAND */}
-            <Col
-              md={6}
-              className="bg-dark text-white p-5 d-flex flex-column justify-content-center"
-            >
-              <h2 className="fw-bold">Join INXINFO Labs</h2>
-              <p className="mt-3">
-                Build. Innovate. Scale.
-              </p>
-              <p className="opacity-75">
-                Create your account to access next-gen platforms and tools.
-              </p>
+            <Col md={6} className="bg-primary text-white p-5 d-flex flex-column justify-content-center">
+              <h2 className="fw-bold">INXINFO Labs</h2>
+              <p className="mt-3">Innovation Nexus for Information</p>
             </Col>
 
-            {/* RIGHT FORM */}
             <Col md={6} className="p-5">
-              <h4 className="mb-4 fw-semibold">Create Account</h4>
-
+              <h4 className="mb-4 fw-semibold">Create your account</h4>
               <Form onSubmit={submit}>
                 <Form.Group className="mb-3">
                   <Form.Label>Name</Form.Label>
                   <Form.Control
-                    placeholder="Your Name"
-                    value={form.name}
-                    onChange={(e) =>
-                      setForm({ ...form, name: e.target.value })
-                    }
+                    type="text"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
                     required
                   />
                 </Form.Group>
@@ -67,11 +54,8 @@ export default function Register() {
                   <Form.Label>Email</Form.Label>
                   <Form.Control
                     type="email"
-                    placeholder="you@inxinfo.com"
-                    value={form.email}
-                    onChange={(e) =>
-                      setForm({ ...form, email: e.target.value })
-                    }
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     required
                   />
                 </Form.Group>
@@ -80,20 +64,13 @@ export default function Register() {
                   <Form.Label>Password</Form.Label>
                   <Form.Control
                     type="password"
-                    placeholder="Create a strong password"
-                    value={form.password}
-                    onChange={(e) =>
-                      setForm({ ...form, password: e.target.value })
-                    }
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                     required
                   />
                 </Form.Group>
 
-                <Button
-                  type="submit"
-                  className="w-100"
-                  disabled={loading}
-                >
+                <Button type="submit" className="w-100" disabled={loading}>
                   {loading ? <Spinner size="sm" /> : "Register"}
                 </Button>
               </Form>
