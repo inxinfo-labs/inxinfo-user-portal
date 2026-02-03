@@ -1,29 +1,87 @@
-img:hover {
-  opacity: 0.7;
+/* Global Styles */
+
+/* Image Hover Effects */
+img {
+  transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
+img:hover {
+  opacity: 0.85;
+  transform: scale(1.02);
+}
+
+/* Profile Dropdown */
 #profile-dropdown > .dropdown-toggle::after {
   display: none;
 }
 
 #profile-dropdown .dropdown-menu {
   min-width: 230px;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  border: none;
+  padding: 0.5rem;
 }
 
+/* Button Styles */
 button.btn-outline-secondary {
   border-radius: 50%;
-}
-
-#profile-dropdown > .dropdown-toggle::after {
-  display: none;
-}
-
-#profile-dropdown .dropdown-menu {
-  min-width: 200px;
-}
-
-button.btn-outline-secondary {
   width: 36px;
   height: 36px;
+  transition: all 0.3s ease;
+}
+
+button.btn-outline-secondary:hover {
+  transform: scale(1.1);
+}
+
+/* Form Controls */
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--teal, #0d9488);
+  box-shadow: 0 0 0 0.2rem rgba(13, 148, 136, 0.25);
+}
+
+/* Links */
+a {
+  transition: all 0.3s ease;
+}
+
+a:hover {
+  opacity: 0.8;
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Selection */
+::selection {
+  background: rgba(13, 148, 136, 0.3);
+  color: inherit;
+}
+
+/* Focus Styles */
+*:focus {
+  outline: none;
+}
+
+*:focus-visible {
+  outline: 2px solid var(--teal, #0d9488);
+  outline-offset: 2px;
 }
 

@@ -19,7 +19,7 @@ export default function Register() {
     try {
       const res = await api.post("/auth/register", { name, email, password });
       login(res.data.accessToken); // ✅ log in immediately
-      navigate("/user/home"); // ✅ redirect to Home immediately
+      navigate("/user/home");
     } catch (err) {
       alert("Registration failed");
     } finally {

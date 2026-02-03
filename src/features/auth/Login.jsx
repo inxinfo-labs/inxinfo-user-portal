@@ -18,7 +18,7 @@ export default function Login({ embedded = false }) {
     try {
       const res = await api.post("/auth/login", { email, password });
       login(res.data.accessToken); // Update AuthContext
-      navigate("/user/home"); // ✅ redirect to Home immediately
+      navigate("/user/home");
     } catch (err) {
       alert("Invalid credentials");
     } finally {
