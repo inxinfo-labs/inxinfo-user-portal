@@ -1,4 +1,7 @@
-/* Global Styles */
+/* Global Styles - Professional Theme */
+
+/* Import theme variables */
+@import './styles/theme.css';
 
 /* Image Hover Effects */
 img {

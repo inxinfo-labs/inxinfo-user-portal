@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Hero from "../features/landing/Hero";
 import Features from "../features/landing/Features";
+import LandingServices from "../features/landing/LandingServices";
 import MapSection from "../features/landing/MapSection";
 import CTA from "../features/landing/CTA";
 import About from "./About";
@@ -17,6 +18,8 @@ export default function LandingPage() {
       </section>
 
       <Features />
+
+      <LandingServices />
 
       <MapSection />
 
