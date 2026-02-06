@@ -2,7 +2,7 @@ import { useContext, useState, useEffect } from "react";
 import { Card, Row, Col, Button, Spinner } from "react-bootstrap";
 import { AuthContext } from "../../context/AuthContext";
 import { Link } from "react-router-dom";
-import { FaMapMarkerAlt, FaUser, FaEdit, FaCamera, FaExternalLinkAlt } from "react-icons/fa";
+import { FaMapMarkerAlt, FaUser, FaEdit, FaCamera, FaExternalLinkAlt, FaPrayingHands, FaShoppingCart, FaUserTie } from "react-icons/fa";
 
 const OFFICE_LAT = 12.9716;
 const OFFICE_LNG = 77.5946;
@@ -114,6 +114,45 @@ export default function UserHome() {
                   <FaExternalLinkAlt className="me-1" /> Open in Google Maps
                 </Button>
               </div>
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
+
+      <Row className="g-4 mb-4">
+        <Col md={4}>
+          <Card className="border-0 shadow-sm h-100 card-theme">
+            <Card.Body className="text-center p-4">
+              <FaPrayingHands className="text-teal mb-3" style={{ fontSize: "3rem" }} />
+              <h5 className="fw-bold mb-2">Puja Services</h5>
+              <p className="text-muted small mb-3">Book different types of puja services</p>
+              <Button as={Link} to="/user/puja" variant="primary" className="rounded-pill">
+                Browse Puja Services
+              </Button>
+            </Card.Body>
+          </Card>
+        </Col>
+        <Col md={4}>
+          <Card className="border-0 shadow-sm h-100 card-theme">
+            <Card.Body className="text-center p-4">
+              <FaShoppingCart className="text-teal mb-3" style={{ fontSize: "3rem" }} />
+              <h5 className="fw-bold mb-2">Orders</h5>
+              <p className="text-muted small mb-3">View and manage your orders</p>
+              <Button as={Link} to="/user/order" variant="primary" className="rounded-pill">
+                View Orders
+              </Button>
+            </Card.Body>
+          </Card>
+        </Col>
+        <Col md={4}>
+          <Card className="border-0 shadow-sm h-100 card-theme">
+            <Card.Body className="text-center p-4">
+              <FaUserTie className="text-teal mb-3" style={{ fontSize: "3rem" }} />
+              <h5 className="fw-bold mb-2">Book Pandit</h5>
+              <p className="text-muted small mb-3">Book a pandit ji for your ceremonies</p>
+              <Button as={Link} to="/user/pandit" variant="primary" className="rounded-pill">
+                Find Pandit
+              </Button>
             </Card.Body>
           </Card>
         </Col>

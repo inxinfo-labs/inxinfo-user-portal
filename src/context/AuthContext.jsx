@@ -1,5 +1,5 @@
-import { createContext, useEffect, useState } from "react";
-import api from "../services/api";
+import { createContext, useCallback, useEffect, useState } from "react";
+import api, { setUnauthorizedHandler } from "../services/api";
 
 export const AuthContext = createContext();
 
@@ -7,6 +7,17 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem("accessToken"));
   const [user, setUser] = useState(null);
   const [avatar, setAvatar] = useState(null);
+
+  const logout = useCallback(() => {
+    localStorage.removeItem("accessToken");
+    setToken(null);
+    setUser(null);
+    setAvatar(null);
+  }, []);
+
+  useEffect(() => {
+    setUnauthorizedHandler(logout);
+  }, [logout]);
 
   // fetch user info & avatar when token exists
   useEffect(() => {
@@ -17,7 +28,7 @@ export const AuthProvider = ({ children }) => {
 
       loadAvatar();
     }
-  }, [token]);
+  }, [token, logout]);
 
   const loadAvatar = async () => {
     try {
@@ -33,13 +44,6 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem("accessToken", newToken);
     setToken(newToken);
     loadAvatar();
-  };
-
-  const logout = () => {
-    localStorage.removeItem("accessToken");
-    setToken(null);
-    setUser(null);
-    setAvatar(null);
   };
 
   const refreshAvatar = async () => {

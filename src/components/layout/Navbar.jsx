@@ -1,297 +1,198 @@
 import { useContext, useState } from "react";
-import { AppBar, Toolbar, Typography, Button, Menu, MenuItem, Box, Avatar, IconButton, useMediaQuery, useTheme } from "@mui/material";
+import { Navbar as BootstrapNavbar, Nav, Container, Button, Dropdown } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
-import SettingsIcon from "@mui/icons-material/Settings";
-import MenuIcon from "@mui/icons-material/Menu";
-import CloseIcon from "@mui/icons-material/Close";
 import { AuthContext } from "../../context/AuthContext";
+import { FaUser, FaCog, FaSignOutAlt, FaHome, FaInfoCircle, FaEnvelope, FaBars, FaTimes } from "react-icons/fa";
 
 export default function Navbar() {
   const navigate = useNavigate();
-  const { token, avatar, logout } = useContext(AuthContext);
-  const [anchorEl, setAnchorEl] = useState(null);
+  const { token, user, avatar, logout } = useContext(AuthContext);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-  const open = Boolean(anchorEl);
 
-  const handleMenuOpen = (event) => setAnchorEl(event.currentTarget);
-  const handleMenuClose = () => setAnchorEl(null);
-
-  const handleNavClick = (link) => {
-    setMobileMenuOpen(false);
-    if (link.path === "/") {
-      navigate("/");
-      setTimeout(() => {
-        const el = document.getElementById("home");
-        el?.scrollIntoView({ behavior: "smooth" });
-      }, 100);
-    } else {
-      navigate(link.path);
-    }
+  const handleLogout = () => {
+    logout();
+    navigate("/");
   };
 
-  const navLinks = [
-    { label: "Home", path: "/", isRoute: true },
-    { label: "About", path: "/about", isRoute: true },
-    { label: "Contact", path: "/contact", isRoute: true },
-  ];
-
   return (
-    <AppBar 
-      position="sticky" 
-      elevation={0}
-      sx={{ 
-        background: "white",
-        borderBottom: "1px solid #e2e8f0",
-        color: "#1e293b"
+    <BootstrapNavbar 
+      expand="lg" 
+      className="bg-white shadow-sm border-bottom"
+      style={{ 
+        padding: "0.75rem 0",
+        position: "sticky",
+        top: 0,
+        zIndex: 1000
       }}
     >
-      <Toolbar sx={{ py: 1 }}>
-        <Typography
-          variant="h6"
-          component={Link}
-          to="/"
-          sx={{ 
-            textDecoration: "none", 
-            color: "#2563eb", 
+      <Container fluid="lg">
+        {/* Logo/Brand */}
+        <BootstrapNavbar.Brand 
+          as={Link} 
+          to="/" 
+          className="d-flex align-items-center"
+          style={{
+            textDecoration: "none",
             fontWeight: 700,
-            fontSize: "1.5rem",
-            background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-            backgroundClip: "text",
-            "&:hover": {
-              opacity: 0.9
-            }
+            fontSize: "1.75rem",
+            color: "#0d9488",
+            letterSpacing: "-0.5px"
           }}
         >
-          INXINFO Labs
-        </Typography>
-
-        {/* Desktop Navigation */}
-        {!isMobile && (
-          <Box sx={{ flexGrow: 1, ml: 4, display: "flex", gap: 1 }}>
-            {navLinks.map((link) => (
-              <Button
-                key={link.path}
-                onClick={() => handleNavClick(link)}
-                sx={{
-                  color: "#475569",
-                  fontWeight: 500,
-                  textTransform: "none",
-                  "&:hover": {
-                    color: "#0d9488",
-                    background: "rgba(13, 148, 136, 0.08)"
-                  }
-                }}
-              >
-                {link.label}
-              </Button>
-            ))}
-          </Box>
-        )}
-
-        {/* Mobile Menu Button */}
-        {isMobile && (
-          <Box sx={{ flexGrow: 1 }} />
-        )}
-
-        {isMobile && (
-          <IconButton
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            sx={{ color: "#475569" }}
+          <div 
+            className="me-2 d-flex align-items-center justify-content-center"
+            style={{
+              width: "40px",
+              height: "40px",
+              borderRadius: "10px",
+              background: "linear-gradient(135deg, #0d9488 0%, #0f766e 100%)",
+              color: "white",
+              fontWeight: 700,
+              fontSize: "1.2rem",
+              boxShadow: "0 2px 8px rgba(13, 148, 136, 0.3)"
+            }}
           >
-            {mobileMenuOpen ? <CloseIcon /> : <MenuIcon />}
-          </IconButton>
-        )}
+            IN
+          </div>
+          <span style={{ color: "#0d9488" }}>INXINFO</span>
+          <span className="ms-1" style={{ fontSize: "0.9rem", fontWeight: 400, color: "#64748b" }}>Labs</span>
+        </BootstrapNavbar.Brand>
 
-        {/* Auth Buttons */}
-        {!token ? (
-          <Box sx={{ display: "flex", gap: 1, ml: 2 }}>
-            <Button
-              component={Link}
-              to="/auth/login"
-              variant="outlined"
-              sx={{
-                color: "#0d9488",
-                borderColor: "#0d9488",
-                textTransform: "none",
-                fontWeight: 600,
-                borderRadius: "8px",
-                "&:hover": {
-                  borderColor: "#0f766e",
-                  background: "rgba(13, 148, 136, 0.08)"
-                }
-              }}
-            >
-              Login
-            </Button>
-            <Button
-              component={Link}
-              to="/auth/register"
-              variant="contained"
-              sx={{
-                background: "linear-gradient(135deg, #0d9488 0%, #0f766e 100%)",
-                textTransform: "none",
-                fontWeight: 600,
-                borderRadius: "8px",
-                boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
-                "&:hover": {
-                  background: "linear-gradient(135deg, #0f766e 0%, #115e59 100%)",
-                  boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
-                  transform: "translateY(-2px)"
-                }
-              }}
-            >
-              Register
-            </Button>
-          </Box>
-        ) : (
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1, ml: 2 }}>
-            <Button
-              startIcon={<SettingsIcon />}
-              onClick={handleMenuOpen}
-              sx={{
-                textTransform: "none",
-                color: "#475569",
-                fontWeight: 500,
-                "&:hover": {
-                  color: "#2563eb",
-                  background: "rgba(37, 99, 235, 0.05)"
-                }
-              }}
-            >
-              {!isMobile && "Settings"}
-            </Button>
-
-            <Menu
-              anchorEl={anchorEl}
-              open={open}
-              onClose={handleMenuClose}
-              anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-              transformOrigin={{ vertical: "top", horizontal: "right" }}
-              PaperProps={{
-                sx: {
-                  borderRadius: "12px",
-                  boxShadow: "0 10px 25px rgba(0, 0, 0, 0.1)",
-                  mt: 1,
-                  minWidth: 200
-                }
-              }}
-            >
-              <MenuItem
-                onClick={() => {
-                  navigate("/user/profile");
-                  handleMenuClose();
-                }}
-                sx={{
-                  "&:hover": {
-                    background: "rgba(37, 99, 235, 0.05)"
-                  }
-                }}
-              >
-                Profile
-              </MenuItem>
-              <MenuItem
-                onClick={() => {
-                  navigate("/user/profile/update");
-                  handleMenuClose();
-                }}
-                sx={{
-                  "&:hover": {
-                    background: "rgba(37, 99, 235, 0.05)"
-                  }
-                }}
-              >
-                Update Profile
-              </MenuItem>
-              <MenuItem
-                onClick={() => {
-                  navigate("/user/profile/pic");
-                  handleMenuClose();
-                }}
-                sx={{
-                  "&:hover": {
-                    background: "rgba(37, 99, 235, 0.05)"
-                  }
-                }}
-              >
-                Upload Profile Picture
-              </MenuItem>
-            </Menu>
-
-            <Button
-              variant="outlined"
-              sx={{
-                color: "#ef4444",
-                borderColor: "#ef4444",
-                textTransform: "none",
-                fontWeight: 600,
-                borderRadius: "8px",
-                "&:hover": {
-                  borderColor: "#dc2626",
-                  background: "rgba(239, 68, 68, 0.05)"
-                }
-              }}
-              onClick={() => { logout(); navigate("/"); }}
-            >
-              Logout
-            </Button>
-
-            {avatar && (
-              <Avatar 
-                src={avatar} 
-                sx={{ 
-                  ml: 1, 
-                  width: 36, 
-                  height: 36,
-                  border: "2px solid #e2e8f0",
-                  cursor: "pointer",
-                "&:hover": {
-                  borderColor: "#0d9488"
-                }
-              }}
-                onClick={() => navigate("/user/profile")}
-              />
-            )}
-          </Box>
-        )}
-      </Toolbar>
-
-      {/* Mobile Menu */}
-      {isMobile && mobileMenuOpen && (
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            gap: 1,
-            p: 2,
-            borderTop: "1px solid #e2e8f0",
-            background: "#f8fafc"
-          }}
+        <BootstrapNavbar.Toggle 
+          aria-controls="basic-navbar-nav"
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          style={{ border: "none" }}
         >
-          {navLinks.map((link) => (
-            <Button
-              key={link.path}
-              onClick={() => handleNavClick(link)}
-              fullWidth
-              sx={{
-                color: "#475569",
-                fontWeight: 500,
-                textTransform: "none",
-                justifyContent: "flex-start",
-                "&:hover": {
-                  color: "#0d9488",
-                  background: "rgba(13, 148, 136, 0.08)"
-                }
-              }}
-            >
-              {link.label}
-            </Button>
-          ))}
-        </Box>
-      )}
-    </AppBar>
+          {mobileMenuOpen ? <FaTimes /> : <FaBars />}
+        </BootstrapNavbar.Toggle>
+
+        <BootstrapNavbar.Collapse id="basic-navbar-nav">
+          {/* Navigation Links */}
+          <Nav className="me-auto ms-4">
+            <Nav.Link as={Link} to="/" className="fw-semibold" style={{ color: "#475569" }}>
+              <FaHome className="me-1" />
+              Home
+            </Nav.Link>
+            <Nav.Link as={Link} to="/about" className="fw-semibold" style={{ color: "#475569" }}>
+              <FaInfoCircle className="me-1" />
+              About
+            </Nav.Link>
+            <Nav.Link as={Link} to="/contact" className="fw-semibold" style={{ color: "#475569" }}>
+              <FaEnvelope className="me-1" />
+              Contact
+            </Nav.Link>
+          </Nav>
+
+          {/* Auth Section */}
+          <Nav className="align-items-center">
+            {!token ? (
+              <>
+                <Button
+                  as={Link}
+                  to="/auth/login"
+                  variant="outline-primary"
+                  className="me-2 fw-semibold"
+                  style={{
+                    borderRadius: "8px",
+                    borderColor: "#0d9488",
+                    color: "#0d9488"
+                  }}
+                >
+                  Login
+                </Button>
+                <Button
+                  as={Link}
+                  to="/auth/register"
+                  className="fw-semibold"
+                  style={{
+                    background: "linear-gradient(135deg, #0d9488 0%, #0f766e 100%)",
+                    border: "none",
+                    borderRadius: "8px"
+                  }}
+                >
+                  Register
+                </Button>
+              </>
+            ) : (
+              <Dropdown align="end">
+                <Dropdown.Toggle
+                  variant="link"
+                  className="d-flex align-items-center text-decoration-none p-0"
+                  style={{ color: "#1e293b" }}
+                >
+                  {avatar ? (
+                    <img
+                      src={avatar}
+                      alt="Profile"
+                      className="rounded-circle"
+                      style={{
+                        width: "40px",
+                        height: "40px",
+                        objectFit: "cover",
+                        border: "2px solid #e2e8f0"
+                      }}
+                    />
+                  ) : (
+                    <div
+                      className="rounded-circle d-flex align-items-center justify-content-center"
+                      style={{
+                        width: "40px",
+                        height: "40px",
+                        background: "linear-gradient(135deg, #0d9488 0%, #0f766e 100%)",
+                        color: "white",
+                        fontWeight: 600
+                      }}
+                    >
+                      {user?.name?.charAt(0)?.toUpperCase() || "U"}
+                    </div>
+                  )}
+                  <span className="ms-2 d-none d-md-inline fw-semibold" style={{ color: "#1e293b", textDecoration: "none" }}>
+                    {user?.name || "User"}
+                  </span>
+                </Dropdown.Toggle>
+
+                <Dropdown.Menu
+                  className="shadow-lg border-0"
+                  style={{
+                    borderRadius: "12px",
+                    marginTop: "0.5rem",
+                    minWidth: "220px",
+                    padding: "0.5rem"
+                  }}
+                >
+                  <Dropdown.Item
+                    as={Link}
+                    to="/user/home"
+                    className="d-flex align-items-center py-2"
+                    style={{ borderRadius: "8px" }}
+                  >
+                    <FaHome className="me-2 text-teal" />
+                    Dashboard
+                  </Dropdown.Item>
+                  <Dropdown.Item
+                    as={Link}
+                    to="/user/profile"
+                    className="d-flex align-items-center py-2"
+                    style={{ borderRadius: "8px" }}
+                  >
+                    <FaUser className="me-2 text-teal" />
+                    My Profile
+                  </Dropdown.Item>
+                  <Dropdown.Divider />
+                  <Dropdown.Item
+                    onClick={handleLogout}
+                    className="d-flex align-items-center py-2 text-danger"
+                    style={{ borderRadius: "8px" }}
+                  >
+                    <FaSignOutAlt className="me-2" />
+                    Logout
+                  </Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
+            )}
+          </Nav>
+        </BootstrapNavbar.Collapse>
+      </Container>
+    </BootstrapNavbar>
   );
 }
