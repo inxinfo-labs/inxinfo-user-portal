@@ -21,12 +21,12 @@ export default function AppRoutes() {
         <Route path="/auth/*" element={<AuthRoutes />} />
       </Route>
 
-      {/* PRIVATE */}
+      {/* PRIVATE - more specific paths first so /user/puja, /user/order, /user/pandit work */}
       <Route element={<PrivateLayout />}>
-        <Route path="/user/*" element={<UserRoutes />} />
         <Route path="/user/puja/*" element={<PujaRoutes />} />
         <Route path="/user/order/*" element={<OrderRoutes />} />
         <Route path="/user/pandit/*" element={<PanditRoutes />} />
+        <Route path="/user/*" element={<UserRoutes />} />
       </Route>
     </Routes>
   );

@@ -11,7 +11,7 @@ export default function Hero({ onOpenModal }) {
         color: "white",
         position: "relative",
         overflow: "hidden",
-        minHeight: "90vh",
+        minHeight: "55vh",
         display: "flex",
         alignItems: "center"
       }}

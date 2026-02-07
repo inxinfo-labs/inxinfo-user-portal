@@ -1,9 +1,9 @@
 import { useState, useContext } from "react";
-import { Card, Button, Form, Spinner, Row, Col, Alert } from "react-bootstrap";
+import { Button, Form, Spinner, Alert } from "react-bootstrap";
 import { useNavigate, Link } from "react-router-dom";
 import api from "../../services/api";
 import { AuthContext } from "../../context/AuthContext";
-import { FaEnvelope, FaLock, FaSignInAlt } from "react-icons/fa";
+import { FaEnvelope, FaLock, FaSignInAlt, FaLeaf } from "react-icons/fa";
 
 export default function Login({ embedded = false }) {
   const { login } = useContext(AuthContext);
@@ -26,7 +26,7 @@ export default function Login({ embedded = false }) {
       }
     } catch (err) {
       const errorMessage = err.response?.data?.message || err.response?.data || "Invalid credentials. Please try again.";
-      setError(errorMessage);
+      setError(typeof errorMessage === "string" ? errorMessage : "Invalid credentials. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -34,201 +34,136 @@ export default function Login({ embedded = false }) {
 
   if (embedded) {
     return (
-      <Card className="border-0 shadow-sm">
-        <Card.Body className="p-4">
-          <h5 className="mb-4 fw-bold">Sign In</h5>
+      <div className="border-0 shadow-sm p-4 rounded-3">
+        <h5 className="mb-4 fw-bold">Sign In</h5>
+        {error && <Alert variant="danger" className="mb-3" dismissible onClose={() => setError("")}>{error}</Alert>}
+        <Form onSubmit={submit}>
+          <Form.Group className="mb-3">
+            <Form.Label>Email</Form.Label>
+            <Form.Control type="email" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} required />
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label>Password</Form.Label>
+            <Form.Control type="password" placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} required />
+          </Form.Group>
+          <Button type="submit" className="w-100" disabled={loading}>{loading ? <Spinner size="sm" /> : "Login"}</Button>
+        </Form>
+      </div>
+    );
+  }
+
+  return (
+    <div
+      className="min-vh-100 d-flex align-items-center justify-content-center p-3"
+      style={{
+        background: "linear-gradient(160deg, #0f766e 0%, #0d9488 35%, #14b8a6 70%, #2dd4bf 100%)",
+        position: "relative",
+        overflow: "hidden",
+      }}
+    >
+      {/* Decorative circles */}
+      <div style={{ position: "absolute", top: "10%", left: "5%", width: 280, height: 280, borderRadius: "50%", background: "rgba(255,255,255,0.08)" }} />
+      <div style={{ position: "absolute", bottom: "15%", right: "10%", width: 200, height: 200, borderRadius: "50%", background: "rgba(255,255,255,0.06)" }} />
+      <div style={{ position: "absolute", top: "50%", left: "50%", width: 400, height: 400, borderRadius: "50%", background: "rgba(255,255,255,0.03)", transform: "translate(-50%, -50%)" }} />
+
+      <div
+        className="w-100 shadow-lg border-0 rounded-4 overflow-hidden"
+        style={{
+          maxWidth: 480,
+          background: "rgba(255, 255, 255, 0.95)",
+          backdropFilter: "blur(20px)",
+          boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255,255,255,0.5)",
+        }}
+      >
+        <div className="p-4 p-md-5">
+          <div className="text-center mb-4">
+            <div
+              className="d-inline-flex align-items-center justify-content-center rounded-3 mb-3"
+              style={{ width: 56, height: 56, background: "linear-gradient(135deg, #0d9488 0%, #0f766e 100%)", color: "white" }}
+            >
+              <FaLeaf style={{ fontSize: "1.5rem" }} />
+            </div>
+            <h1 className="h3 fw-bold mb-2" style={{ color: "#0f766e" }}>Welcome back</h1>
+            <p className="text-muted small mb-0">Sign in to access Puja services, orders & PanditJi</p>
+          </div>
+
           {error && (
-            <Alert variant="danger" className="mb-3" dismissible onClose={() => setError("")}>
-              {error}
+            <Alert variant="danger" className="py-2 mb-3 rounded-3" dismissible onClose={() => setError("")}>
+              <small>{error}</small>
             </Alert>
           )}
+
           <Form onSubmit={submit}>
             <Form.Group className="mb-3">
-              <Form.Label>Email</Form.Label>
+              <Form.Label className="small fw-semibold text-secondary">
+                <FaEnvelope className="me-1" style={{ color: "#0d9488" }} /> Email
+              </Form.Label>
               <Form.Control
                 type="email"
                 placeholder="you@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
+                className="border-2 rounded-3 py-2"
+                style={{ borderColor: "#e2e8f0" }}
               />
             </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Label>Password</Form.Label>
+
+            <Form.Group className="mb-4">
+              <Form.Label className="small fw-semibold text-secondary">
+                <FaLock className="me-1" style={{ color: "#0d9488" }} /> Password
+              </Form.Label>
               <Form.Control
                 type="password"
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                className="border-2 rounded-3 py-2"
+                style={{ borderColor: "#e2e8f0" }}
               />
+              <div className="d-flex justify-content-end mt-1">
+                <Link to="#" className="small text-decoration-none" style={{ color: "#0d9488" }}>Forgot password?</Link>
+              </div>
             </Form.Group>
-            <Button type="submit" className="w-100" disabled={loading}>
-              {loading ? <Spinner size="sm" /> : "Login"}
+
+            <Button
+              type="submit"
+              className="w-100 rounded-3 py-2 fw-semibold border-0"
+              disabled={loading}
+              style={{
+                background: "linear-gradient(135deg, #0d9488 0%, #0f766e 100%)",
+                fontSize: "1rem",
+                transition: "transform 0.2s, box-shadow 0.2s",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = "translateY(-2px)";
+                e.currentTarget.style.boxShadow = "0 10px 25px rgba(13, 148, 136, 0.35)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = "translateY(0)";
+                e.currentTarget.style.boxShadow = "none";
+              }}
+            >
+              {loading ? (
+                <><Spinner animation="border" size="sm" className="me-2" /> Signing in...</>
+              ) : (
+                <><FaSignInAlt className="me-2" /> Sign in</>
+              )}
             </Button>
           </Form>
-        </Card.Body>
-      </Card>
-    );
-  }
 
-  return (
-    <div className="min-vh-100 d-flex align-items-center justify-content-center" style={{ 
-      background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-      padding: "2rem 1rem"
-    }}>
-      <Row className="w-100" style={{ maxWidth: "1000px" }}>
-        <Col lg={12}>
-          <Card className="shadow-lg border-0 overflow-hidden" style={{ borderRadius: "20px" }}>
-            <Row className="g-0">
-              {/* Left Side - Branding */}
-              <Col lg={5} className="d-none d-lg-flex align-items-center justify-content-center text-white p-5" 
-                style={{ 
-                  background: "linear-gradient(135deg, #0d9488 0%, #0f766e 100%)",
-                  position: "relative",
-                  overflow: "hidden"
-                }}>
-                <div style={{ position: "relative", zIndex: 1 }}>
-                  <div className="mb-4">
-                    <h1 className="fw-bold mb-3" style={{ fontSize: "2.5rem" }}>INXINFO Labs</h1>
-                    <p className="lead mb-2">Innovation Nexus for Information</p>
-                    <p className="opacity-90">Connecting innovation with information for next-gen solutions.</p>
-                  </div>
-                  <div className="mt-5">
-                    <h5 className="mb-3">Welcome Back!</h5>
-                    <ul className="list-unstyled">
-                      <li className="mb-2">✓ Secure Authentication</li>
-                      <li className="mb-2">✓ Your Data Protected</li>
-                      <li className="mb-2">✓ Fast & Reliable</li>
-                    </ul>
-                  </div>
-                </div>
-                <div style={{
-                  position: "absolute",
-                  top: "-50%",
-                  right: "-50%",
-                  width: "200%",
-                  height: "200%",
-                  background: "radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%)",
-                  animation: "pulse 4s ease-in-out infinite"
-                }}></div>
-              </Col>
-
-              {/* Right Side - Login Form */}
-              <Col lg={7} className="p-4 p-lg-5">
-                <div className="mb-4">
-                  <h2 className="fw-bold mb-2" style={{ color: "#0d9488" }}>Sign In to Your Account</h2>
-                  <p className="text-muted">Enter your credentials to access your account</p>
-                </div>
-
-                {error && (
-                  <Alert variant="danger" className="mb-4" dismissible onClose={() => setError("")}>
-                    {error}
-                  </Alert>
-                )}
-
-                <Form onSubmit={submit}>
-                  <Form.Group className="mb-4">
-                    <Form.Label className="fw-semibold">
-                      <FaEnvelope className="me-2 text-teal" />
-                      Email Address
-                    </Form.Label>
-                    <Form.Control
-                      type="email"
-                      placeholder="you@example.com"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      required
-                      className="border-2"
-                      style={{ borderRadius: "10px", padding: "0.75rem" }}
-                    />
-                  </Form.Group>
-
-                  <Form.Group className="mb-4">
-                    <Form.Label className="fw-semibold">
-                      <FaLock className="me-2 text-teal" />
-                      Password
-                    </Form.Label>
-                    <Form.Control
-                      type="password"
-                      placeholder="••••••••"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      required
-                      className="border-2"
-                      style={{ borderRadius: "10px", padding: "0.75rem" }}
-                    />
-                    <div className="d-flex justify-content-end mt-2">
-                      <Link 
-                        to="#" 
-                        className="text-decoration-none small"
-                        style={{ color: "#0d9488" }}
-                      >
-                        Forgot password?
-                      </Link>
-                    </div>
-                  </Form.Group>
-
-                  <Button 
-                    type="submit" 
-                    className="w-100 fw-semibold" 
-                    disabled={loading}
-                    style={{
-                      background: "linear-gradient(135deg, #0d9488 0%, #0f766e 100%)",
-                      border: "none",
-                      borderRadius: "10px",
-                      padding: "0.875rem",
-                      fontSize: "1.1rem",
-                      transition: "all 0.3s ease"
-                    }}
-                    onMouseEnter={(e) => {
-                      e.target.style.transform = "translateY(-2px)";
-                      e.target.style.boxShadow = "0 10px 20px rgba(13, 148, 136, 0.3)";
-                    }}
-                    onMouseLeave={(e) => {
-                      e.target.style.transform = "translateY(0)";
-                      e.target.style.boxShadow = "none";
-                    }}
-                  >
-                    {loading ? (
-                      <>
-                        <Spinner size="sm" className="me-2" />
-                        Signing In...
-                      </>
-                    ) : (
-                      <>
-                        <FaSignInAlt className="me-2" />
-                        Sign In
-                      </>
-                    )}
-                  </Button>
-                </Form>
-
-                <div className="text-center mt-4">
-                  <span className="text-muted">Don't have an account?</span>{" "}
-                  <Link 
-                    to="/auth/register" 
-                    className="fw-semibold"
-                    style={{ color: "#0d9488", textDecoration: "none" }}
-                  >
-                    Create Account
-                  </Link>
-                </div>
-              </Col>
-            </Row>
-          </Card>
-        </Col>
-      </Row>
+          <p className="text-center mt-4 mb-0 small text-muted">
+            Don't have an account?{" "}
+            <Link to="/auth/register" className="fw-semibold text-decoration-none" style={{ color: "#0d9488" }}>
+              Create account
+            </Link>
+          </p>
+        </div>
+      </div>
 
       <style>{`
-        @keyframes pulse {
-          0%, 100% { opacity: 0.5; }
-          50% { opacity: 0.8; }
-        }
-        .form-control:focus {
-          border-color: #0d9488 !important;
-          box-shadow: 0 0 0 0.2rem rgba(13, 148, 136, 0.25) !important;
-        }
+        .form-control:focus { border-color: #0d9488 !important; box-shadow: 0 0 0 0.2rem rgba(13, 148, 136, 0.2) !important; }
       `}</style>
     </div>
   );

@@ -18,7 +18,7 @@ const services = [
     color: "#0f766e",
   },
   {
-    title: "Book Pandit",
+    title: "PanditJi",
     description: "Find and book experienced pandits",
     to: "/user/pandit",
     icon: <FaUserTie />,
@@ -28,12 +28,12 @@ const services = [
 
 export default function LandingServices() {
   return (
-    <section className="py-5" style={{ background: "#fff" }}>
+    <section id="our-services" className="py-4" style={{ background: "#fff" }}>
       <Container>
-        <div className="text-center mb-5">
+        <div className="text-center mb-4">
           <h2 className="fw-bold mb-3">Our Services</h2>
           <p className="lead text-muted" style={{ maxWidth: "600px", margin: "0 auto" }}>
-            Sign in to access Puja services, orders, and pandit booking
+            Sign in to access Puja services, orders, and PanditJi booking
           </p>
         </div>
         <Row className="g-4">

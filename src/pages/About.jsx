@@ -88,19 +88,26 @@ export default function About() {
           ))}
         </Row>
 
-        {/* Technology Stack */}
+        {/* Platform Architecture & Capabilities */}
         <Row className="mt-5 pt-5" style={{ borderTop: "1px solid #e2e8f0" }}>
           <Col md={12}>
             <div className="text-center mb-4">
-              <h4 className="fw-bold mb-3">Our Technology Stack</h4>
+              <h4 className="fw-bold mb-3">Platform Architecture &amp; Capabilities</h4>
+              <p className="text-muted" style={{ maxWidth: "720px", margin: "0 auto 1.5rem" }}>
+                Our platform is built for reliability, security, and scale.
+              </p>
             </div>
             <div className="d-flex flex-wrap justify-content-center gap-3">
               {[
-                "React & Next.js", "Node.js & Express", "Java & Spring Boot",
-                "Python & Django", "Docker & Kubernetes", "AWS & Azure",
-                "PostgreSQL & MongoDB", "Redis & Elasticsearch", "GraphQL & REST APIs",
-                "TypeScript & JavaScript", "Microservices", "CI/CD Pipelines"
-              ].map((tech, idx) => (
+                "Distributed microservices",
+                "Secure authentication (JWT & OAuth2)",
+                "Scalable design",
+                "Fault tolerance",
+                "Saga-based consistency",
+                "API Gateway routing",
+                "Event-driven communication",
+                "Independent deployment"
+              ].map((item, idx) => (
                 <span 
                   key={idx}
                   className="badge px-3 py-2"
@@ -112,7 +119,7 @@ export default function About() {
                     borderRadius: "8px"
                   }}
                 >
-                  {tech}
+                  {item}
                 </span>
               ))}
             </div>

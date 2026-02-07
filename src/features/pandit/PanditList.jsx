@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Container, Row, Col, Card, Button, Spinner, Alert, Form, Badge } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import api from "../../services/api";
-import { FaMapMarkerAlt, FaStar, FaRupeeSign, FaClock, FaArrowRight } from "react-icons/fa";
+import { FaMapMarkerAlt, FaStar, FaRupeeSign, FaArrowRight } from "react-icons/fa";
 
 export default function PanditList() {
   const [pandits, setPandits] = useState([]);
@@ -60,7 +60,7 @@ export default function PanditList() {
   return (
     <Container className="my-5">
       <div className="mb-5">
-        <h1 className="fw-bold mb-2">Available Pandits</h1>
+        <h1 className="fw-bold mb-2">PanditJi — Available Pandits</h1>
         <p className="text-muted">Book experienced pandits for your ceremonies</p>
       </div>
 
@@ -189,7 +189,7 @@ export default function PanditList() {
                       padding: "0.75rem"
                     }}
                   >
-                    Book Pandit <FaArrowRight className="ms-2" />
+                    Book PanditJi <FaArrowRight className="ms-2" />
                   </Button>
                 </Card.Body>
               </Card>

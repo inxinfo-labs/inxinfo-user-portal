@@ -2,7 +2,7 @@ import { useContext, useState } from "react";
 import { Navbar as BootstrapNavbar, Nav, Container, Button, Dropdown } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
-import { FaUser, FaCog, FaSignOutAlt, FaHome, FaInfoCircle, FaEnvelope, FaBars, FaTimes } from "react-icons/fa";
+import { FaUser, FaSignOutAlt, FaHome, FaInfoCircle, FaEnvelope, FaBars, FaTimes } from "react-icons/fa";
 
 export default function Navbar() {
   const navigate = useNavigate();

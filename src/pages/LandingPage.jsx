@@ -17,9 +17,10 @@ export default function LandingPage() {
         <Hero onOpenModal={() => setModalOpen(true)} />
       </section>
 
-      <Features />
-
+      {/* Our Services at top so visible without scrolling */}
       <LandingServices />
+
+      <Features />
 
       <MapSection />
 

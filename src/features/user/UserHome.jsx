@@ -2,7 +2,7 @@ import { useContext, useState, useEffect } from "react";
 import { Card, Row, Col, Button, Spinner } from "react-bootstrap";
 import { AuthContext } from "../../context/AuthContext";
 import { Link } from "react-router-dom";
-import { FaMapMarkerAlt, FaUser, FaEdit, FaCamera, FaExternalLinkAlt, FaPrayingHands, FaShoppingCart, FaUserTie, FaHome } from "react-icons/fa";
+import { FaMapMarkerAlt, FaUser, FaEdit, FaExternalLinkAlt, FaPrayingHands, FaShoppingCart, FaUserTie } from "react-icons/fa";
 
 const OFFICE_LAT = 12.9716;
 const OFFICE_LNG = 77.5946;
@@ -59,14 +59,14 @@ export default function UserHome() {
       {/* Quick Actions */}
       <Row className="g-4 mb-5">
         <Col md={3} sm={6}>
-          <Card className="border-0 shadow-sm h-100 text-center" style={{ 
+          <Card className="border-0 shadow-sm h-100 text-center" as={Link} to="/user/puja"
+          style={{ 
             borderRadius: "1rem",
             transition: "all 0.3s ease",
-            cursor: "pointer"
+            cursor: "pointer",
+            textDecoration: "none",
+            color: "inherit"
           }}
-          as={Link}
-          to="/user/puja"
-          style={{ textDecoration: "none", color: "inherit" }}
           onMouseEnter={(e) => {
             e.currentTarget.style.transform = "translateY(-4px)";
             e.currentTarget.style.boxShadow = "0 10px 25px rgba(13, 148, 136, 0.15)";
@@ -98,14 +98,14 @@ export default function UserHome() {
         </Col>
 
         <Col md={3} sm={6}>
-          <Card className="border-0 shadow-sm h-100 text-center" style={{ 
+          <Card className="border-0 shadow-sm h-100 text-center" as={Link} to="/user/order"
+          style={{ 
             borderRadius: "1rem",
             transition: "all 0.3s ease",
-            cursor: "pointer"
+            cursor: "pointer",
+            textDecoration: "none",
+            color: "inherit"
           }}
-          as={Link}
-          to="/user/order"
-          style={{ textDecoration: "none", color: "inherit" }}
           onMouseEnter={(e) => {
             e.currentTarget.style.transform = "translateY(-4px)";
             e.currentTarget.style.boxShadow = "0 10px 25px rgba(13, 148, 136, 0.15)";
@@ -137,14 +137,14 @@ export default function UserHome() {
         </Col>
 
         <Col md={3} sm={6}>
-          <Card className="border-0 shadow-sm h-100 text-center" style={{ 
+          <Card className="border-0 shadow-sm h-100 text-center" as={Link} to="/user/pandit"
+          style={{ 
             borderRadius: "1rem",
             transition: "all 0.3s ease",
-            cursor: "pointer"
+            cursor: "pointer",
+            textDecoration: "none",
+            color: "inherit"
           }}
-          as={Link}
-          to="/user/pandit"
-          style={{ textDecoration: "none", color: "inherit" }}
           onMouseEnter={(e) => {
             e.currentTarget.style.transform = "translateY(-4px)";
             e.currentTarget.style.boxShadow = "0 10px 25px rgba(13, 148, 136, 0.15)";
@@ -169,21 +169,21 @@ export default function UserHome() {
                   <FaUserTie style={{ fontSize: "2rem" }} />
                 </div>
               </div>
-              <h5 className="fw-bold mb-2">Book Pandit</h5>
+              <h5 className="fw-bold mb-2">PanditJi</h5>
               <p className="text-muted small mb-0">Find and book pandits</p>
             </Card.Body>
           </Card>
         </Col>
 
         <Col md={3} sm={6}>
-          <Card className="border-0 shadow-sm h-100 text-center" style={{ 
+          <Card className="border-0 shadow-sm h-100 text-center" as={Link} to="/user/profile"
+          style={{ 
             borderRadius: "1rem",
             transition: "all 0.3s ease",
-            cursor: "pointer"
+            cursor: "pointer",
+            textDecoration: "none",
+            color: "inherit"
           }}
-          as={Link}
-          to="/user/profile"
-          style={{ textDecoration: "none", color: "inherit" }}
           onMouseEnter={(e) => {
             e.currentTarget.style.transform = "translateY(-4px)";
             e.currentTarget.style.boxShadow = "0 10px 25px rgba(13, 148, 136, 0.15)";

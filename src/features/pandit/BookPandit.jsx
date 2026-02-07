@@ -203,7 +203,7 @@ export default function BookPandit() {
               />
             </Form.Group>
             <Button variant="primary" type="submit" disabled={submitting}>
-              {submitting ? "Booking..." : `Book Pandit (₹${pandit?.hourlyRate * formData.durationHours})`}
+              {submitting ? "Booking..." : `Book PanditJi (₹${pandit?.hourlyRate * formData.durationHours})`}
             </Button>
           </Form>
         </Col>

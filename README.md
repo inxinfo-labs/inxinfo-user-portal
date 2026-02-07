@@ -1,6 +1,6 @@
-# InxInfo User Portal
+# INXINFO Labs — Puja Store (User Portal)
 
-A modern React.js frontend application for the Puja Store platform, providing user authentication, puja booking, order management, and pandit booking services.
+A modern React.js frontend for the **Puja Store** platform — suitable for portfolio and production demos. Features user authentication, Puja services, order management, and **PanditJi** (pandit) booking.
 
 ## 🚀 Features
 
@@ -18,7 +18,7 @@ A modern React.js frontend application for the Puja Store platform, providing us
 - Book puja services
 - Order management
 - Order history and tracking
-- Pandit ji booking
+- PanditJi booking (book experienced pandits)
 - Check pandit availability
 - Calendar-based booking
 
@@ -44,35 +44,54 @@ A modern React.js frontend application for the Puja Store platform, providing us
 ## 📋 Prerequisites
 
 - Node.js 16+ and npm
-- Backend API running at `http://localhost:8080`
+- **Backend:** [inxinfo-auth-service](https://github.com/inxinfo-labs/inxinfo-auth-service) must be running. All API calls from this frontend go to that single backend (auth, user, puja, pandit, orders).
 
-## ⚙️ Installation
+---
+
+## ⚙️ Backend (inxinfo-auth-service) — run first
+
+1. Clone and open **inxinfo-auth-service**.
+2. Create MySQL database: `CREATE DATABASE authdb;`
+3. In `auth-module/src/main/resources/application.yml`, set DB credentials and (optional) Google OAuth2 client-id/secret.
+4. From the repo root run:
+   ```bash
+   mvn clean install
+   mvn spring-boot:run -pl app-runner
+   ```
+5. Backend will be at **http://localhost:8080**. API base for frontend: **http://localhost:8080/api**.
+
+---
+
+## ⚙️ Installation (Frontend — inxinfo-user-portal)
 
 1. **Install dependencies:**
-```bash
-npm install
-```
+   ```bash
+   npm install
+   ```
 
 2. **Configure API endpoint:**
-Update `src/services/api.js` if your backend runs on a different port:
-```javascript
-const api = axios.create({
-  baseURL: "http://localhost:8080/api",
-});
-```
+   Copy `.env.example` to `.env` and set the backend URL:
+   ```bash
+   cp .env.example .env
+   ```
+   In `.env`:
+   ```
+   REACT_APP_API_URL=http://localhost:8080/api
+   REACT_APP_GOOGLE_CLIENT_ID=your_google_client_id_if_using_oauth
+   ```
 
 3. **Start the development server:**
-```bash
-npm start
-```
+   ```bash
+   npm start
+   ```
 
 4. **Access the application:**
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+   Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## 📁 Project Structure
 
 ```
-inxinfo-user-portal/
+inxinfo-user-portal/            # Frontend (this repo)
 ├── public/
 │   ├── index.html
 │   └── manifest.json
@@ -124,32 +143,17 @@ inxinfo-user-portal/
 
 ## 🔌 API Integration
 
-The application integrates with the following backend endpoints:
+The frontend talks **only** to **inxinfo-auth-service**. All requests use the base URL from `REACT_APP_API_URL` (e.g. `http://localhost:8080/api`). Endpoints used:
 
-### Authentication
-- `POST /api/auth/register` - User registration
-- `POST /api/auth/login` - User login
-- `GET /oauth2/authorization/google` - OAuth2 redirect
+| Area   | Endpoints |
+|--------|-----------|
+| Auth   | `POST /auth/register`, `POST /auth/login`, `POST /auth/logout`, OAuth2 |
+| User   | `GET /user/me`, `PUT /user/profile`, `PUT /user/password`, `POST /user/profile-pic`, `GET /user/profile-pic` |
+| Puja   | `GET /puja`, `GET /puja/:id`, `POST /puja/book`, `GET /puja/bookings` |
+| Pandit | `GET /pandit/available`, `GET /pandit/city/:city`, `GET /pandit/:id`, `GET /pandit/:id/availability`, `POST /pandit/book`, `GET /pandit/bookings` |
+| Orders | `GET /orders`, `GET /orders/:id`, `POST /orders`, `POST /orders/:id/payment/confirm` |
 
-### User Profile
-- `GET /api/user/me` - Get current user
-- `PUT /api/user/profile` - Update profile
-- `POST /api/user/profile-pic` - Upload profile picture
-
-### Puja Services
-- `GET /api/puja` - Get all puja types
-- `GET /api/puja/{id}` - Get puja details
-- `POST /api/puja/book` - Book a puja
-
-### Orders
-- `GET /api/orders` - Get user orders
-- `GET /api/orders/{id}` - Get order details
-- `POST /api/orders` - Create order
-
-### Pandit Booking
-- `GET /api/pandit` - Get available pandits
-- `GET /api/pandit/{id}` - Get pandit details
-- `POST /api/pandit/book` - Book a pandit
+(Paths are relative to the base URL; the backend serves them under `/api/...`.)
 
 ## 🎨 Styling
 
@@ -199,7 +203,7 @@ npm run build
 
 ## 📝 Environment Variables
 
-Create a `.env` file for environment-specific configuration:
+Copy `.env.example` to `.env` and set values. Point `REACT_APP_API_URL` to **inxinfo-auth-service** base URL:
 ```
 REACT_APP_API_URL=http://localhost:8080/api
 REACT_APP_GOOGLE_CLIENT_ID=your_google_client_id
@@ -216,9 +220,9 @@ Ensure backend CORS configuration allows your frontend origin.
 - Check browser console for errors
 
 ### API Connection Issues
-- Verify backend URL in `src/services/api.js`
+- Set `REACT_APP_API_URL` to your inxinfo-auth-service URL (e.g. `http://localhost:8080/api`)
 - Check network tab in browser DevTools
-- Ensure backend is running and accessible
+- Ensure inxinfo-auth-service is running and accessible
 
 ## 📞 Support
 

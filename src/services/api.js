@@ -1,5 +1,6 @@
 import axios from "axios";
 
+// Backend: inxinfo-auth-service (auth, user, puja, pandit, orders). Set REACT_APP_API_URL in .env.
 const baseURL = process.env.REACT_APP_API_URL || "http://localhost:8080/api";
 
 const api = axios.create({

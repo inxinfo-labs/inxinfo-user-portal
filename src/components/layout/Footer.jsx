@@ -1,249 +1,137 @@
-import { Container, Row, Col } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import Box from "@mui/material/Box";
+import Container from "@mui/material/Container";
+import Grid from "@mui/material/Grid";
+import Typography from "@mui/material/Typography";
+import MuiLink from "@mui/material/Link";
 import { FaLinkedin, FaGithub, FaTwitter, FaEnvelope } from "react-icons/fa";
+
+const footerLinks = {
+  company: [
+    { label: "About Us", path: "/about" },
+    { label: "Services", path: "/" },
+    { label: "Contact", path: "/contact" },
+  ],
+  resources: [
+    { label: "Documentation", path: "#" },
+    { label: "Blog", path: "#" },
+    { label: "Support", path: "/contact" },
+  ],
+  legal: [
+    { label: "Privacy Policy", path: "#" },
+    { label: "Terms of Service", path: "#" },
+    { label: "Cookie Policy", path: "#" },
+  ],
+};
 
 export default function AppFooter() {
   const currentYear = new Date().getFullYear();
 
-  const footerLinks = {
-    company: [
-      { label: "About Us", path: "/about" },
-      { label: "Services", path: "/" },
-      { label: "Contact", path: "/contact" },
-    ],
-    resources: [
-      { label: "Documentation", path: "#" },
-      { label: "Blog", path: "#" },
-      { label: "Support", path: "/contact" },
-    ],
-    legal: [
-      { label: "Privacy Policy", path: "#" },
-      { label: "Terms of Service", path: "#" },
-      { label: "Cookie Policy", path: "#" },
-    ],
+  const linkSx = {
+    color: "#cbd5e1",
+    textDecoration: "none",
+    fontSize: "0.9375rem",
+    "&:hover": { color: "#fff" },
   };
 
   return (
-    <footer 
-      className="mt-auto"
-      style={{
-        background: "#0f172a",
-        color: "#e5e7eb",
-        padding: "4rem 0 2rem"
+    <Box
+      component="footer"
+      role="contentinfo"
+      sx={{
+        mt: "auto",
+        py: 4,
+        px: 2,
+        backgroundColor: "#0f172a",
+        color: "#e2e8f0",
+        position: "sticky",
+        bottom: 0,
+        zIndex: 10,
       }}
     >
-      <Container>
-        <Row className="g-4 mb-4">
-          {/* Brand Column */}
-          <Col md={4}>
-            <h4 className="fw-bold mb-3" style={{ color: "white" }}>
+      <Container maxWidth="lg">
+        <Grid container spacing={4} sx={{ mb: 2 }}>
+          <Grid item xs={12} md={4}>
+            <Typography variant="h6" sx={{ fontWeight: 700, color: "#fff", mb: 2 }}>
               INXINFO Labs
-            </h4>
-            <p className="text-muted mb-3" style={{ lineHeight: 1.7 }}>
-              Innovation Nexus for Information. Building enterprise-ready 
-              digital solutions that scale with your business.
-            </p>
-            <div className="d-flex gap-3">
-              <a 
-                href="https://linkedin.com" 
-                target="_blank" 
-                rel="noreferrer"
-                className="text-white"
-                style={{ fontSize: "1.5rem", transition: "all 0.3s ease" }}
-                onMouseEnter={(e) => e.currentTarget.style.transform = "translateY(-3px)"}
-                onMouseLeave={(e) => e.currentTarget.style.transform = "translateY(0)"}
-              >
-                <FaLinkedin />
-              </a>
-              <a 
-                href="https://github.com" 
-                target="_blank" 
-                rel="noreferrer"
-                className="text-white"
-                style={{ fontSize: "1.5rem", transition: "all 0.3s ease" }}
-                onMouseEnter={(e) => e.currentTarget.style.transform = "translateY(-3px)"}
-                onMouseLeave={(e) => e.currentTarget.style.transform = "translateY(0)"}
-              >
-                <FaGithub />
-              </a>
-              <a 
-                href="https://twitter.com" 
-                target="_blank" 
-                rel="noreferrer"
-                className="text-white"
-                style={{ fontSize: "1.5rem", transition: "all 0.3s ease" }}
-                onMouseEnter={(e) => e.currentTarget.style.transform = "translateY(-3px)"}
-                onMouseLeave={(e) => e.currentTarget.style.transform = "translateY(0)"}
-              >
-                <FaTwitter />
-              </a>
-              <a 
-                href="mailto:satish.prasad@inxinfo.com"
-                className="text-white"
-                style={{ fontSize: "1.5rem", transition: "all 0.3s ease" }}
-                onMouseEnter={(e) => e.currentTarget.style.transform = "translateY(-3px)"}
-                onMouseLeave={(e) => e.currentTarget.style.transform = "translateY(0)"}
-              >
-                <FaEnvelope />
-              </a>
-            </div>
-          </Col>
-
-          {/* Company Links */}
-          <Col md={2}>
-            <h6 className="fw-bold mb-3" style={{ color: "white" }}>Company</h6>
-            <ul className="list-unstyled">
-              {footerLinks.company.map((link, idx) => (
-                <li key={idx} className="mb-2">
-                  <Link
-                    to={link.path}
-                    className="text-muted text-decoration-none"
-                    style={{ transition: "all 0.3s ease", display: "inline-block" }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.color = "white";
-                      e.currentTarget.style.transform = "translateX(4px)";
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.color = "#94a3b8";
-                      e.currentTarget.style.transform = "translateX(0)";
-                    }}
-                  >
-                    {link.label}
+            </Typography>
+            <Typography sx={{ color: "#cbd5e1", lineHeight: 1.7, mb: 2 }}>
+              Innovation Nexus for Information. Building enterprise-ready digital solutions that scale with your business.
+            </Typography>
+            <Box sx={{ display: "flex", gap: 1.5 }}>
+              <MuiLink href="https://linkedin.com" target="_blank" rel="noreferrer" sx={{ color: "#cbd5e1", "&:hover": { color: "#fff" } }}>
+                <FaLinkedin size={22} />
+              </MuiLink>
+              <MuiLink href="https://github.com" target="_blank" rel="noreferrer" sx={{ color: "#cbd5e1", "&:hover": { color: "#fff" } }}>
+                <FaGithub size={22} />
+              </MuiLink>
+              <MuiLink href="https://twitter.com" target="_blank" rel="noreferrer" sx={{ color: "#cbd5e1", "&:hover": { color: "#fff" } }}>
+                <FaTwitter size={22} />
+              </MuiLink>
+              <MuiLink href="mailto:satish.prasad@inxinfo.com" sx={{ color: "#cbd5e1", "&:hover": { color: "#fff" } }}>
+                <FaEnvelope size={22} />
+              </MuiLink>
+            </Box>
+          </Grid>
+          <Grid item xs={6} md={2}>
+            <Typography variant="subtitle2" sx={{ fontWeight: 700, color: "#fff", mb: 1.5 }}>
+              Company
+            </Typography>
+            {footerLinks.company.map((link) => (
+              <Box key={link.path} sx={{ mb: 1 }}>
+                <Link to={link.path} style={{ textDecoration: "none" }}>
+                  <Typography sx={linkSx}>{link.label}</Typography>
+                </Link>
+              </Box>
+            ))}
+          </Grid>
+          <Grid item xs={6} md={2}>
+            <Typography variant="subtitle2" sx={{ fontWeight: 700, color: "#fff", mb: 1.5 }}>
+              Resources
+            </Typography>
+            {footerLinks.resources.map((link) => (
+              <Box key={link.path} sx={{ mb: 1 }}>
+                {link.path.startsWith("/") ? (
+                  <Link to={link.path} style={{ textDecoration: "none" }}>
+                    <Typography sx={linkSx}>{link.label}</Typography>
                   </Link>
-                </li>
-              ))}
-            </ul>
-          </Col>
-
-          {/* Resources Links */}
-          <Col md={2}>
-            <h6 className="fw-bold mb-3" style={{ color: "white" }}>Resources</h6>
-            <ul className="list-unstyled">
-              {footerLinks.resources.map((link, idx) => (
-                <li key={idx} className="mb-2">
-                  {(link.path && link.path.startsWith("/")) ? (
-                  <Link
-                    to={link.path}
-                    className="text-muted text-decoration-none"
-                    style={{ transition: "all 0.3s ease", display: "inline-block" }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.color = "white";
-                      e.currentTarget.style.transform = "translateX(4px)";
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.color = "#94a3b8";
-                      e.currentTarget.style.transform = "translateX(0)";
-                    }}
-                  >
-                    {link.label}
-                  </Link>
-                  ) : (
-                  <a
-                    href={link.href || link.path || "#"}
-                    className="text-muted text-decoration-none"
-                    style={{ transition: "all 0.3s ease", display: "inline-block" }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.color = "white";
-                      e.currentTarget.style.transform = "translateX(4px)";
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.color = "#94a3b8";
-                      e.currentTarget.style.transform = "translateX(0)";
-                    }}
-                  >
-                    {link.label}
-                  </a>
-                  )}
-                </li>
-              ))}
-            </ul>
-          </Col>
-
-          {/* Legal Links */}
-          <Col md={2}>
-            <h6 className="fw-bold mb-3" style={{ color: "white" }}>Legal</h6>
-            <ul className="list-unstyled">
-              {footerLinks.legal.map((link, idx) => (
-                <li key={idx} className="mb-2">
-                  {link.path && link.path.startsWith("/") ? (
-                    <Link
-                      to={link.path}
-                      className="text-muted text-decoration-none"
-                      style={{ 
-                        transition: "all 0.3s ease",
-                        display: "inline-block"
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.color = "white";
-                        e.currentTarget.style.transform = "translateX(4px)";
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.color = "#94a3b8";
-                        e.currentTarget.style.transform = "translateX(0)";
-                      }}
-                    >
-                      {link.label}
-                    </Link>
-                  ) : (
-                    <a
-                      href={link.path || "#"}
-                      className="text-muted text-decoration-none"
-                      style={{ 
-                        transition: "all 0.3s ease",
-                        display: "inline-block"
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.color = "white";
-                        e.currentTarget.style.transform = "translateX(4px)";
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.color = "#94a3b8";
-                        e.currentTarget.style.transform = "translateX(0)";
-                      }}
-                    >
-                      {link.label}
-                    </a>
-                  )}
-                </li>
-              ))}
-            </ul>
-          </Col>
-
-          {/* Contact Info */}
-          <Col md={2}>
-            <h6 className="fw-bold mb-3" style={{ color: "white" }}>Contact</h6>
-            <ul className="list-unstyled text-muted small">
-              <li className="mb-2">
-                <FaEnvelope className="me-2" />
-                <a 
-                  href="mailto:satish.prasad@inxinfo.com"
-                  className="text-muted text-decoration-none"
-                  style={{ fontSize: "0.875rem" }}
-                >
-                  Email Us
-                </a>
-              </li>
-              <li className="mb-2">
-                <span>📍 Bangalore, India</span>
-              </li>
-            </ul>
-          </Col>
-        </Row>
-
-        {/* Bottom Bar */}
-        <Row>
-          <Col md={12}>
-            <div 
-              className="text-center pt-4"
-              style={{ borderTop: "1px solid rgba(255,255,255,0.1)" }}
-            >
-              <p className="text-muted mb-0 small">
-                © {currentYear} INXINFO Labs. All rights reserved. • v1.0.0
-              </p>
-            </div>
-          </Col>
-        </Row>
+                ) : (
+                  <MuiLink href={link.path} sx={linkSx}>{link.label}</MuiLink>
+                )}
+              </Box>
+            ))}
+          </Grid>
+          <Grid item xs={6} md={2}>
+            <Typography variant="subtitle2" sx={{ fontWeight: 700, color: "#fff", mb: 1.5 }}>
+              Legal
+            </Typography>
+            {footerLinks.legal.map((link) => (
+              <Box key={link.path} sx={{ mb: 1 }}>
+                <MuiLink href={link.path} sx={linkSx}>{link.label}</MuiLink>
+              </Box>
+            ))}
+          </Grid>
+          <Grid item xs={6} md={2}>
+            <Typography variant="subtitle2" sx={{ fontWeight: 700, color: "#fff", mb: 1.5 }}>
+              Contact
+            </Typography>
+            <Typography sx={{ color: "#cbd5e1", fontSize: "0.875rem" }}>
+              <MuiLink href="mailto:satish.prasad@inxinfo.com" sx={{ color: "#cbd5e1", "&:hover": { color: "#fff" } }}>
+                Email Us
+              </MuiLink>
+            </Typography>
+            <Typography sx={{ color: "#cbd5e1", fontSize: "0.875rem", mt: 1 }}>
+              23 and 30 Suloka Nilaya, Vishuvardhan Rd, Near RNSIT College, Bangalore – 560098
+            </Typography>
+            <Typography sx={{ color: "#cbd5e1", fontSize: "0.875rem" }}>📞 8050618092</Typography>
+          </Grid>
+        </Grid>
+        <Box sx={{ borderTop: "1px solid rgba(255,255,255,0.12)", pt: 2, textAlign: "center" }}>
+          <Typography variant="body2" sx={{ color: "#94a3b8" }}>
+            © {currentYear} INXINFO Labs. All rights reserved. • v1.0.0
+          </Typography>
+        </Box>
       </Container>
-    </footer>
+    </Box>
   );
 }
