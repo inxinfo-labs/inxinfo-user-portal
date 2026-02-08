@@ -1,32 +1,103 @@
 import { useState, useContext } from "react";
-import { Button, Form, Spinner, Alert } from "react-bootstrap";
+import { Button, Form, Spinner, Alert, Tab, Tabs } from "react-bootstrap";
 import { useNavigate, Link } from "react-router-dom";
 import api from "../../services/api";
 import { AuthContext } from "../../context/AuthContext";
-import { FaEnvelope, FaLock, FaSignInAlt, FaLeaf } from "react-icons/fa";
+import { getApiErrorMessage } from "../../utils/apiError";
+import { ApiCodeMessages } from "../../constants";
+import { FaEnvelope, FaLock, FaSignInAlt, FaLeaf, FaMobileAlt, FaKey } from "react-icons/fa";
 
 export default function Login({ embedded = false }) {
   const { login } = useContext(AuthContext);
-  const [email, setEmail] = useState("");
+  const [activeTab, setActiveTab] = useState("password");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [otpEmailOrPhone, setOtpEmailOrPhone] = useState("");
+  const [otpCode, setOtpCode] = useState("");
+  const [otpSent, setOtpSent] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [sendOtpLoading, setSendOtpLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const submit = async (e) => {
+  const submitPassword = async (e) => {
     e.preventDefault();
+    const u = (username || "").trim();
+    const p = (password || "").trim();
+    if (!u || !p) {
+      setError("Email, username or phone and password are required.");
+      return;
+    }
     setLoading(true);
     setError("");
-
     try {
-      const res = await api.post("/auth/login", { email, password });
-      if (res.data.accessToken) {
+      const res = await api.post("/auth/login", { username: u, password: p });
+      if (res.data?.accessToken) {
         login(res.data.accessToken);
         navigate("/user/home");
+      } else {
+        setError("Invalid response from server. Please try again.");
       }
     } catch (err) {
-      const errorMessage = err.response?.data?.message || err.response?.data || "Invalid credentials. Please try again.";
-      setError(typeof errorMessage === "string" ? errorMessage : "Invalid credentials. Please try again.");
+      const code = err.response?.data?.code;
+      const msg =
+        (code != null && ApiCodeMessages[code]) ||
+        getApiErrorMessage(err, "Sign-in failed. Check your email and password, and that the server is running.");
+      setError(msg);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const sendOtp = async (e) => {
+    e.preventDefault();
+    const input = (otpEmailOrPhone || "").trim();
+    if (!input) {
+      setError("Enter your email or phone number.");
+      return;
+    }
+    setSendOtpLoading(true);
+    setError("");
+    try {
+      await api.post("/auth/send-otp", { emailOrPhone: input });
+      setOtpSent(true);
+      setOtpCode("");
+      setError("");
+    } catch (err) {
+      const code = err.response?.data?.code;
+      const msg =
+        (code != null && ApiCodeMessages[code]) ||
+        getApiErrorMessage(err, "Could not send OTP. Check your email and that the server is running, or try signing in with password.");
+      setError(msg);
+    } finally {
+      setSendOtpLoading(false);
+    }
+  };
+
+  const verifyOtp = async (e) => {
+    e.preventDefault();
+    const input = (otpEmailOrPhone || "").trim();
+    const code = (otpCode || "").trim();
+    if (!input || !code) {
+      setError("Email/phone and OTP are required.");
+      return;
+    }
+    setLoading(true);
+    setError("");
+    try {
+      const res = await api.post("/auth/verify-otp", { emailOrPhone: input, otp: code });
+      if (res.data?.accessToken) {
+        login(res.data.accessToken);
+        navigate("/user/home");
+      } else {
+        setError("Verification failed. Please try again.");
+      }
+    } catch (err) {
+      const code = err.response?.data?.code;
+      const msg =
+        (code != null && ApiCodeMessages[code]) ||
+        getApiErrorMessage(err, "Verification failed. Check the code or request a new OTP. Ensure the server is running.");
+      setError(msg);
     } finally {
       setLoading(false);
     }
@@ -36,17 +107,35 @@ export default function Login({ embedded = false }) {
     return (
       <div className="border-0 shadow-sm p-4 rounded-3">
         <h5 className="mb-4 fw-bold">Sign In</h5>
-        {error && <Alert variant="danger" className="mb-3" dismissible onClose={() => setError("")}>{error}</Alert>}
-        <Form onSubmit={submit}>
+        {error && (
+          <Alert variant="danger" className="mb-3" dismissible onClose={() => setError("")}>
+            {error}
+          </Alert>
+        )}
+        <Form onSubmit={submitPassword}>
           <Form.Group className="mb-3">
-            <Form.Label>Email</Form.Label>
-            <Form.Control type="email" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} required />
+            <Form.Label>Email, username or phone</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="you@example.com or +91 98765 43210"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
           </Form.Group>
           <Form.Group className="mb-3">
             <Form.Label>Password</Form.Label>
-            <Form.Control type="password" placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} required />
+            <Form.Control
+              type="password"
+              placeholder="••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
           </Form.Group>
-          <Button type="submit" className="w-100" disabled={loading}>{loading ? <Spinner size="sm" /> : "Login"}</Button>
+          <Button type="submit" className="w-100" disabled={loading}>
+            {loading ? <Spinner size="sm" /> : "Login"}
+          </Button>
         </Form>
       </div>
     );
@@ -61,15 +150,45 @@ export default function Login({ embedded = false }) {
         overflow: "hidden",
       }}
     >
-      {/* Decorative circles */}
-      <div style={{ position: "absolute", top: "10%", left: "5%", width: 280, height: 280, borderRadius: "50%", background: "rgba(255,255,255,0.08)" }} />
-      <div style={{ position: "absolute", bottom: "15%", right: "10%", width: 200, height: 200, borderRadius: "50%", background: "rgba(255,255,255,0.06)" }} />
-      <div style={{ position: "absolute", top: "50%", left: "50%", width: 400, height: 400, borderRadius: "50%", background: "rgba(255,255,255,0.03)", transform: "translate(-50%, -50%)" }} />
+      <div
+        style={{
+          position: "absolute",
+          top: "10%",
+          left: "5%",
+          width: 280,
+          height: 280,
+          borderRadius: "50%",
+          background: "rgba(255,255,255,0.08)",
+        }}
+      />
+      <div
+        style={{
+          position: "absolute",
+          bottom: "15%",
+          right: "10%",
+          width: 200,
+          height: 200,
+          borderRadius: "50%",
+          background: "rgba(255,255,255,0.06)",
+        }}
+      />
+      <div
+        style={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          width: 400,
+          height: 400,
+          borderRadius: "50%",
+          background: "rgba(255,255,255,0.03)",
+          transform: "translate(-50%, -50%)",
+        }}
+      />
 
       <div
         className="w-100 shadow-lg border-0 rounded-4 overflow-hidden"
         style={{
-          maxWidth: 480,
+          maxWidth: 460,
           background: "rgba(255, 255, 255, 0.95)",
           backdropFilter: "blur(20px)",
           boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255,255,255,0.5)",
@@ -79,82 +198,188 @@ export default function Login({ embedded = false }) {
           <div className="text-center mb-4">
             <div
               className="d-inline-flex align-items-center justify-content-center rounded-3 mb-3"
-              style={{ width: 56, height: 56, background: "linear-gradient(135deg, #0d9488 0%, #0f766e 100%)", color: "white" }}
+              style={{
+                width: 56,
+                height: 56,
+                background: "linear-gradient(135deg, #0d9488 0%, #0f766e 100%)",
+                color: "white",
+              }}
             >
               <FaLeaf style={{ fontSize: "1.5rem" }} />
             </div>
-            <h1 className="h3 fw-bold mb-2" style={{ color: "#0f766e" }}>Welcome back</h1>
-            <p className="text-muted small mb-0">Sign in to access Puja services, orders & PanditJi</p>
+            <h1 className="h3 fw-bold mb-2" style={{ color: "#0f766e" }}>
+              Welcome back
+            </h1>
+            <p className="text-muted small mb-0">
+              Sign in with password or one-time code
+            </p>
           </div>
 
           {error && (
-            <Alert variant="danger" className="py-2 mb-3 rounded-3" dismissible onClose={() => setError("")}>
+            <Alert
+              variant="danger"
+              className="py-2 mb-3 rounded-3"
+              dismissible
+              onClose={() => setError("")}
+            >
               <small>{error}</small>
             </Alert>
           )}
 
-          <Form onSubmit={submit}>
-            <Form.Group className="mb-3">
-              <Form.Label className="small fw-semibold text-secondary">
-                <FaEnvelope className="me-1" style={{ color: "#0d9488" }} /> Email
-              </Form.Label>
-              <Form.Control
-                type="email"
-                placeholder="you@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                className="border-2 rounded-3 py-2"
-                style={{ borderColor: "#e2e8f0" }}
-              />
-            </Form.Group>
-
-            <Form.Group className="mb-4">
-              <Form.Label className="small fw-semibold text-secondary">
-                <FaLock className="me-1" style={{ color: "#0d9488" }} /> Password
-              </Form.Label>
-              <Form.Control
-                type="password"
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                className="border-2 rounded-3 py-2"
-                style={{ borderColor: "#e2e8f0" }}
-              />
-              <div className="d-flex justify-content-end mt-1">
-                <Link to="#" className="small text-decoration-none" style={{ color: "#0d9488" }}>Forgot password?</Link>
-              </div>
-            </Form.Group>
-
-            <Button
-              type="submit"
-              className="w-100 rounded-3 py-2 fw-semibold border-0"
-              disabled={loading}
-              style={{
-                background: "linear-gradient(135deg, #0d9488 0%, #0f766e 100%)",
-                fontSize: "1rem",
-                transition: "transform 0.2s, box-shadow 0.2s",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = "translateY(-2px)";
-                e.currentTarget.style.boxShadow = "0 10px 25px rgba(13, 148, 136, 0.35)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = "translateY(0)";
-                e.currentTarget.style.boxShadow = "none";
-              }}
-            >
-              {loading ? (
-                <><Spinner animation="border" size="sm" className="me-2" /> Signing in...</>
+          <Tabs
+            activeKey={activeTab}
+            onSelect={(k) => {
+              setActiveTab(k || "password");
+              setError("");
+              if (k === "otp") setOtpSent(false);
+            }}
+            className="mb-3 border-0"
+          >
+            <Tab eventKey="password" title={<span><FaKey className="me-1" /> Password</span>}>
+              <Form onSubmit={submitPassword}>
+                <Form.Group className="mb-3">
+                  <Form.Label className="small fw-semibold text-secondary">
+                    <FaEnvelope className="me-1" style={{ color: "#0d9488" }} /> Email or phone number
+                  </Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="Use the email or mobile number you registered with"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    required
+                    className="border-2 rounded-3 py-2"
+                    style={{ borderColor: "#e2e8f0" }}
+                  />
+                  <Form.Text className="small text-muted">
+                    Sign in with the same email or mobile number you used during registration.
+                  </Form.Text>
+                </Form.Group>
+                <Form.Group className="mb-4">
+                  <Form.Label className="small fw-semibold text-secondary">
+                    <FaLock className="me-1" style={{ color: "#0d9488" }} /> Password
+                  </Form.Label>
+                  <Form.Control
+                    type="password"
+                    placeholder="••••••••"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    className="border-2 rounded-3 py-2"
+                    style={{ borderColor: "#e2e8f0" }}
+                  />
+                  <div className="d-flex justify-content-end mt-1">
+                    <Link to="#" className="small text-decoration-none" style={{ color: "#0d9488" }}>
+                      Forgot password?
+                    </Link>
+                  </div>
+                </Form.Group>
+                <Button
+                  type="submit"
+                  className="w-100 rounded-3 py-2 fw-semibold border-0"
+                  disabled={loading}
+                  style={{
+                    background: "linear-gradient(135deg, #0d9488 0%, #0f766e 100%)",
+                    fontSize: "1rem",
+                  }}
+                >
+                  {loading ? (
+                    <><Spinner animation="border" size="sm" className="me-2" /> Signing in...</>
+                  ) : (
+                    <><FaSignInAlt className="me-2" /> Sign in</>
+                  )}
+                </Button>
+              </Form>
+            </Tab>
+            <Tab eventKey="otp" title={<span><FaMobileAlt className="me-1" /> OTP</span>}>
+              {!otpSent ? (
+                <Form onSubmit={sendOtp}>
+                  <Form.Group className="mb-4">
+                    <Form.Label className="small fw-semibold text-secondary">
+                      <FaEnvelope className="me-1" style={{ color: "#0d9488" }} /> Email address
+                    </Form.Label>
+                    <Form.Control
+                      type="email"
+                      placeholder="you@example.com"
+                      value={otpEmailOrPhone}
+                      onChange={(e) => setOtpEmailOrPhone(e.target.value)}
+                      required
+                      className="border-2 rounded-3 py-2"
+                      style={{ borderColor: "#e2e8f0" }}
+                    />
+                    <Form.Text className="small text-muted">
+                      We’ll OTP is sent to your email only. To sign in with mobile number, use the Password tab.
+                    </Form.Text>
+                  </Form.Group>
+                  <Button
+                    type="submit"
+                    className="w-100 rounded-3 py-2 fw-semibold border-0"
+                    disabled={sendOtpLoading}
+                    style={{
+                      background: "linear-gradient(135deg, #0d9488 0%, #0f766e 100%)",
+                      fontSize: "1rem",
+                    }}
+                  >
+                    {sendOtpLoading ? (
+                      <><Spinner animation="border" size="sm" className="me-2" /> Sending...</>
+                    ) : (
+                      "Send OTP"
+                    )}
+                  </Button>
+                </Form>
               ) : (
-                <><FaSignInAlt className="me-2" /> Sign in</>
+                <Form onSubmit={verifyOtp}>
+                  <Form.Group className="mb-3">
+                    <Form.Label className="small fw-semibold text-secondary">Code sent to {otpEmailOrPhone}</Form.Label>
+                    <Form.Control
+                      type="text"
+                      placeholder="Enter 6-digit OTP"
+                      value={otpCode}
+                      onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
+                      maxLength={6}
+                      required
+                      className="border-2 rounded-3 py-2 text-center"
+                      style={{ borderColor: "#e2e8f0", letterSpacing: "0.5em", fontSize: "1.25rem" }}
+                    />
+                  </Form.Group>
+                  <div className="d-flex gap-2 mb-3">
+                    <Button
+                      type="button"
+                      variant="outline-secondary"
+                      size="sm"
+                      className="rounded-3"
+                      onClick={() => setOtpSent(false)}
+                    >
+                      Change email/phone
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline-primary"
+                      size="sm"
+                      className="rounded-3"
+                      onClick={sendOtp}
+                      disabled={sendOtpLoading}
+                    >
+                      Resend OTP
+                    </Button>
+                  </div>
+                  <Button
+                    type="submit"
+                    className="w-100 rounded-3 py-2 fw-semibold border-0"
+                    disabled={loading || otpCode.length < 4}
+                    style={{
+                      background: "linear-gradient(135deg, #0d9488 0%, #0f766e 100%)",
+                      fontSize: "1rem",
+                    }}
+                  >
+                    {loading ? <><Spinner animation="border" size="sm" className="me-2" /> Verifying...</> : "Verify & sign in"}
+                  </Button>
+                </Form>
               )}
-            </Button>
-          </Form>
+            </Tab>
+          </Tabs>
 
           <p className="text-center mt-4 mb-0 small text-muted">
-            Don't have an account?{" "}
+            Don’t have an account?{" "}
             <Link to="/auth/register" className="fw-semibold text-decoration-none" style={{ color: "#0d9488" }}>
               Create account
             </Link>
@@ -163,6 +388,8 @@ export default function Login({ embedded = false }) {
       </div>
 
       <style>{`
+        .nav-tabs .nav-link { border: none; color: #64748b; font-weight: 600; }
+        .nav-tabs .nav-link.active { color: #0f766e; background: transparent; border-bottom: 2px solid #0d9488; }
         .form-control:focus { border-color: #0d9488 !important; box-shadow: 0 0 0 0.2rem rgba(13, 148, 136, 0.2) !important; }
       `}</style>
     </div>

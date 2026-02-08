@@ -2,7 +2,8 @@ import { useContext, useState, useEffect } from "react";
 import { Card, Row, Col, Button, Spinner } from "react-bootstrap";
 import { AuthContext } from "../../context/AuthContext";
 import { Link } from "react-router-dom";
-import { FaMapMarkerAlt, FaUser, FaEdit, FaExternalLinkAlt, FaPrayingHands, FaShoppingCart, FaUserTie } from "react-icons/fa";
+import { FaMapMarkerAlt, FaUser, FaEdit, FaExternalLinkAlt, FaPrayingHands, FaShoppingCart, FaUserTie, FaSearch } from "react-icons/fa";
+import { getDisplayName } from "../../utils/displayName";
 
 const OFFICE_LAT = 12.9716;
 const OFFICE_LNG = 77.5946;
@@ -52,12 +53,50 @@ export default function UserHome() {
     <div className="user-home">
       {/* Welcome Section */}
       <div className="mb-5">
-        <h1 className="fw-bold mb-2">Welcome back, {user.name || user.email}!</h1>
+        <h1 className="fw-bold mb-2">Welcome back, {getDisplayName(user)}!</h1>
         <p className="text-muted mb-0">Manage your services, bookings, and orders from your dashboard</p>
       </div>
 
       {/* Quick Actions */}
       <Row className="g-4 mb-5">
+        <Col md={3} sm={6}>
+          <Card className="border-0 shadow-sm h-100 text-center" as={Link} to="/user/search"
+          style={{
+            borderRadius: "1rem",
+            transition: "all 0.3s ease",
+            cursor: "pointer",
+            textDecoration: "none",
+            color: "inherit"
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform = "translateY(-4px)";
+            e.currentTarget.style.boxShadow = "0 10px 25px rgba(13, 148, 136, 0.15)";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = "translateY(0)";
+            e.currentTarget.style.boxShadow = "0 1px 3px rgba(0, 0, 0, 0.1)";
+          }}
+          >
+            <Card.Body className="p-4">
+              <div className="mb-3">
+                <div
+                  className="mx-auto d-flex align-items-center justify-content-center"
+                  style={{
+                    width: "64px",
+                    height: "64px",
+                    borderRadius: "1rem",
+                    background: "linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)",
+                    color: "white"
+                  }}
+                >
+                  <FaSearch style={{ fontSize: "2rem" }} />
+                </div>
+              </div>
+              <h5 className="fw-bold mb-2">Search</h5>
+              <p className="text-muted small mb-0">Search puja, pandit & more</p>
+            </Card.Body>
+          </Card>
+        </Col>
         <Col md={3} sm={6}>
           <Card className="border-0 shadow-sm h-100 text-center" as={Link} to="/user/puja"
           style={{ 
@@ -242,8 +281,7 @@ export default function UserHome() {
                   <FaUser style={{ fontSize: "3rem", color: "white" }} />
                 )}
               </div>
-              <h5 className="fw-bold mb-2">{user.name}</h5>
-              <p className="text-muted small mb-3">{user.email}</p>
+              <h5 className="fw-bold mb-3">{getDisplayName(user)}</h5>
               <div className="d-grid gap-2">
                 <Button 
                   as={Link} 
@@ -356,3 +394,4 @@ export default function UserHome() {
     </div>
   );
 }
+

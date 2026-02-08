@@ -2,12 +2,15 @@ import { useContext, useState } from "react";
 import { Navbar as BootstrapNavbar, Nav, Container, Button, Dropdown } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
-import { FaUser, FaSignOutAlt, FaHome, FaInfoCircle, FaEnvelope, FaBars, FaTimes } from "react-icons/fa";
+import { getDisplayName } from "../../utils/displayName";
+import { isAdmin } from "../../utils/admin";
+import { FaUser, FaSignOutAlt, FaHome, FaInfoCircle, FaEnvelope, FaBars, FaTimes, FaSearch, FaUserShield } from "react-icons/fa";
 
 export default function Navbar() {
   const navigate = useNavigate();
   const { token, user, avatar, logout } = useContext(AuthContext);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const admin = isAdmin(user);
 
   const handleLogout = () => {
     logout();
@@ -81,6 +84,12 @@ export default function Navbar() {
               <FaEnvelope className="me-1" />
               Contact
             </Nav.Link>
+            {admin && (
+              <Nav.Link as={Link} to="/user/admin" className="fw-semibold d-flex align-items-center" style={{ color: "#0d9488" }}>
+                <FaUserShield className="me-1" />
+                Admin
+              </Nav.Link>
+            )}
           </Nav>
 
           {/* Auth Section */}
@@ -143,11 +152,11 @@ export default function Navbar() {
                         fontWeight: 600
                       }}
                     >
-                      {user?.name?.charAt(0)?.toUpperCase() || "U"}
+                      {getDisplayName(user)?.charAt(0)?.toUpperCase() || "U"}
                     </div>
                   )}
                   <span className="ms-2 d-none d-md-inline fw-semibold" style={{ color: "#1e293b", textDecoration: "none" }}>
-                    {user?.name || "User"}
+                    {getDisplayName(user)}
                   </span>
                 </Dropdown.Toggle>
 
@@ -171,6 +180,15 @@ export default function Navbar() {
                   </Dropdown.Item>
                   <Dropdown.Item
                     as={Link}
+                    to="/user/search"
+                    className="d-flex align-items-center py-2"
+                    style={{ borderRadius: "8px" }}
+                  >
+                    <FaSearch className="me-2 text-teal" />
+                    Search
+                  </Dropdown.Item>
+                  <Dropdown.Item
+                    as={Link}
                     to="/user/profile"
                     className="d-flex align-items-center py-2"
                     style={{ borderRadius: "8px" }}
@@ -178,6 +196,17 @@ export default function Navbar() {
                     <FaUser className="me-2 text-teal" />
                     My Profile
                   </Dropdown.Item>
+                  {admin && (
+                    <Dropdown.Item
+                      as={Link}
+                      to="/user/admin"
+                      className="d-flex align-items-center py-2"
+                      style={{ borderRadius: "8px", color: "#0d9488" }}
+                    >
+                      <FaUserShield className="me-2" />
+                      Admin
+                    </Dropdown.Item>
+                  )}
                   <Dropdown.Divider />
                   <Dropdown.Item
                     onClick={handleLogout}

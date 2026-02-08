@@ -1,71 +1,161 @@
-import { useState, useContext } from "react";
+import { useState, useRef, useContext } from "react";
 import { Button, Form, Spinner, Alert, Row, Col } from "react-bootstrap";
 import { useNavigate, Link } from "react-router-dom";
 import api from "../../services/api";
 import { AuthContext } from "../../context/AuthContext";
-import { FaUser, FaEnvelope, FaLock, FaCalendarAlt, FaVenusMars, FaMapMarkerAlt, FaPhone, FaLeaf } from "react-icons/fa";
+import { getApiErrorMessage } from "../../utils/apiError";
+import { Country, State, City } from "country-state-city";
+import {
+  ApiCodeMessages,
+  COUNTRY_PHONE_CODES,
+  DEFAULT_COUNTRY_CODE,
+} from "../../constants";
+import {
+  FaUser,
+  FaEnvelope,
+  FaLock,
+  FaCalendarAlt,
+  FaVenusMars,
+  FaMapMarkerAlt,
+  FaPhone,
+  FaLeaf,
+  FaCamera,
+  FaTimes,
+} from "react-icons/fa";
+
+const ACCEPT_IMAGE = "image/jpeg,image/png,image/webp";
+const MAX_IMAGE_MB = 2;
+const DEFAULT_DIAL = COUNTRY_PHONE_CODES.find((c) => c.code === DEFAULT_COUNTRY_CODE)?.dial || "+91";
 
 export default function Register() {
-  const { login } = useContext(AuthContext);
+  const { login, refreshAvatar } = useContext(AuthContext);
+  const fileInputRef = useRef(null);
   const [formData, setFormData] = useState({
-    name: "",
+    firstName: "",
+    lastName: "",
     email: "",
     password: "",
+    confirmPassword: "",
+    phoneCode: DEFAULT_DIAL,
+    phoneNumber: "",
     dob: "",
     gender: "MALE",
-    mobileNumber: "",
-    country: "",
-    location: "",
+    countryCode: DEFAULT_COUNTRY_CODE,
+    stateCode: "",
+    city: "",
   });
+  const [profilePic, setProfilePic] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData((prev) => {
+      const next = { ...prev, [name]: value };
+      if (name === "countryCode") {
+        next.stateCode = "";
+        next.city = "";
+      } else if (name === "stateCode") next.city = "";
+      return next;
+    });
     setError("");
+  };
+
+  const countries = Country.getAllCountries();
+  const defaultCountryFirst = [...countries].sort((a, b) =>
+    a.isoCode === DEFAULT_COUNTRY_CODE ? -1 : b.isoCode === DEFAULT_COUNTRY_CODE ? 1 : a.name.localeCompare(b.name)
+  );
+  const states = State.getStatesOfCountry(formData.countryCode);
+  const cities = formData.stateCode
+    ? City.getCitiesOfState(formData.countryCode, formData.stateCode)
+    : [];
+
+  const handleFileChange = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.match(/^image\/(jpeg|png|webp)$/)) {
+      setError("Please choose a JPG, PNG or WebP image.");
+      return;
+    }
+    if (file.size > MAX_IMAGE_MB * 1024 * 1024) {
+      setError(`Image must be under ${MAX_IMAGE_MB} MB.`);
+      return;
+    }
+    setProfilePic(file);
+    setPreviewUrl(URL.createObjectURL(file));
+    setError("");
+  };
+
+  const removeProfilePic = () => {
+    setProfilePic(null);
+    if (previewUrl) URL.revokeObjectURL(previewUrl);
+    setPreviewUrl(null);
+    if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
   const submit = async (e) => {
     e.preventDefault();
-    setLoading(true);
     setError("");
+    if (formData.password !== formData.confirmPassword) {
+      setError("Passwords do not match.");
+      return;
+    }
+    if (formData.password.length < 6) {
+      setError("Password must be at least 6 characters.");
+      return;
+    }
+    setLoading(true);
 
     try {
+      const mobileNumber =
+        formData.phoneNumber?.trim() ? `${formData.phoneCode.trim()} ${formData.phoneNumber.trim()}` : null;
+      const countryObj = countries.find((c) => c.isoCode === formData.countryCode);
+      const stateObj = states.find((s) => s.isoCode === formData.stateCode);
+      const countryName = countryObj?.name || null;
+      const locationParts = [stateObj?.name, formData.city?.trim()].filter(Boolean);
+      const location = locationParts.length ? locationParts.join(", ") : null;
       const registerData = {
-        name: formData.name,
-        email: formData.email,
+        firstName: formData.firstName.trim(),
+        lastName: formData.lastName.trim(),
+        email: formData.email.trim(),
         password: formData.password,
+        mobileNumber,
         dob: formData.dob || null,
         gender: formData.gender || null,
+        country: countryName || null,
+        location,
       };
 
       const res = await api.post("/auth/register", registerData);
 
-      if (res.data.accessToken) {
+      if (res.data?.accessToken) {
         login(res.data.accessToken);
 
-        if (formData.mobileNumber || formData.country || formData.location) {
+        if (profilePic) {
           try {
-            await api.put("/user/profile", {
-              name: formData.name,
-              mobileNumber: formData.mobileNumber || "",
-              dob: formData.dob || "",
-              gender: formData.gender || "MALE",
-              country: formData.country || "",
-              location: formData.location || "",
+            const fd = new FormData();
+            fd.append("file", profilePic);
+            await api.post("/user/profile-pic", fd, {
+              headers: { "Content-Type": "multipart/form-data" },
             });
-          } catch (profileError) {
-            console.log("Profile update skipped:", profileError);
+            if (refreshAvatar) await refreshAvatar();
+          } catch (picErr) {
+            console.warn("Profile pic upload skipped:", picErr);
           }
         }
 
         navigate("/user/home");
+      } else {
+        setError("Registration succeeded but no token received. Please sign in.");
       }
     } catch (err) {
-      const errorMessage = err.response?.data?.message || err.response?.data || "Registration failed. Please try again.";
-      setError(typeof errorMessage === "string" ? errorMessage : "Registration failed. Please try again.");
+      const code = err.response?.data?.code;
+      const msg =
+        (code != null && ApiCodeMessages[code]) ||
+        getApiErrorMessage(err, "Registration failed. Please try again.");
+      setError(msg);
     } finally {
       setLoading(false);
     }
@@ -80,14 +170,34 @@ export default function Register() {
         overflow: "hidden",
       }}
     >
-      <div style={{ position: "absolute", top: "10%", right: "8%", width: 220, height: 220, borderRadius: "50%", background: "rgba(255,255,255,0.08)" }} />
-      <div style={{ position: "absolute", bottom: "20%", left: "5%", width: 180, height: 180, borderRadius: "50%", background: "rgba(255,255,255,0.06)" }} />
+      <div
+        style={{
+          position: "absolute",
+          top: "10%",
+          right: "8%",
+          width: 220,
+          height: 220,
+          borderRadius: "50%",
+          background: "rgba(255,255,255,0.08)",
+        }}
+      />
+      <div
+        style={{
+          position: "absolute",
+          bottom: "20%",
+          left: "5%",
+          width: 180,
+          height: 180,
+          borderRadius: "50%",
+          background: "rgba(255,255,255,0.06)",
+        }}
+      />
 
       <div
         className="w-100 shadow-lg border-0 rounded-4 overflow-hidden"
         style={{
-          maxWidth: 620,
-          background: "rgba(255, 255, 255, 0.96)",
+          maxWidth: 640,
+          background: "rgba(255, 255, 255, 0.98)",
           backdropFilter: "blur(20px)",
           boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255,255,255,0.5)",
         }}
@@ -96,32 +206,126 @@ export default function Register() {
           <div className="text-center mb-4">
             <div
               className="d-inline-flex align-items-center justify-content-center rounded-3 mb-3"
-              style={{ width: 56, height: 56, background: "linear-gradient(135deg, #0d9488 0%, #0f766e 100%)", color: "white" }}
+              style={{
+                width: 56,
+                height: 56,
+                background: "linear-gradient(135deg, #0d9488 0%, #0f766e 100%)",
+                color: "white",
+              }}
             >
               <FaLeaf style={{ fontSize: "1.5rem" }} />
             </div>
-            <h1 className="h3 fw-bold mb-2" style={{ color: "#0f766e" }}>Create your account</h1>
-            <p className="text-muted small mb-0">Join to book Puja services, orders & PanditJi</p>
+            <h1 className="h3 fw-bold mb-2" style={{ color: "#0f766e" }}>
+              Create your account
+            </h1>
+            <p className="text-muted small mb-0">
+              Join to book Puja services, orders & Pandit Ji
+            </p>
           </div>
 
           {error && (
-            <Alert variant="danger" className="py-2 mb-3 rounded-3" dismissible onClose={() => setError("")}>
+            <Alert
+              variant="danger"
+              className="py-2 mb-3 rounded-3"
+              dismissible
+              onClose={() => setError("")}
+            >
               <small>{error}</small>
             </Alert>
           )}
 
           <Form onSubmit={submit}>
+            {/* Optional profile picture */}
+            <Form.Group className="mb-4 text-center">
+              <Form.Label className="small fw-semibold text-secondary d-block mb-2">
+                <FaCamera className="me-1" style={{ color: "#0d9488" }} /> Profile photo (optional)
+              </Form.Label>
+              <div className="d-flex flex-column align-items-center gap-2">
+                <div
+                  className="rounded-circle border border-3 overflow-hidden bg-light d-flex align-items-center justify-content-center"
+                  style={{
+                    width: 100,
+                    height: 100,
+                    borderColor: "#e2e8f0 !important",
+                    cursor: "pointer",
+                  }}
+                  onClick={() => fileInputRef.current?.click()}
+                >
+                  {previewUrl ? (
+                    <img
+                      src={previewUrl}
+                      alt="Preview"
+                      style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                    />
+                  ) : (
+                    <FaCamera className="text-muted" style={{ fontSize: "2rem" }} />
+                  )}
+                </div>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept={ACCEPT_IMAGE}
+                  onChange={handleFileChange}
+                  className="d-none"
+                />
+                <div className="d-flex gap-2">
+                  <Button
+                    type="button"
+                    variant="outline-secondary"
+                    size="sm"
+                    className="rounded-3"
+                    onClick={() => fileInputRef.current?.click()}
+                  >
+                    {profilePic ? "Change" : "Upload"}
+                  </Button>
+                  {profilePic && (
+                    <Button
+                      type="button"
+                      variant="outline-danger"
+                      size="sm"
+                      className="rounded-3"
+                      onClick={removeProfilePic}
+                    >
+                      <FaTimes /> Remove
+                    </Button>
+                  )}
+                </div>
+              </div>
+            </Form.Group>
+
             <Row className="g-2">
               <Col md={6}>
                 <Form.Group className="mb-3">
-                  <Form.Label className="small fw-semibold text-secondary"><FaUser className="me-1" style={{ color: "#0d9488" }} /> Full name</Form.Label>
-                  <Form.Control type="text" name="name" placeholder="John Doe" value={formData.name} onChange={handleChange} required className="border-2 rounded-3 py-2" style={{ borderColor: "#e2e8f0" }} />
+                  <Form.Label className="small fw-semibold text-secondary">
+                    <FaUser className="me-1" style={{ color: "#0d9488" }} /> First name
+                  </Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="firstName"
+                    placeholder="John"
+                    value={formData.firstName}
+                    onChange={handleChange}
+                    required
+                    className="border-2 rounded-3 py-2"
+                    style={{ borderColor: "#e2e8f0" }}
+                  />
                 </Form.Group>
               </Col>
               <Col md={6}>
                 <Form.Group className="mb-3">
-                  <Form.Label className="small fw-semibold text-secondary"><FaEnvelope className="me-1" style={{ color: "#0d9488" }} /> Email</Form.Label>
-                  <Form.Control type="email" name="email" placeholder="you@example.com" value={formData.email} onChange={handleChange} required className="border-2 rounded-3 py-2" style={{ borderColor: "#e2e8f0" }} />
+                  <Form.Label className="small fw-semibold text-secondary">
+                    <FaUser className="me-1" style={{ color: "#0d9488" }} /> Last name
+                  </Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="lastName"
+                    placeholder="Doe"
+                    value={formData.lastName}
+                    onChange={handleChange}
+                    required
+                    className="border-2 rounded-3 py-2"
+                    style={{ borderColor: "#e2e8f0" }}
+                  />
                 </Form.Group>
               </Col>
             </Row>
@@ -129,15 +333,89 @@ export default function Register() {
             <Row className="g-2">
               <Col md={6}>
                 <Form.Group className="mb-3">
-                  <Form.Label className="small fw-semibold text-secondary"><FaLock className="me-1" style={{ color: "#0d9488" }} /> Password</Form.Label>
-                  <Form.Control type="password" name="password" placeholder="••••••••" value={formData.password} onChange={handleChange} required minLength={6} className="border-2 rounded-3 py-2" style={{ borderColor: "#e2e8f0" }} />
+                  <Form.Label className="small fw-semibold text-secondary">
+                    <FaEnvelope className="me-1" style={{ color: "#0d9488" }} /> Email
+                  </Form.Label>
+                  <Form.Control
+                    type="email"
+                    name="email"
+                    placeholder="you@example.com"
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
+                    className="border-2 rounded-3 py-2"
+                    style={{ borderColor: "#e2e8f0" }}
+                  />
+                </Form.Group>
+              </Col>
+              <Col md={6}>
+                <Form.Group className="mb-3">
+                  <Form.Label className="small fw-semibold text-secondary">
+                    <FaPhone className="me-1" style={{ color: "#0d9488" }} /> Mobile (optional)
+                  </Form.Label>
+                  <div className="d-flex gap-1">
+                    <Form.Select
+                      value={formData.phoneCode}
+                      onChange={(e) => setFormData((p) => ({ ...p, phoneCode: e.target.value }))}
+                      className="border-2 rounded-3 py-2 flex-grow-0"
+                      style={{ borderColor: "#e2e8f0", maxWidth: "115px" }}
+                      aria-label="Country code"
+                    >
+                      {COUNTRY_PHONE_CODES.map((c) => (
+                        <option key={c.code} value={c.dial}>
+                          {c.dial}
+                        </option>
+                      ))}
+                    </Form.Select>
+                    <Form.Control
+                      type="tel"
+                      placeholder="98765 43210"
+                      value={formData.phoneNumber}
+                      onChange={(e) => setFormData((p) => ({ ...p, phoneNumber: e.target.value }))}
+                      className="border-2 rounded-3 py-2"
+                      style={{ borderColor: "#e2e8f0" }}
+                    />
+                  </div>
+                </Form.Group>
+              </Col>
+            </Row>
+
+            <Row className="g-2">
+              <Col md={6}>
+                <Form.Group className="mb-3">
+                  <Form.Label className="small fw-semibold text-secondary">
+                    <FaLock className="me-1" style={{ color: "#0d9488" }} /> Password
+                  </Form.Label>
+                  <Form.Control
+                    type="password"
+                    name="password"
+                    placeholder="••••••••"
+                    value={formData.password}
+                    onChange={handleChange}
+                    required
+                    minLength={6}
+                    className="border-2 rounded-3 py-2"
+                    style={{ borderColor: "#e2e8f0" }}
+                  />
                   <Form.Text className="small text-muted">Min 6 characters</Form.Text>
                 </Form.Group>
               </Col>
               <Col md={6}>
                 <Form.Group className="mb-3">
-                  <Form.Label className="small fw-semibold text-secondary"><FaPhone className="me-1" style={{ color: "#0d9488" }} /> Mobile</Form.Label>
-                  <Form.Control type="tel" name="mobileNumber" placeholder="+1 234 567 8900" value={formData.mobileNumber} onChange={handleChange} className="border-2 rounded-3 py-2" style={{ borderColor: "#e2e8f0" }} />
+                  <Form.Label className="small fw-semibold text-secondary">
+                    <FaLock className="me-1" style={{ color: "#0d9488" }} /> Confirm password
+                  </Form.Label>
+                  <Form.Control
+                    type="password"
+                    name="confirmPassword"
+                    placeholder="••••••••"
+                    value={formData.confirmPassword}
+                    onChange={handleChange}
+                    required
+                    minLength={6}
+                    className="border-2 rounded-3 py-2"
+                    style={{ borderColor: "#e2e8f0" }}
+                  />
                 </Form.Group>
               </Col>
             </Row>
@@ -145,14 +423,32 @@ export default function Register() {
             <Row className="g-2">
               <Col md={6}>
                 <Form.Group className="mb-3">
-                  <Form.Label className="small fw-semibold text-secondary"><FaCalendarAlt className="me-1" style={{ color: "#0d9488" }} /> Date of birth</Form.Label>
-                  <Form.Control type="date" name="dob" value={formData.dob} onChange={handleChange} className="border-2 rounded-3 py-2" style={{ borderColor: "#e2e8f0" }} />
+                  <Form.Label className="small fw-semibold text-secondary">
+                    <FaCalendarAlt className="me-1" style={{ color: "#0d9488" }} /> Date of birth
+                  </Form.Label>
+                  <Form.Control
+                    type="date"
+                    name="dob"
+                    value={formData.dob}
+                    onChange={handleChange}
+                    max={new Date().toISOString().split("T")[0]}
+                    className="border-2 rounded-3 py-2"
+                    style={{ borderColor: "#e2e8f0" }}
+                  />
                 </Form.Group>
               </Col>
               <Col md={6}>
                 <Form.Group className="mb-3">
-                  <Form.Label className="small fw-semibold text-secondary"><FaVenusMars className="me-1" style={{ color: "#0d9488" }} /> Gender</Form.Label>
-                  <Form.Select name="gender" value={formData.gender} onChange={handleChange} className="border-2 rounded-3 py-2" style={{ borderColor: "#e2e8f0" }}>
+                  <Form.Label className="small fw-semibold text-secondary">
+                    <FaVenusMars className="me-1" style={{ color: "#0d9488" }} /> Gender
+                  </Form.Label>
+                  <Form.Select
+                    name="gender"
+                    value={formData.gender}
+                    onChange={handleChange}
+                    className="border-2 rounded-3 py-2"
+                    style={{ borderColor: "#e2e8f0" }}
+                  >
                     <option value="MALE">Male</option>
                     <option value="FEMALE">Female</option>
                     <option value="OTHER">Other</option>
@@ -162,16 +458,66 @@ export default function Register() {
             </Row>
 
             <Row className="g-2">
-              <Col md={6}>
+              <Col md={4}>
                 <Form.Group className="mb-3">
-                  <Form.Label className="small fw-semibold text-secondary"><FaMapMarkerAlt className="me-1" style={{ color: "#0d9488" }} /> Country</Form.Label>
-                  <Form.Control type="text" name="country" placeholder="India" value={formData.country} onChange={handleChange} className="border-2 rounded-3 py-2" style={{ borderColor: "#e2e8f0" }} />
+                  <Form.Label className="small fw-semibold text-secondary">
+                    <FaMapMarkerAlt className="me-1" style={{ color: "#0d9488" }} /> Country
+                  </Form.Label>
+                  <Form.Select
+                    name="countryCode"
+                    value={formData.countryCode}
+                    onChange={handleChange}
+                    className="border-2 rounded-3 py-2"
+                    style={{ borderColor: "#e2e8f0" }}
+                  >
+                    {defaultCountryFirst.map((c) => (
+                      <option key={c.isoCode} value={c.isoCode}>
+                        {c.name}
+                      </option>
+                    ))}
+                  </Form.Select>
                 </Form.Group>
               </Col>
-              <Col md={6}>
+              <Col md={4}>
                 <Form.Group className="mb-3">
-                  <Form.Label className="small fw-semibold text-secondary"><FaMapMarkerAlt className="me-1" style={{ color: "#0d9488" }} /> City</Form.Label>
-                  <Form.Control type="text" name="location" placeholder="Bangalore" value={formData.location} onChange={handleChange} className="border-2 rounded-3 py-2" style={{ borderColor: "#e2e8f0" }} />
+                  <Form.Label className="small fw-semibold text-secondary">
+                    <FaMapMarkerAlt className="me-1" style={{ color: "#0d9488" }} /> State
+                  </Form.Label>
+                  <Form.Select
+                    name="stateCode"
+                    value={formData.stateCode}
+                    onChange={handleChange}
+                    className="border-2 rounded-3 py-2"
+                    style={{ borderColor: "#e2e8f0" }}
+                  >
+                    <option value="">Select state</option>
+                    {states.map((s) => (
+                      <option key={s.isoCode} value={s.isoCode}>
+                        {s.name}
+                      </option>
+                    ))}
+                  </Form.Select>
+                </Form.Group>
+              </Col>
+              <Col md={4}>
+                <Form.Group className="mb-3">
+                  <Form.Label className="small fw-semibold text-secondary">
+                    <FaMapMarkerAlt className="me-1" style={{ color: "#0d9488" }} /> City
+                  </Form.Label>
+                  <Form.Select
+                    name="city"
+                    value={formData.city}
+                    onChange={handleChange}
+                    className="border-2 rounded-3 py-2"
+                    style={{ borderColor: "#e2e8f0" }}
+                  >
+                    <option value="">Select city</option>
+                    {cities.map((c) => (
+                      <option key={c.name + (c.stateCode || "")} value={c.name}>
+                        {c.name}
+                      </option>
+                    ))}
+                  </Form.Select>
                 </Form.Group>
               </Col>
             </Row>
@@ -194,7 +540,13 @@ export default function Register() {
                 e.currentTarget.style.boxShadow = "none";
               }}
             >
-              {loading ? <><Spinner animation="border" size="sm" className="me-2" /> Creating account...</> : "Create account"}
+              {loading ? (
+                <>
+                  <Spinner animation="border" size="sm" className="me-2" /> Creating account...
+                </>
+              ) : (
+                "Create account"
+              )}
             </Button>
           </Form>
 

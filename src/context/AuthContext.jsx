@@ -32,10 +32,12 @@ export const AuthProvider = ({ children }) => {
 
   const loadAvatar = async () => {
     try {
-      const res = await api.get("/user/profile-pic", { responseType: "blob" });
+      const res = await api.get("/user/profile-pic", {
+        responseType: "blob",
+        params: { t: Date.now() },
+      });
       setAvatar(URL.createObjectURL(res.data));
     } catch (err) {
-      console.log("Avatar not found");
       setAvatar(null);
     }
   };

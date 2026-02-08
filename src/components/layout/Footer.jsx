@@ -1,3 +1,4 @@
+import { useContext } from "react";
 import { Link } from "react-router-dom";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
@@ -5,16 +6,18 @@ import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import MuiLink from "@mui/material/Link";
 import { FaLinkedin, FaGithub, FaTwitter, FaEnvelope } from "react-icons/fa";
+import { AuthContext } from "../../context/AuthContext";
+import { isAdmin } from "../../utils/admin";
 
-const footerLinks = {
+const footerLinks = (admin) => ({
   company: [
     { label: "About Us", path: "/about" },
     { label: "Services", path: "/" },
     { label: "Contact", path: "/contact" },
   ],
   resources: [
-    { label: "Documentation", path: "#" },
-    { label: "Blog", path: "#" },
+    ...(admin ? [{ label: "Documentation", path: "/docs" }] : []),
+    { label: "Blog", path: "/blog" },
     { label: "Support", path: "/contact" },
   ],
   legal: [
@@ -22,9 +25,12 @@ const footerLinks = {
     { label: "Terms of Service", path: "#" },
     { label: "Cookie Policy", path: "#" },
   ],
-};
+});
 
 export default function AppFooter() {
+  const { user } = useContext(AuthContext);
+  const admin = isAdmin(user);
+  const links = footerLinks(admin);
   const currentYear = new Date().getFullYear();
 
   const linkSx = {
@@ -77,7 +83,7 @@ export default function AppFooter() {
             <Typography variant="subtitle2" sx={{ fontWeight: 700, color: "#fff", mb: 1.5 }}>
               Company
             </Typography>
-            {footerLinks.company.map((link) => (
+            {links.company.map((link) => (
               <Box key={link.path} sx={{ mb: 1 }}>
                 <Link to={link.path} style={{ textDecoration: "none" }}>
                   <Typography sx={linkSx}>{link.label}</Typography>
@@ -89,7 +95,7 @@ export default function AppFooter() {
             <Typography variant="subtitle2" sx={{ fontWeight: 700, color: "#fff", mb: 1.5 }}>
               Resources
             </Typography>
-            {footerLinks.resources.map((link) => (
+            {links.resources.map((link) => (
               <Box key={link.path} sx={{ mb: 1 }}>
                 {link.path.startsWith("/") ? (
                   <Link to={link.path} style={{ textDecoration: "none" }}>
@@ -105,7 +111,7 @@ export default function AppFooter() {
             <Typography variant="subtitle2" sx={{ fontWeight: 700, color: "#fff", mb: 1.5 }}>
               Legal
             </Typography>
-            {footerLinks.legal.map((link) => (
+            {links.legal.map((link) => (
               <Box key={link.path} sx={{ mb: 1 }}>
                 <MuiLink href={link.path} sx={linkSx}>{link.label}</MuiLink>
               </Box>

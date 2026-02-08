@@ -1,6 +1,7 @@
 import { Row, Col, Card, Image, ListGroup } from "react-bootstrap";
 import { useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
+import { getDisplayName } from "../../utils/displayName";
 import { FaUser, FaEnvelope, FaCalendarAlt, FaVenusMars, FaMapMarkerAlt, FaPhone, FaGlobe, FaExternalLinkAlt, FaLink } from "react-icons/fa";
 
 const ViewProfile = () => {
@@ -96,7 +97,9 @@ const ViewProfile = () => {
                   </div>
                 </Col>
                 <Col>
-                  <h2 className="fw-bold mb-2 text-white">{user.name || "User"}</h2>
+                  <h2 className="fw-bold mb-2 text-white">
+                    {getDisplayName(user)}
+                  </h2>
                   <p 
                     className="mb-1 opacity-90 d-flex align-items-center"
                     style={{ cursor: "pointer" }}
@@ -140,7 +143,9 @@ const ViewProfile = () => {
                   </div>
                   <div className="flex-grow-1">
                     <div className="text-muted small mb-1">Full Name</div>
-                    <div className="fw-semibold">{user.name || "Not set"}</div>
+                    <div className="fw-semibold">
+                      {getDisplayName(user)}
+                    </div>
                   </div>
                 </ListGroup.Item>
 

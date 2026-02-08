@@ -3,12 +3,14 @@ import UserHome from "./UserHome";
 import Profile from "./Profile";
 import UpdateProfile from "./UpdateProfile";
 import UploadProfilePic from "./UploadProfilePic";
+import SearchPage from "../search/SearchPage";
 
 export default function UserRoutes() {
   return (
     <Routes>
       <Route index element={<UserHome />} />
       <Route path="home" element={<UserHome />} />
+      <Route path="search" element={<SearchPage />} />
       <Route path="profile" element={<Profile />} />
       <Route path="profile/update" element={<UpdateProfile />} />
       <Route path="profile/pic" element={<UploadProfilePic />} />

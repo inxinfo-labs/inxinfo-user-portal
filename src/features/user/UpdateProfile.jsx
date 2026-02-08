@@ -1,8 +1,14 @@
 import { useEffect, useState, useContext } from "react";
 import { Card, Form, Button, Row, Col, Image, Alert } from "react-bootstrap";
+import { Country, State, City } from "country-state-city";
 import api from "../../services/api";
 import { AuthContext } from "../../context/AuthContext";
+import { getApiErrorMessage } from "../../utils/apiError";
+import { ApiCodeMessages } from "../../constants";
+import { COUNTRY_PHONE_CODES, DEFAULT_COUNTRY_CODE } from "../../constants";
 import { FaUser, FaPhone, FaCalendarAlt, FaVenusMars, FaMapMarkerAlt, FaGlobe, FaSave } from "react-icons/fa";
+
+const DEFAULT_DIAL = COUNTRY_PHONE_CODES.find((c) => c.code === DEFAULT_COUNTRY_CODE)?.dial || "+91";
 
 const UpdateProfile = () => {
   const { user, avatar } = useContext(AuthContext);
@@ -11,30 +17,83 @@ const UpdateProfile = () => {
   const [error, setError] = useState("");
 
   const [form, setForm] = useState({
-    name: "",
-    mobileNumber: "",
+    firstName: "",
+    lastName: "",
+    phoneCode: DEFAULT_DIAL,
+    phoneNumber: "",
     dob: "",
     gender: "MALE",
-    country: "",
-    location: "",
+    countryCode: DEFAULT_COUNTRY_CODE,
+    stateCode: "",
+    city: "",
   });
 
+  const countries = Country.getAllCountries();
+  const defaultCountryFirst = [...countries].sort((a, b) =>
+    a.isoCode === DEFAULT_COUNTRY_CODE ? -1 : b.isoCode === DEFAULT_COUNTRY_CODE ? 1 : a.name.localeCompare(b.name)
+  );
+  const states = State.getStatesOfCountry(form.countryCode);
+  const cities = form.stateCode
+    ? City.getCitiesOfState(form.countryCode, form.stateCode)
+    : [];
+
   useEffect(() => {
-    if (user) {
-      setForm({
-        name: user.name || "",
-        mobileNumber: user.mobileNumber || "",
-        dob: user.dob ? user.dob.split("T")[0] : "",
-        gender: user.gender || "MALE",
-        country: user.country || "",
-        location: user.location || "",
-      });
+    if (!user) return;
+    let phoneCode = DEFAULT_DIAL;
+    let phoneNumber = "";
+    if (user.mobileNumber && typeof user.mobileNumber === "string") {
+      const trimmed = user.mobileNumber.trim();
+      const match = trimmed.match(/^(\+\d+)\s*(.*)$/);
+      if (match) {
+        phoneCode = match[1];
+        phoneNumber = (match[2] || "").trim();
+      } else {
+        phoneNumber = trimmed;
+      }
     }
+    const countryObj = countries.find(
+      (c) => c.name === user.country || c.isoCode === user.country
+    );
+    const countryCode = countryObj?.isoCode || DEFAULT_COUNTRY_CODE;
+    const statesForCountry = State.getStatesOfCountry(countryCode);
+    let stateCode = "";
+    let city = "";
+    if (user.location && typeof user.location === "string") {
+      const parts = user.location.split(",").map((p) => p.trim()).filter(Boolean);
+      if (parts.length >= 2) {
+        const stateName = parts[0];
+        const stateFound = statesForCountry.find(
+          (s) => s.name.toLowerCase() === stateName.toLowerCase()
+        );
+        stateCode = stateFound?.isoCode || "";
+        city = parts.slice(1).join(", ");
+      } else if (parts.length === 1) {
+        city = parts[0];
+      }
+    }
+    setForm({
+      firstName: user.firstName || "",
+      lastName: user.lastName || "",
+      phoneCode,
+      phoneNumber,
+      dob: user.dob ? user.dob.split("T")[0] : "",
+      gender: user.gender || "MALE",
+      countryCode,
+      stateCode,
+      city,
+    });
   }, [user]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setForm(prev => ({ ...prev, [name]: value }));
+    setForm((prev) => {
+      const next = { ...prev, [name]: value };
+      if (name === "countryCode") {
+        next.stateCode = "";
+        next.city = "";
+      } else if (name === "stateCode") next.city = "";
+      return next;
+    });
     setError("");
     setSuccess("");
   };
@@ -46,14 +105,34 @@ const UpdateProfile = () => {
     setSuccess("");
 
     try {
-      await api.put("/user/profile", form);
+      const countryObj = countries.find((c) => c.isoCode === form.countryCode);
+      const countryName = countryObj?.name || "";
+      const stateObj = states.find((s) => s.isoCode === form.stateCode);
+      const locationParts = [stateObj?.name, form.city?.trim()].filter(Boolean);
+      const location = locationParts.length ? locationParts.join(", ") : "";
+      const mobileNumber =
+        form.phoneNumber?.trim()
+          ? `${form.phoneCode.trim()} ${form.phoneNumber.trim()}`
+          : "";
+
+      await api.put("/user/profile", {
+        firstName: form.firstName,
+        lastName: form.lastName,
+        dob: form.dob || null,
+        gender: form.gender,
+        country: countryName,
+        location: location || null,
+        mobileNumber: mobileNumber || null,
+      });
       setSuccess("Profile updated successfully!");
       setTimeout(() => setSuccess(""), 3000);
-      // Refresh user data
       window.location.reload();
     } catch (err) {
-      const errorMessage = err.response?.data?.message || err.response?.data || "Failed to update profile";
-      setError(errorMessage);
+      const code = err.response?.data?.code;
+      const msg =
+        (code != null && ApiCodeMessages[code]) ||
+        getApiErrorMessage(err, "Failed to update profile");
+      setError(msg);
     } finally {
       setLoading(false);
     }
@@ -132,35 +211,75 @@ const UpdateProfile = () => {
                     <Form.Group className="mb-4">
                       <Form.Label className="fw-semibold d-flex align-items-center">
                         <FaUser className="me-2 text-teal" />
-                        Full Name
+                        First Name
                       </Form.Label>
                       <Form.Control
-                        name="name"
-                        value={form.name}
+                        name="firstName"
+                        value={form.firstName}
                         onChange={handleChange}
                         required
                         className="border-2"
                         style={{ borderRadius: "10px", padding: "0.75rem" }}
-                        placeholder="Enter your full name"
+                        placeholder="First name"
                       />
                     </Form.Group>
                   </Col>
+                  <Col md={6}>
+                    <Form.Group className="mb-4">
+                      <Form.Label className="fw-semibold d-flex align-items-center">
+                        <FaUser className="me-2 text-teal" />
+                        Last Name
+                      </Form.Label>
+                      <Form.Control
+                        name="lastName"
+                        value={form.lastName}
+                        onChange={handleChange}
+                        required
+                        className="border-2"
+                        style={{ borderRadius: "10px", padding: "0.75rem" }}
+                        placeholder="Last name"
+                      />
+                    </Form.Group>
+                  </Col>
+                </Row>
 
+                <Row>
                   <Col md={6}>
                     <Form.Group className="mb-4">
                       <Form.Label className="fw-semibold d-flex align-items-center">
                         <FaPhone className="me-2 text-teal" />
                         Mobile Number
                       </Form.Label>
-                      <Form.Control
-                        name="mobileNumber"
-                        type="tel"
-                        value={form.mobileNumber}
-                        onChange={handleChange}
-                        className="border-2"
-                        style={{ borderRadius: "10px", padding: "0.75rem" }}
-                        placeholder="+1 234 567 8900"
-                      />
+                      <div className="d-flex gap-2">
+                        <Form.Select
+                          value={form.phoneCode}
+                          onChange={(e) =>
+                            setForm((p) => ({ ...p, phoneCode: e.target.value }))
+                          }
+                          className="border-2"
+                          style={{
+                            borderRadius: "10px",
+                            padding: "0.75rem",
+                            maxWidth: "120px",
+                          }}
+                          aria-label="Country code"
+                        >
+                          {COUNTRY_PHONE_CODES.map((c) => (
+                            <option key={c.code} value={c.dial}>
+                              {c.dial}
+                            </option>
+                          ))}
+                        </Form.Select>
+                        <Form.Control
+                          name="phoneNumber"
+                          type="tel"
+                          value={form.phoneNumber}
+                          onChange={handleChange}
+                          className="border-2 flex-grow-1"
+                          style={{ borderRadius: "10px", padding: "0.75rem" }}
+                          placeholder="98765 43210"
+                        />
+                      </div>
                     </Form.Group>
                   </Col>
                 </Row>
@@ -205,37 +324,72 @@ const UpdateProfile = () => {
                 </Row>
 
                 <Row>
-                  <Col md={6}>
+                  <Col md={4}>
                     <Form.Group className="mb-4">
                       <Form.Label className="fw-semibold d-flex align-items-center">
                         <FaGlobe className="me-2 text-teal" />
                         Country
                       </Form.Label>
-                      <Form.Control
-                        name="country"
-                        value={form.country}
+                      <Form.Select
+                        name="countryCode"
+                        value={form.countryCode}
                         onChange={handleChange}
                         className="border-2"
                         style={{ borderRadius: "10px", padding: "0.75rem" }}
-                        placeholder="Enter your country"
-                      />
+                      >
+                        {defaultCountryFirst.map((c) => (
+                          <option key={c.isoCode} value={c.isoCode}>
+                            {c.name}
+                          </option>
+                        ))}
+                      </Form.Select>
                     </Form.Group>
                   </Col>
-
-                  <Col md={6}>
+                  <Col md={4}>
                     <Form.Group className="mb-4">
                       <Form.Label className="fw-semibold d-flex align-items-center">
                         <FaMapMarkerAlt className="me-2 text-teal" />
-                        City/Location
+                        State
                       </Form.Label>
-                      <Form.Control
-                        name="location"
-                        value={form.location}
+                      <Form.Select
+                        name="stateCode"
+                        value={form.stateCode}
                         onChange={handleChange}
                         className="border-2"
                         style={{ borderRadius: "10px", padding: "0.75rem" }}
-                        placeholder="Enter your city"
-                      />
+                      >
+                        <option value="">Select state</option>
+                        {states.map((s) => (
+                          <option key={s.isoCode} value={s.isoCode}>
+                            {s.name}
+                          </option>
+                        ))}
+                      </Form.Select>
+                    </Form.Group>
+                  </Col>
+                  <Col md={4}>
+                    <Form.Group className="mb-4">
+                      <Form.Label className="fw-semibold d-flex align-items-center">
+                        <FaMapMarkerAlt className="me-2 text-teal" />
+                        City
+                      </Form.Label>
+                      <Form.Select
+                        name="city"
+                        value={form.city}
+                        onChange={handleChange}
+                        className="border-2"
+                        style={{ borderRadius: "10px", padding: "0.75rem" }}
+                      >
+                        <option value="">Select city</option>
+                        {cities.map((c) => (
+                          <option
+                            key={c.name + (c.stateCode || "")}
+                            value={c.name}
+                          >
+                            {c.name}
+                          </option>
+                        ))}
+                      </Form.Select>
                     </Form.Group>
                   </Col>
                 </Row>
