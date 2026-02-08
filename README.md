@@ -81,6 +81,16 @@ A modern React.js frontend for the **Puja Store** platform — suitable for port
    REACT_APP_API_URL=http://localhost:8080/api
    REACT_APP_GOOGLE_CLIENT_ID=your_google_client_id_if_using_oauth
    ```
+   If you see **"Cannot reach the server"**, the frontend cannot reach the backend. Start **inxinfo-auth-service** (see above) and ensure `REACT_APP_API_URL` matches your backend (e.g. `http://localhost:8080/api`). If the backend runs on another host/port, set that URL in `.env`.
+
+   **Contact form — receive messages at satish.prasad@inxinfo.com:**  
+   By default, "Send Message" opens your email app (mailto). To have messages delivered directly to the inbox, set up [EmailJS](https://www.emailjs.com/) (free tier) and add to `.env`:
+   ```
+   REACT_APP_EMAILJS_SERVICE_ID=your_service_id
+   REACT_APP_EMAILJS_TEMPLATE_ID=your_template_id
+   REACT_APP_EMAILJS_PUBLIC_KEY=your_public_key
+   ```
+   In EmailJS, create a template with To: satish.prasad@inxinfo.com and variables `{{from_name}}`, `{{from_email}}`, `{{subject}}`, `{{message}}`.
 
 3. **Start the development server:**
    ```bash

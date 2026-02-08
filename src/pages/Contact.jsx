@@ -15,11 +15,19 @@ import PhoneIcon from "@mui/icons-material/Phone";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import SendIcon from "@mui/icons-material/Send";
 import { FaLinkedin, FaGithub, FaTwitter } from "react-icons/fa";
+import emailjs from "@emailjs/browser";
+
+const CONTACT_EMAIL = "satish.prasad@inxinfo.com";
+const EMAILJS_SERVICE = process.env.REACT_APP_EMAILJS_SERVICE_ID;
+const EMAILJS_TEMPLATE = process.env.REACT_APP_EMAILJS_TEMPLATE_ID;
+const EMAILJS_PUBLIC_KEY = process.env.REACT_APP_EMAILJS_PUBLIC_KEY;
+const EMAILJS_CONFIGURED = EMAILJS_SERVICE && EMAILJS_TEMPLATE && EMAILJS_PUBLIC_KEY;
 
 export default function Contact() {
   const [form, setForm] = useState({ name: "", email: "", subject: "", message: "" });
   const [errors, setErrors] = useState({});
   const [submitStatus, setSubmitStatus] = useState(null);
+  const [sending, setSending] = useState(false);
 
   const validate = () => {
     const e = {};
@@ -32,12 +40,37 @@ export default function Contact() {
     return Object.keys(e).length === 0;
   };
 
-  const CONTACT_EMAIL = "satish.prasad@inxinfo.com";
-
-  const submit = (e) => {
+  const submit = async (e) => {
     e.preventDefault();
     setSubmitStatus(null);
     if (!validate()) return;
+
+    if (EMAILJS_CONFIGURED) {
+      setSending(true);
+      try {
+        await emailjs.send(
+          EMAILJS_SERVICE,
+          EMAILJS_TEMPLATE,
+          {
+            to_email: CONTACT_EMAIL,
+            from_name: form.name.trim(),
+            from_email: form.email.trim(),
+            subject: form.subject?.trim() || "Contact from INXINFO Labs",
+            message: form.message?.trim(),
+          },
+          { publicKey: EMAILJS_PUBLIC_KEY }
+        );
+        setSubmitStatus("sent");
+        setForm({ name: "", email: "", subject: "", message: "" });
+        setErrors({});
+      } catch (err) {
+        setSubmitStatus("error");
+      } finally {
+        setSending(false);
+      }
+      return;
+    }
+
     const subject = encodeURIComponent(form.subject || "Contact from INXINFO Labs");
     const body = encodeURIComponent(
       `Name: ${form.name}\nEmail: ${form.email}\n\nMessage:\n${form.message}`
@@ -125,11 +158,18 @@ export default function Contact() {
                 Send Us a Message
               </Typography>
               <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                Your message will be sent to <strong>{CONTACT_EMAIL}</strong>. Click &quot;Send Message&quot; to open your email app with the form pre-filled—you must then click <strong>Send</strong> in that app for us to receive it. If no app opens, copy our email below and send from Gmail or your inbox.
+                {EMAILJS_CONFIGURED
+                  ? `Your message will be sent directly to ${CONTACT_EMAIL}. We will reply to the email you enter.`
+                  : `Your message will be sent to ${CONTACT_EMAIL}. Click "Send Message" to open your email app—you must then click Send in that app for us to receive it. Or copy our email below and send from Gmail.`}
               </Typography>
+              {submitStatus === "sent" && (
+                <Alert severity="success" onClose={() => setSubmitStatus(null)} sx={{ mb: 2 }}>
+                  Message sent. We received it at {CONTACT_EMAIL} and will reply to you shortly.
+                </Alert>
+              )}
               {submitStatus === "success" && (
                 <Alert severity="info" onClose={() => setSubmitStatus(null)} sx={{ mb: 2 }}>
-                  Your email app should have opened with your message. <strong>Click Send in that app</strong> to deliver it to us. We will reply to the email you entered.
+                  Your email app should have opened. <strong>Click Send in that app</strong> to deliver the message to us.
                 </Alert>
               )}
               {submitStatus === "copied" && (
@@ -200,8 +240,8 @@ export default function Contact() {
                     />
                   </Grid>
                   <Grid item xs={12}>
-                    <Button type="submit" variant="contained" size="large" startIcon={<SendIcon />}>
-                      Send Message
+                    <Button type="submit" variant="contained" size="large" startIcon={<SendIcon />} disabled={sending}>
+                      {sending ? "Sending…" : "Send Message"}
                     </Button>
                   </Grid>
                 </Grid>

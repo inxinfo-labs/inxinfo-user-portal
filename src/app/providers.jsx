@@ -6,7 +6,9 @@ import { AuthProvider } from "../context/AuthContext";
 // eslint-disable-next-line no-unused-vars -- used as JSX <AuthModalProvider>
 import { AuthModalProvider } from "../context/AuthModalContext";
 import { ServiceModalProvider } from "../context/ServiceModalContext";
+// eslint-disable-next-line no-unused-vars -- used as JSX below
 import { PageModalProvider } from "../context/PageModalContext";
+// eslint-disable-next-line no-unused-vars -- used as JSX below
 import { UserModalProvider } from "../context/UserModalContext";
 import { ThemeProvider, ThemeContext } from "../context/ThemeContext";
 import { lightTheme, darkTheme } from "../theme/muiTheme";

@@ -2,9 +2,10 @@ import { useContext, useState, useEffect } from "react";
 import { Card, Row, Col, Button, Spinner, Alert } from "react-bootstrap";
 import { AuthContext } from "../../context/AuthContext";
 import { useUserModal } from "../../context/UserModalContext";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { FaMapMarkerAlt, FaUser, FaEdit, FaExternalLinkAlt, FaPrayingHands, FaShoppingCart, FaUserTie, FaSearch } from "react-icons/fa";
 import { getDisplayNameForDashboard } from "../../utils/displayName";
+import { RITUAL_TYPES } from "../../constants";
 
 const OFFICE_LAT = 12.9716;
 const OFFICE_LNG = 77.5946;
@@ -406,8 +407,8 @@ export default function UserHome() {
             className="rounded-3 p-4 p-md-5"
             style={{
               background: "linear-gradient(180deg, #fffbf7 0%, #fff7ed 100%)",
-              border: "1px solid rgba(234, 88, 12, 0.12)",
-              boxShadow: "0 4px 16px rgba(0,0,0,0.04)",
+              border: "1px solid rgba(234, 88, 12, 0.15)",
+              boxShadow: "0 4px 20px rgba(0,0,0,0.05)",
             }}
           >
             <div className="text-center mb-4">
@@ -418,27 +419,18 @@ export default function UserHome() {
                 Traditional Hindu puja and ceremonies for every occasion.
               </p>
             </div>
-            <div className="d-flex flex-wrap justify-content-center gap-2 gx-2">
-              {[
-                "Satyanarayan Puja",
-                "Shradh & Pitru Paksha",
-                "Griha Pravesh",
-                "Wedding ceremonies",
-                "Mundan & naming",
-                "Festival pujas (Diwali, Navratri)",
-                "Puja samagri & items",
-                "Custom rituals",
-              ].map((item, idx) => (
+            <div className="d-flex flex-wrap justify-content-center gap-2">
+              {RITUAL_TYPES.map((item, idx) => (
                 <span
                   key={idx}
                   className="px-3 py-2 rounded-pill"
                   style={{
-                    background: "rgba(255, 255, 255, 0.9)",
+                    background: "rgba(255, 255, 255, 0.95)",
                     color: "var(--primary-800)",
-                    fontSize: "0.875rem",
+                    fontSize: "0.8125rem",
                     fontWeight: 600,
                     border: "1px solid rgba(234, 88, 12, 0.2)",
-                    boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
+                    boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
                   }}
                 >
                   {item}
