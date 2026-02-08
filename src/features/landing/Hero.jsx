@@ -1,5 +1,5 @@
 import { Container, Row, Col, Button } from "react-bootstrap";
-import { FaRocket, FaArrowRight } from "react-icons/fa";
+import { FaPrayingHands, FaArrowRight } from "react-icons/fa";
 
 export default function Hero({ onOpenModal }) {
   return (
@@ -16,7 +16,7 @@ export default function Hero({ onOpenModal }) {
         alignItems: "center"
       }}
     >
-      {/* Background Pattern */}
+      {/* Background - soft sacred pattern */}
       <div 
         style={{
           position: "absolute",
@@ -24,8 +24,8 @@ export default function Hero({ onOpenModal }) {
           left: 0,
           right: 0,
           bottom: 0,
-          backgroundImage: "radial-gradient(circle at 20% 50%, rgba(255,255,255,0.1) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(255,255,255,0.1) 0%, transparent 50%)",
-          opacity: 0.5
+          backgroundImage: "radial-gradient(circle at 20% 50%, rgba(255,255,255,0.08) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(255,255,255,0.06) 0%, transparent 50%)",
+          opacity: 0.8
         }}
       />
       
@@ -42,8 +42,8 @@ export default function Hero({ onOpenModal }) {
                   fontWeight: 600
                 }}
               >
-                <FaRocket className="me-2" />
-                Innovation at Scale
+                <FaPrayingHands className="me-2" />
+                Puja &amp; Hindu Rituals
               </span>
             </div>
             
@@ -67,7 +67,7 @@ export default function Hero({ onOpenModal }) {
                 maxWidth: "600px"
               }}
             >
-              Innovation Nexus for Information
+              Book Puja, Pandit Ji &amp; Puja Samagri
             </p>
             
             <p 
@@ -78,8 +78,8 @@ export default function Hero({ onOpenModal }) {
                 maxWidth: "550px"
               }}
             >
-              Building enterprise-ready SaaS platforms, cloud-native solutions, and intelligent systems 
-              that transform ideas into production-ready digital products.
+              Traditional Hindu puja services at home, festival pujas, Shradh, and all rituals. 
+              Order puja samagri and book experienced Pandit Ji for your occasions.
             </p>
 
             <div className="d-flex flex-wrap gap-3">
@@ -109,15 +109,15 @@ export default function Hero({ onOpenModal }) {
             <div className="row mt-5 pt-4" style={{ borderTop: "1px solid rgba(255,255,255,0.2)" }}>
               <div className="col-md-4 mb-3 mb-md-0">
                 <div className="fw-bold" style={{ fontSize: "2rem" }}>100+</div>
-                <div style={{ opacity: 0.9 }}>Projects Delivered</div>
+                <div style={{ opacity: 0.9 }}>Pujas Booked</div>
               </div>
               <div className="col-md-4 mb-3 mb-md-0">
                 <div className="fw-bold" style={{ fontSize: "2rem" }}>50+</div>
-                <div style={{ opacity: 0.9 }}>Enterprise Clients</div>
+                <div style={{ opacity: 0.9 }}>Pandit Ji</div>
               </div>
               <div className="col-md-4">
                 <div className="fw-bold" style={{ fontSize: "2rem" }}>24/7</div>
-                <div style={{ opacity: 0.9 }}>Support Available</div>
+                <div style={{ opacity: 0.9 }}>Booking Support</div>
               </div>
             </div>
           </Col>
@@ -132,10 +132,10 @@ export default function Hero({ onOpenModal }) {
                 border: "1px solid rgba(255,255,255,0.2)"
               }}
             >
-              <div style={{ fontSize: "5rem", opacity: 0.8 }}>🚀</div>
-              <h4 className="mt-3 mb-2">Cloud-Native Solutions</h4>
+              <div style={{ fontSize: "5rem", opacity: 0.9 }}>🪔</div>
+              <h4 className="mt-3 mb-2">Puja at Your Doorstep</h4>
               <p style={{ opacity: 0.9 }}>
-                Scalable, secure, and modern platforms built for the future
+                Book traditional puja, get samagri, and experienced Pandit Ji for every occasion
               </p>
             </div>
           </Col>

@@ -77,7 +77,7 @@ export default function AdminPuja() {
         </div>
         <Button
           variant="primary"
-          style={{ background: "linear-gradient(135deg, #0d9488 0%, #0f766e 100%)", border: "none" }}
+          style={{ background: "var(--gradient-primary)", border: "none" }}
           onClick={() => setShowForm(true)}
         >
           <FaPlus className="me-2" /> Add Puja Service
@@ -158,7 +158,7 @@ export default function AdminPuja() {
           </Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={() => setShowForm(false)}>Cancel</Button>
-            <Button type="submit" disabled={saving} style={{ background: "#0d9488", border: "none" }}>
+            <Button type="submit" disabled={saving} style={{ background: "var(--primary-600)", border: "none" }}>
               {saving ? <Spinner animation="border" size="sm" /> : "Add Puja Service"}
             </Button>
           </Modal.Footer>

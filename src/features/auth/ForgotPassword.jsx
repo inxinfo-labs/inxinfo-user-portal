@@ -41,7 +41,7 @@ export default function ForgotPassword() {
       <div
         className="min-vh-100 d-flex align-items-center justify-content-center p-3"
         style={{
-          background: "linear-gradient(160deg, #0f766e 0%, #0d9488 35%, #14b8a6 70%, #2dd4bf 100%)",
+          background: "var(--gradient-hero)",
         }}
       >
         <div
@@ -53,13 +53,13 @@ export default function ForgotPassword() {
             style={{
               width: 56,
               height: 56,
-              background: "linear-gradient(135deg, #0d9488 0%, #0f766e 100%)",
+              background: "linear-gradient(135deg, var(--primary-600) 0%, var(--primary-700) 100%)",
               color: "white",
             }}
           >
             <FaEnvelope style={{ fontSize: "1.5rem" }} />
           </div>
-          <h3 className="h5 fw-bold mb-2" style={{ color: "#0f766e" }}>
+          <h3 className="h5 fw-bold mb-2" style={{ color: "var(--primary-700)" }}>
             Check your email
           </h3>
           <p className="text-muted small mb-4">
@@ -71,7 +71,7 @@ export default function ForgotPassword() {
             to="/auth/login"
             variant="primary"
             className="rounded-3"
-            style={{ background: "linear-gradient(135deg, #0d9488 0%, #0f766e 100%)", border: "none" }}
+            style={{ background: "linear-gradient(135deg, var(--primary-600) 0%, var(--primary-700) 100%)", border: "none" }}
           >
             Back to sign in
           </Button>
@@ -84,7 +84,7 @@ export default function ForgotPassword() {
     <div
       className="min-vh-100 d-flex align-items-center justify-content-center p-3"
       style={{
-        background: "linear-gradient(160deg, #0f766e 0%, #0d9488 35%, #14b8a6 70%, #2dd4bf 100%)",
+        background: "var(--gradient-hero)",
       }}
     >
       <div
@@ -97,13 +97,13 @@ export default function ForgotPassword() {
             style={{
               width: 56,
               height: 56,
-              background: "linear-gradient(135deg, #0d9488 0%, #0f766e 100%)",
+              background: "linear-gradient(135deg, var(--primary-600) 0%, var(--primary-700) 100%)",
               color: "white",
             }}
           >
             <FaLeaf style={{ fontSize: "1.5rem" }} />
           </div>
-          <h1 className="h4 fw-bold mb-2" style={{ color: "#0f766e" }}>
+          <h1 className="h4 fw-bold mb-2" style={{ color: "var(--primary-700)" }}>
             Forgot password?
           </h1>
           <p className="text-muted small mb-0">
@@ -120,7 +120,7 @@ export default function ForgotPassword() {
         <Form onSubmit={handleSubmit}>
           <Form.Group className="mb-4">
             <Form.Label className="small fw-semibold text-secondary">
-              <FaEnvelope className="me-1" style={{ color: "#0d9488" }} /> Gmail address
+              <FaEnvelope className="me-1" style={{ color: "var(--primary-600)" }} /> Gmail address
             </Form.Label>
             <Form.Control
               type="email"
@@ -137,7 +137,7 @@ export default function ForgotPassword() {
             type="submit"
             className="w-100 rounded-3 py-2 fw-semibold border-0"
             disabled={loading}
-            style={{ background: "linear-gradient(135deg, #0d9488 0%, #0f766e 100%)", fontSize: "1rem" }}
+            style={{ background: "linear-gradient(135deg, var(--primary-600) 0%, var(--primary-700) 100%)", fontSize: "1rem" }}
           >
             {loading ? (
               <>
@@ -150,7 +150,7 @@ export default function ForgotPassword() {
         </Form>
 
         <p className="text-center mt-4 mb-0 small text-muted">
-          <Link to="/auth/login" className="fw-semibold text-decoration-none" style={{ color: "#0d9488" }}>
+          <Link to="/auth/login" className="fw-semibold text-decoration-none" style={{ color: "var(--primary-600)" }}>
             Back to sign in
           </Link>
         </p>

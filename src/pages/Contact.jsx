@@ -32,21 +32,34 @@ export default function Contact() {
     return Object.keys(e).length === 0;
   };
 
+  const CONTACT_EMAIL = "satish.prasad@inxinfo.com";
+
   const submit = (e) => {
     e.preventDefault();
     setSubmitStatus(null);
     if (!validate()) return;
+    const subject = encodeURIComponent(form.subject || "Contact from INXINFO Labs");
+    const body = encodeURIComponent(
+      `Name: ${form.name}\nEmail: ${form.email}\n\nMessage:\n${form.message}`
+    );
+    window.location.href = `mailto:${CONTACT_EMAIL}?subject=${subject}&body=${body}`;
+    setSubmitStatus("success");
+    setForm({ name: "", email: "", subject: "", message: "" });
+    setErrors({});
+  };
+
+  const copyEmail = async () => {
     try {
-      setSubmitStatus("success");
-      setForm({ name: "", email: "", subject: "", message: "" });
-      setErrors({});
+      await navigator.clipboard.writeText(CONTACT_EMAIL);
+      setSubmitStatus("copied");
+      setTimeout(() => setSubmitStatus(null), 2000);
     } catch {
-      setSubmitStatus("error");
+      setSubmitStatus(null);
     }
   };
 
   const contactItems = [
-    { icon: <EmailIcon />, title: "Email", content: "satish.prasad@inxinfo.com", href: "mailto:satish.prasad@inxinfo.com" },
+    { icon: <EmailIcon />, title: "Email", content: CONTACT_EMAIL, href: `mailto:${CONTACT_EMAIL}` },
     { icon: <PhoneIcon />, title: "Mobile", content: "8050618092", href: "tel:8050618092" },
     { icon: <LocationOnIcon />, title: "Address", content: "23 and 30 Suloka Nilaya, Vishuvardhan Rd, Near RNSIT College, Bangalore – 560098", href: null },
   ];
@@ -58,7 +71,7 @@ export default function Contact() {
           Get In Touch
         </Typography>
         <Typography color="text.secondary" textAlign="center" sx={{ maxWidth: 600, mx: "auto", mb: 4 }}>
-          Have a project in mind? Let's discuss how we can help bring your vision to life.
+          Need help booking a puja or Pandit Ji? Get in touch for your Hindu ritual and puja samagri needs.
         </Typography>
 
         <Grid container spacing={3} sx={{ mb: 4 }}>
@@ -85,21 +98,21 @@ export default function Contact() {
           <Grid container>
             <Grid item xs={12} md={5} sx={{ bgcolor: "primary.main", color: "white", p: 3 }}>
               <Typography variant="h6" fontWeight={700} gutterBottom>
-                Let's Start a Conversation
+                Puja &amp; Pandit Ji Enquiries
               </Typography>
               <Typography sx={{ opacity: 0.95, mb: 2 }}>
-                Whether you're looking to build a new platform, modernize existing systems, or explore innovative solutions, we're here to help.
+                Book traditional Hindu puja, Pandit Ji for ceremonies, or order puja samagri. We are here for all your ritual needs.
               </Typography>
               <Typography variant="subtitle2" fontWeight={600} sx={{ mb: 1 }}>
-                What We Can Help With:
+                We Can Help With:
               </Typography>
               <Typography component="ul" sx={{ pl: 2, "& li": { mb: 0.5 } }}>
-                <li>SaaS Platform Development</li>
-                <li>Cloud Migration & Architecture</li>
-                <li>Enterprise Software Solutions</li>
-                <li>API Development & Integration</li>
-                <li>DevOps & Infrastructure</li>
-                <li>Technical Consulting</li>
+                <li>Puja booking (festival, Shradh, Satyanarayan)</li>
+                <li>Pandit Ji at home</li>
+                <li>Puja samagri &amp; ritual items</li>
+                <li>Griha pravesh &amp; wedding ceremonies</li>
+                <li>Custom rituals &amp; consultations</li>
+                <li>Bulk orders for events</li>
               </Typography>
               <Box sx={{ display: "flex", gap: 1, mt: 2 }}>
                 <a href="https://linkedin.com" target="_blank" rel="noreferrer" style={{ color: "white" }}><FaLinkedin size={22} /></a>
@@ -111,16 +124,32 @@ export default function Contact() {
               <Typography variant="h6" fontWeight={700} sx={{ mb: 2 }}>
                 Send Us a Message
               </Typography>
+              <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                Your message will be sent to <strong>{CONTACT_EMAIL}</strong>. Click &quot;Send Message&quot; to open your email app with the form pre-filled—you must then click <strong>Send</strong> in that app for us to receive it. If no app opens, copy our email below and send from Gmail or your inbox.
+              </Typography>
               {submitStatus === "success" && (
+                <Alert severity="info" onClose={() => setSubmitStatus(null)} sx={{ mb: 2 }}>
+                  Your email app should have opened with your message. <strong>Click Send in that app</strong> to deliver it to us. We will reply to the email you entered.
+                </Alert>
+              )}
+              {submitStatus === "copied" && (
                 <Alert severity="success" onClose={() => setSubmitStatus(null)} sx={{ mb: 2 }}>
-                  Thank you! Your message has been sent. We will get back to you shortly.
+                  Email address copied. Paste it in Gmail or your email and send your message there.
                 </Alert>
               )}
               {submitStatus === "error" && (
                 <Alert severity="error" onClose={() => setSubmitStatus(null)} sx={{ mb: 2 }}>
-                  Something went wrong. Please try again or email us directly.
+                  Something went wrong. Please try again or email us directly at {CONTACT_EMAIL}.
                 </Alert>
               )}
+              <Box sx={{ mb: 2, display: "flex", alignItems: "center", gap: 1, flexWrap: "wrap" }}>
+                <Typography variant="body2" color="text.secondary">
+                  Or copy our email and send from your inbox:
+                </Typography>
+                <Button size="small" variant="outlined" onClick={copyEmail} sx={{ textTransform: "none" }}>
+                  {CONTACT_EMAIL} — Copy
+                </Button>
+              </Box>
               <Box component="form" onSubmit={submit}>
                 <Grid container spacing={2}>
                   <Grid item xs={12} sm={6}>

@@ -4,7 +4,9 @@ import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 import { useAuthModal, AUTH_MODES } from "../../context/AuthModalContext";
 import { useServiceModal, SERVICE_TYPES } from "../../context/ServiceModalContext";
-import { getDisplayName } from "../../utils/displayName";
+import { usePageModal, PAGE_MODAL_TYPES } from "../../context/PageModalContext";
+import { useUserModal, USER_MODAL_VIEWS } from "../../context/UserModalContext";
+import { getDisplayNameForNav } from "../../utils/displayName";
 import { isAdmin } from "../../utils/admin";
 import { FaUser, FaSignOutAlt, FaHome, FaInfoCircle, FaEnvelope, FaBars, FaTimes, FaSearch, FaUserShield, FaBox, FaPrayingHands, FaShoppingCart, FaUserTie, FaTag } from "react-icons/fa";
 
@@ -13,6 +15,8 @@ export default function Navbar() {
   const { token, user, avatar, logout } = useContext(AuthContext);
   const { openService } = useServiceModal();
   const { openAuth } = useAuthModal();
+  const { openPage } = usePageModal();
+  const { openUserModal, closeUserModal } = useUserModal();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const admin = isAdmin(user);
 
@@ -22,72 +26,105 @@ export default function Navbar() {
   };
 
   return (
-    <BootstrapNavbar 
-      expand="lg" 
-      className="bg-white shadow-sm border-bottom"
-      style={{ 
-        padding: "0.75rem 0",
-        position: "sticky",
-        top: 0,
-        zIndex: 1000
-      }}
-    >
-      <Container fluid="lg">
-        {/* Logo/Brand */}
-        <BootstrapNavbar.Brand 
-          as={Link} 
-          to="/" 
-          className="d-flex align-items-center"
-          style={{
-            textDecoration: "none",
-            fontWeight: 700,
-            fontSize: "1.75rem",
-            color: "#0d9488",
-            letterSpacing: "-0.5px"
-          }}
-        >
-          <div 
-            className="me-2 d-flex align-items-center justify-content-center"
+    <header className="border-0 sticky-top" style={{ zIndex: 1000 }}>
+      {/* Ritual / festival top band - saffron, white, maroon (sacred Hindu colors) */}
+      <div
+        className="d-flex"
+        style={{
+          height: 6,
+          background: "linear-gradient(90deg, #ff9933 0%, #ff9933 33.33%, #ffffff 33.33%, #ffffff 66.66%, #b91c1c 66.66%, #b91c1c 100%)",
+          boxShadow: "0 1px 3px rgba(0,0,0,0.08)",
+        }}
+      />
+      <BootstrapNavbar
+        expand="lg"
+        className="bg-white border-0 py-2 py-lg-3"
+        style={{
+          boxShadow: "0 1px 0 rgba(0,0,0,0.06)",
+          borderBottom: "2px solid var(--primary-100)",
+          background: "linear-gradient(180deg, #ffffff 0%, #fffbf7 100%)",
+        }}
+      >
+        <Container fluid="lg">
+          {/* Logo/Brand - clean block */}
+          <BootstrapNavbar.Brand
+            as={Link}
+            to="/"
+            className="d-flex align-items-center text-decoration-none rounded-3 px-3 py-2"
             style={{
-              width: "40px",
-              height: "40px",
-              borderRadius: "10px",
-              background: "linear-gradient(135deg, #0d9488 0%, #0f766e 100%)",
-              color: "white",
               fontWeight: 700,
-              fontSize: "1.2rem",
-              boxShadow: "0 2px 8px rgba(13, 148, 136, 0.3)"
+              fontSize: "1.5rem",
+              color: "var(--primary-700)",
+              letterSpacing: "-0.02em",
+              background: "var(--primary-50)",
+              transition: "background 0.2s ease",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = "var(--primary-100)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = "var(--primary-50)";
             }}
           >
-            IN
-          </div>
-          <span style={{ color: "#0d9488" }}>INXINFO</span>
-          <span className="ms-1" style={{ fontSize: "0.9rem", fontWeight: 400, color: "#64748b" }}>Labs</span>
-        </BootstrapNavbar.Brand>
+            <span
+              className="d-inline-flex align-items-center justify-content-center me-2"
+              style={{
+                width: 40,
+                height: 40,
+                borderRadius: "10px",
+                background: "var(--gradient-primary)",
+                color: "white",
+                fontWeight: 700,
+                fontSize: "1rem",
+              }}
+            >
+              IN
+            </span>
+            <span style={{ color: "var(--primary-700)" }}>INXINFO</span>
+            <span className="ms-1 opacity-75" style={{ fontSize: "0.8rem", fontWeight: 600, color: "#64748b" }}>Labs</span>
+          </BootstrapNavbar.Brand>
 
-        <BootstrapNavbar.Toggle 
-          aria-controls="basic-navbar-nav"
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          style={{ border: "none" }}
-        >
-          {mobileMenuOpen ? <FaTimes /> : <FaBars />}
-        </BootstrapNavbar.Toggle>
+          <BootstrapNavbar.Toggle
+            aria-controls="basic-navbar-nav"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="border-0 rounded-2"
+            style={{ padding: "0.5rem 0.75rem" }}
+          >
+            {mobileMenuOpen ? <FaTimes /> : <FaBars />}
+          </BootstrapNavbar.Toggle>
 
-        <BootstrapNavbar.Collapse id="basic-navbar-nav">
-          {/* Navigation Links */}
-          <Nav className="me-auto ms-4">
-            <Nav.Link as={Link} to="/" className="fw-semibold" style={{ color: "#475569" }}>
-              <FaHome className="me-1" />
-              Home
-            </Nav.Link>
-            <Nav.Link as={Link} to="/about" className="fw-semibold" style={{ color: "#475569" }}>
-              <FaInfoCircle className="me-1" />
-              About
-            </Nav.Link>
-            <Nav.Link as={Link} to="/contact" className="fw-semibold" style={{ color: "#475569" }}>
-              <FaEnvelope className="me-1" />
-              Contact
-            </Nav.Link>
+          <BootstrapNavbar.Collapse id="basic-navbar-nav">
+            {/* Navigation Links - spaced */}
+            <Nav className="me-auto ms-lg-4 gap-1">
+              <Nav.Link
+                as={Link}
+                to="/"
+                className="fw-semibold rounded-2 px-3 py-2"
+                style={{ color: "#475569", fontSize: "0.95rem" }}
+              >
+                <FaHome className="me-2 opacity-75" />
+                Home
+              </Nav.Link>
+              <Nav.Link
+                as="button"
+                type="button"
+                className="fw-semibold border-0 bg-transparent rounded-2 px-3 py-2"
+                style={{ color: "#475569", fontSize: "0.95rem" }}
+                onClick={() => openPage(PAGE_MODAL_TYPES.ABOUT)}
+              >
+                <FaInfoCircle className="me-2 opacity-75" />
+                About
+              </Nav.Link>
+              <Nav.Link
+                as="button"
+                type="button"
+                className="fw-semibold border-0 bg-transparent rounded-2 px-3 py-2"
+                style={{ color: "#475569", fontSize: "0.95rem" }}
+                onClick={() => openPage(PAGE_MODAL_TYPES.CONTACT)}
+              >
+                <FaEnvelope className="me-2 opacity-75" />
+                Contact
+              </Nav.Link>
             <Dropdown as={Nav.Item} className="d-flex align-items-center">
               <Dropdown.Toggle
                 as={Nav.Link}
@@ -124,49 +161,64 @@ export default function Navbar() {
               </Dropdown.Menu>
             </Dropdown>
             {admin && (
-              <Nav.Link as={Link} to="/user/admin" className="fw-semibold d-flex align-items-center" style={{ color: "#0d9488" }}>
+              <Nav.Link as={Link} to="/user/admin" className="fw-semibold d-flex align-items-center" style={{ color: "var(--primary-600)" }}>
                 <FaUserShield className="me-1" />
                 Admin
               </Nav.Link>
             )}
           </Nav>
 
-          {/* Auth Section */}
+          {/* Auth Section - Login | Register | Join as PanditJi (no overlap) */}
           <Nav className="align-items-center">
             {!token ? (
-              <>
+              <div
+                className="d-flex align-items-center flex-wrap justify-content-end nav-auth-buttons"
+                style={{
+                  columnGap: "1rem",
+                  rowGap: "0.5rem",
+                  minWidth: 0,
+                }}
+              >
                 <Button
                   variant="outline-primary"
-                  className="me-2 fw-semibold"
+                  className="fw-semibold flex-shrink-0"
                   style={{
-                    borderRadius: "8px",
-                    borderColor: "#0d9488",
-                    color: "#0d9488"
+                    borderRadius: "10px",
+                    borderColor: "var(--primary-600)",
+                    color: "var(--primary-600)",
+                    padding: "0.5rem 0.85rem",
+                    fontSize: "0.9rem",
                   }}
                   onClick={() => openAuth(AUTH_MODES.LOGIN)}
                 >
                   Login
                 </Button>
+                <span className="d-none d-sm-inline text-muted flex-shrink-0" style={{ fontSize: "0.75rem" }} aria-hidden>|</span>
                 <Button
                   variant="outline-secondary"
-                  className="me-2 fw-semibold"
-                  style={{ borderRadius: "8px" }}
+                  className="fw-semibold flex-shrink-0"
+                  style={{ borderRadius: "10px", padding: "0.5rem 0.85rem", fontSize: "0.9rem" }}
                   onClick={() => openAuth(AUTH_MODES.REGISTER)}
                 >
                   Register
                 </Button>
+                <span className="d-none d-sm-inline text-muted flex-shrink-0" style={{ fontSize: "0.75rem", marginLeft: "0.1rem" }} aria-hidden>|</span>
                 <Button
-                  className="fw-semibold"
+                  className="fw-semibold flex-shrink-0"
                   style={{
-                    background: "linear-gradient(135deg, #0d9488 0%, #0f766e 100%)",
+                    background: "var(--gradient-primary)",
                     border: "none",
-                    borderRadius: "8px"
+                    borderRadius: "10px",
+                    padding: "0.5rem 0.85rem",
+                    fontSize: "0.9rem",
+                    whiteSpace: "nowrap",
+                    marginLeft: "0.15rem",
                   }}
                   onClick={() => openAuth(AUTH_MODES.REGISTER_PANDIT)}
                 >
                   Join as PanditJi
                 </Button>
-              </>
+              </div>
             ) : (
               <Dropdown align="end">
                 <Dropdown.Toggle
@@ -192,16 +244,16 @@ export default function Navbar() {
                       style={{
                         width: "40px",
                         height: "40px",
-                        background: "linear-gradient(135deg, #0d9488 0%, #0f766e 100%)",
+                        background: "var(--gradient-primary)",
                         color: "white",
                         fontWeight: 600
                       }}
                     >
-                      {getDisplayName(user)?.charAt(0)?.toUpperCase() || "U"}
+                      {getDisplayNameForNav(user)?.charAt(0)?.toUpperCase() || "U"}
                     </div>
                   )}
                   <span className="ms-2 d-none d-md-inline fw-semibold" style={{ color: "#1e293b", textDecoration: "none" }}>
-                    {getDisplayName(user)}
+                    {getDisplayNameForNav(user)}
                   </span>
                 </Dropdown.Toggle>
 
@@ -214,39 +266,41 @@ export default function Navbar() {
                     padding: "0.5rem"
                   }}
                 >
-                  <Dropdown.Item
-                    as={Link}
-                    to="/user/home"
-                    className="d-flex align-items-center py-2"
-                    style={{ borderRadius: "8px" }}
-                  >
-                    <FaHome className="me-2 text-teal" />
-                    Dashboard
-                  </Dropdown.Item>
-                  <Dropdown.Item
-                    as={Link}
-                    to="/user/search"
-                    className="d-flex align-items-center py-2"
-                    style={{ borderRadius: "8px" }}
-                  >
-                    <FaSearch className="me-2 text-teal" />
-                    Search
-                  </Dropdown.Item>
-                  <Dropdown.Item
-                    as={Link}
-                    to="/user/profile"
-                    className="d-flex align-items-center py-2"
-                    style={{ borderRadius: "8px" }}
-                  >
-                    <FaUser className="me-2 text-teal" />
-                    My Profile
-                  </Dropdown.Item>
+                <Dropdown.Item
+                  onClick={() => openUserModal(USER_MODAL_VIEWS.HOME)}
+                  className="d-flex align-items-center py-2"
+                  style={{ borderRadius: "8px" }}
+                >
+                  <FaHome className="me-2 text-teal" />
+                  Dashboard
+                </Dropdown.Item>
+                <Dropdown.Item
+                  className="d-flex align-items-center py-2"
+                  style={{ borderRadius: "8px" }}
+                  onClick={() => {
+                    closeUserModal();
+                    navigate("/user/search");
+                  }}
+                >
+                  <FaSearch className="me-2 text-teal" />
+                  Search
+                </Dropdown.Item>
+                <Dropdown.Item
+                  onClick={() => openUserModal(USER_MODAL_VIEWS.PROFILE)}
+                  className="d-flex align-items-center py-2"
+                  style={{ borderRadius: "8px" }}
+                >
+                  <FaUser className="me-2 text-teal" />
+                  My Profile
+                </Dropdown.Item>
                   {admin && (
                     <Dropdown.Item
-                      as={Link}
-                      to="/user/admin"
                       className="d-flex align-items-center py-2"
-                      style={{ borderRadius: "8px", color: "#0d9488" }}
+                      style={{ borderRadius: "8px", color: "var(--primary-600)" }}
+                      onClick={() => {
+                        closeUserModal();
+                        navigate("/user/admin");
+                      }}
                     >
                       <FaUserShield className="me-2" />
                       Admin
@@ -268,5 +322,6 @@ export default function Navbar() {
         </BootstrapNavbar.Collapse>
       </Container>
     </BootstrapNavbar>
+    </header>
   );
 }

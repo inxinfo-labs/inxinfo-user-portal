@@ -1,9 +1,10 @@
 import { useContext, useState, useEffect } from "react";
 import { Card, Row, Col, Button, Spinner, Alert } from "react-bootstrap";
 import { AuthContext } from "../../context/AuthContext";
-import { Link, useLocation } from "react-router-dom";
+import { useUserModal } from "../../context/UserModalContext";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { FaMapMarkerAlt, FaUser, FaEdit, FaExternalLinkAlt, FaPrayingHands, FaShoppingCart, FaUserTie, FaSearch } from "react-icons/fa";
-import { getDisplayName } from "../../utils/displayName";
+import { getDisplayNameForDashboard } from "../../utils/displayName";
 
 const OFFICE_LAT = 12.9716;
 const OFFICE_LNG = 77.5946;
@@ -12,7 +13,14 @@ const OFFICE_ADDRESS = "Bangalore, Karnataka, India";
 export default function UserHome() {
   const { user, avatar } = useContext(AuthContext);
   const location = useLocation();
+  const navigate = useNavigate();
+  const { closeUserModal } = useUserModal();
   const [userLocation, setUserLocation] = useState(null);
+
+  const goTo = (path) => {
+    closeUserModal();
+    navigate(path);
+  };
   const [locationLoading, setLocationLoading] = useState(false);
   const [locationError, setLocationError] = useState(null);
 
@@ -57,31 +65,47 @@ export default function UserHome() {
           {location.state.message}
         </Alert>
       )}
-      {/* Welcome Section */}
-      <div className="mb-5">
-        <h1 className="fw-bold mb-2">Welcome back, {getDisplayName(user)}!</h1>
-        <p className="text-muted mb-0">Manage your services, bookings, and orders from your dashboard</p>
+      {/* Welcome Section - attractive block */}
+      <div
+        className="mb-5 rounded-3 p-4 p-md-5"
+        style={{
+          background: "linear-gradient(135deg, rgba(255, 153, 51, 0.08) 0%, rgba(234, 88, 12, 0.06) 50%, rgba(184, 28, 28, 0.06) 100%)",
+          border: "1px solid rgba(234, 88, 12, 0.15)",
+          boxShadow: "0 4px 20px rgba(234, 88, 12, 0.08)",
+        }}
+      >
+        <h1 className="fw-bold mb-2 mb-md-3" style={{ color: "var(--primary-800)", fontSize: "clamp(1.5rem, 4vw, 2rem)" }}>
+          Welcome back, {getDisplayNameForDashboard(user)}!
+        </h1>
+        <p className="mb-0 lead" style={{ color: "#475569", fontSize: "1.05rem", maxWidth: "32rem" }}>
+          Manage your services, bookings, and orders from your dashboard. Book puja, order samagri, or find a Pandit Ji—all in one place.
+        </p>
       </div>
 
       {/* Quick Actions */}
       <Row className="g-4 mb-5">
         <Col md={3} sm={6}>
-          <Card className="border-0 shadow-sm h-100 text-center" as={Link} to="/user/search"
-          style={{
-            borderRadius: "1rem",
-            transition: "all 0.3s ease",
-            cursor: "pointer",
-            textDecoration: "none",
-            color: "inherit"
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.transform = "translateY(-4px)";
-            e.currentTarget.style.boxShadow = "0 10px 25px rgba(13, 148, 136, 0.15)";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.transform = "translateY(0)";
-            e.currentTarget.style.boxShadow = "0 1px 3px rgba(0, 0, 0, 0.1)";
-          }}
+          <Card
+            className="border-0 shadow-sm h-100 text-center"
+            role="button"
+            tabIndex={0}
+            onClick={() => goTo("/user/search")}
+            onKeyDown={(e) => e.key === "Enter" && goTo("/user/search")}
+            style={{
+              borderRadius: "1rem",
+              transition: "all 0.3s ease",
+              cursor: "pointer",
+              textDecoration: "none",
+              color: "inherit"
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = "translateY(-4px)";
+              e.currentTarget.style.boxShadow = "0 10px 25px rgba(234, 88, 12, 0.15)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = "translateY(0)";
+              e.currentTarget.style.boxShadow = "0 1px 3px rgba(0, 0, 0, 0.1)";
+            }}
           >
             <Card.Body className="p-4">
               <div className="mb-3">
@@ -104,32 +128,37 @@ export default function UserHome() {
           </Card>
         </Col>
         <Col md={3} sm={6}>
-          <Card className="border-0 shadow-sm h-100 text-center" as={Link} to="/user/puja"
-          style={{ 
-            borderRadius: "1rem",
-            transition: "all 0.3s ease",
-            cursor: "pointer",
-            textDecoration: "none",
-            color: "inherit"
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.transform = "translateY(-4px)";
-            e.currentTarget.style.boxShadow = "0 10px 25px rgba(13, 148, 136, 0.15)";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.transform = "translateY(0)";
-            e.currentTarget.style.boxShadow = "0 1px 3px rgba(0, 0, 0, 0.1)";
-          }}
+          <Card
+            className="border-0 shadow-sm h-100 text-center"
+            role="button"
+            tabIndex={0}
+            onClick={() => goTo("/user/puja")}
+            onKeyDown={(e) => e.key === "Enter" && goTo("/user/puja")}
+            style={{
+              borderRadius: "1rem",
+              transition: "all 0.3s ease",
+              cursor: "pointer",
+              textDecoration: "none",
+              color: "inherit"
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = "translateY(-4px)";
+              e.currentTarget.style.boxShadow = "0 10px 25px rgba(234, 88, 12, 0.15)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = "translateY(0)";
+              e.currentTarget.style.boxShadow = "0 1px 3px rgba(0, 0, 0, 0.1)";
+            }}
           >
             <Card.Body className="p-4">
               <div className="mb-3">
-                <div 
+                <div
                   className="mx-auto d-flex align-items-center justify-content-center"
                   style={{
                     width: "64px",
                     height: "64px",
                     borderRadius: "1rem",
-                    background: "linear-gradient(135deg, #0d9488 0%, #0f766e 100%)",
+                    background: "var(--gradient-primary)",
                     color: "white"
                   }}
                 >
@@ -143,26 +172,31 @@ export default function UserHome() {
         </Col>
 
         <Col md={3} sm={6}>
-          <Card className="border-0 shadow-sm h-100 text-center" as={Link} to="/user/order"
-          style={{ 
-            borderRadius: "1rem",
-            transition: "all 0.3s ease",
-            cursor: "pointer",
-            textDecoration: "none",
-            color: "inherit"
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.transform = "translateY(-4px)";
-            e.currentTarget.style.boxShadow = "0 10px 25px rgba(13, 148, 136, 0.15)";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.transform = "translateY(0)";
-            e.currentTarget.style.boxShadow = "0 1px 3px rgba(0, 0, 0, 0.1)";
-          }}
+          <Card
+            className="border-0 shadow-sm h-100 text-center"
+            role="button"
+            tabIndex={0}
+            onClick={() => goTo("/user/order")}
+            onKeyDown={(e) => e.key === "Enter" && goTo("/user/order")}
+            style={{
+              borderRadius: "1rem",
+              transition: "all 0.3s ease",
+              cursor: "pointer",
+              textDecoration: "none",
+              color: "inherit"
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = "translateY(-4px)";
+              e.currentTarget.style.boxShadow = "0 10px 25px rgba(234, 88, 12, 0.15)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = "translateY(0)";
+              e.currentTarget.style.boxShadow = "0 1px 3px rgba(0, 0, 0, 0.1)";
+            }}
           >
             <Card.Body className="p-4">
               <div className="mb-3">
-                <div 
+                <div
                   className="mx-auto d-flex align-items-center justify-content-center"
                   style={{
                     width: "64px",
@@ -182,26 +216,31 @@ export default function UserHome() {
         </Col>
 
         <Col md={3} sm={6}>
-          <Card className="border-0 shadow-sm h-100 text-center" as={Link} to="/user/pandit"
-          style={{ 
-            borderRadius: "1rem",
-            transition: "all 0.3s ease",
-            cursor: "pointer",
-            textDecoration: "none",
-            color: "inherit"
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.transform = "translateY(-4px)";
-            e.currentTarget.style.boxShadow = "0 10px 25px rgba(13, 148, 136, 0.15)";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.transform = "translateY(0)";
-            e.currentTarget.style.boxShadow = "0 1px 3px rgba(0, 0, 0, 0.1)";
-          }}
+          <Card
+            className="border-0 shadow-sm h-100 text-center"
+            role="button"
+            tabIndex={0}
+            onClick={() => goTo("/user/pandit")}
+            onKeyDown={(e) => e.key === "Enter" && goTo("/user/pandit")}
+            style={{
+              borderRadius: "1rem",
+              transition: "all 0.3s ease",
+              cursor: "pointer",
+              textDecoration: "none",
+              color: "inherit"
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = "translateY(-4px)";
+              e.currentTarget.style.boxShadow = "0 10px 25px rgba(234, 88, 12, 0.15)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = "translateY(0)";
+              e.currentTarget.style.boxShadow = "0 1px 3px rgba(0, 0, 0, 0.1)";
+            }}
           >
             <Card.Body className="p-4">
               <div className="mb-3">
-                <div 
+                <div
                   className="mx-auto d-flex align-items-center justify-content-center"
                   style={{
                     width: "64px",
@@ -221,26 +260,31 @@ export default function UserHome() {
         </Col>
 
         <Col md={3} sm={6}>
-          <Card className="border-0 shadow-sm h-100 text-center" as={Link} to="/user/profile"
-          style={{ 
-            borderRadius: "1rem",
-            transition: "all 0.3s ease",
-            cursor: "pointer",
-            textDecoration: "none",
-            color: "inherit"
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.transform = "translateY(-4px)";
-            e.currentTarget.style.boxShadow = "0 10px 25px rgba(13, 148, 136, 0.15)";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.transform = "translateY(0)";
-            e.currentTarget.style.boxShadow = "0 1px 3px rgba(0, 0, 0, 0.1)";
-          }}
+          <Card
+            className="border-0 shadow-sm h-100 text-center"
+            role="button"
+            tabIndex={0}
+            onClick={() => goTo("/user/profile")}
+            onKeyDown={(e) => e.key === "Enter" && goTo("/user/profile")}
+            style={{
+              borderRadius: "1rem",
+              transition: "all 0.3s ease",
+              cursor: "pointer",
+              textDecoration: "none",
+              color: "inherit"
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = "translateY(-4px)";
+              e.currentTarget.style.boxShadow = "0 10px 25px rgba(234, 88, 12, 0.15)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = "translateY(0)";
+              e.currentTarget.style.boxShadow = "0 1px 3px rgba(0, 0, 0, 0.1)";
+            }}
           >
             <Card.Body className="p-4">
               <div className="mb-3">
-                <div 
+                <div
                   className="mx-auto d-flex align-items-center justify-content-center"
                   style={{
                     width: "64px",
@@ -271,10 +315,10 @@ export default function UserHome() {
                   width: "120px",
                   height: "120px",
                   borderRadius: "50%",
-                  background: "linear-gradient(135deg, #0d9488 0%, #0f766e 100%)",
+                  background: "var(--gradient-primary)",
                   overflow: "hidden",
-                  border: "4px solid rgba(13, 148, 136, 0.2)",
-                  boxShadow: "0 4px 12px rgba(13, 148, 136, 0.2)"
+                  border: "4px solid rgba(234, 88, 12, 0.25)",
+                  boxShadow: "0 4px 12px rgba(234, 88, 12, 0.2)"
                 }}
               >
                 {avatar ? (
@@ -287,29 +331,27 @@ export default function UserHome() {
                   <FaUser style={{ fontSize: "3rem", color: "white" }} />
                 )}
               </div>
-              <h5 className="fw-bold mb-3">{getDisplayName(user)}</h5>
+              <h5 className="fw-bold mb-3">{getDisplayNameForDashboard(user)}</h5>
               <div className="d-grid gap-2">
-                <Button 
-                  as={Link} 
-                  to="/user/profile" 
-                  variant="primary" 
-                  size="sm" 
+                <Button
+                  variant="primary"
+                  size="sm"
                   className="fw-semibold"
                   style={{
-                    background: "linear-gradient(135deg, #0d9488 0%, #0f766e 100%)",
+                    background: "var(--gradient-primary)",
                     border: "none",
                     borderRadius: "0.5rem"
                   }}
+                  onClick={() => goTo("/user/profile")}
                 >
                   <FaUser className="me-2" /> View Profile
                 </Button>
-                <Button 
-                  as={Link} 
-                  to="/user/profile" 
-                  variant="outline-primary" 
+                <Button
+                  variant="outline-primary"
                   size="sm"
                   className="fw-semibold"
                   style={{ borderRadius: "0.5rem" }}
+                  onClick={() => goTo("/user/profile")}
                 >
                   <FaEdit className="me-2" /> Edit Profile
                 </Button>
@@ -357,6 +399,56 @@ export default function UserHome() {
         </Col>
       </Row>
 
+      {/* Rituals & Puja We Support */}
+      <Row className="mb-4">
+        <Col xs={12}>
+          <div
+            className="rounded-3 p-4 p-md-5"
+            style={{
+              background: "linear-gradient(180deg, #fffbf7 0%, #fff7ed 100%)",
+              border: "1px solid rgba(234, 88, 12, 0.12)",
+              boxShadow: "0 4px 16px rgba(0,0,0,0.04)",
+            }}
+          >
+            <div className="text-center mb-4">
+              <h4 className="fw-bold mb-2" style={{ color: "var(--primary-800)" }}>
+                Rituals & Puja We Support
+              </h4>
+              <p className="text-muted mb-0" style={{ maxWidth: "540px", margin: "0 auto", fontSize: "0.95rem" }}>
+                Traditional Hindu puja and ceremonies for every occasion.
+              </p>
+            </div>
+            <div className="d-flex flex-wrap justify-content-center gap-2 gx-2">
+              {[
+                "Satyanarayan Puja",
+                "Shradh & Pitru Paksha",
+                "Griha Pravesh",
+                "Wedding ceremonies",
+                "Mundan & naming",
+                "Festival pujas (Diwali, Navratri)",
+                "Puja samagri & items",
+                "Custom rituals",
+              ].map((item, idx) => (
+                <span
+                  key={idx}
+                  className="px-3 py-2 rounded-pill"
+                  style={{
+                    background: "rgba(255, 255, 255, 0.9)",
+                    color: "var(--primary-800)",
+                    fontSize: "0.875rem",
+                    fontWeight: 600,
+                    border: "1px solid rgba(234, 88, 12, 0.2)",
+                    boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
+                  }}
+                >
+                  {item}
+                </span>
+              ))}
+            </div>
+          </div>
+        </Col>
+      </Row>
+
       {/* User Location Card */}
       {user && (
         <Card className="border-0 shadow-sm" style={{ borderRadius: "1rem" }}>
@@ -384,7 +476,7 @@ export default function UserHome() {
                   size="sm"
                   className="fw-semibold"
                   style={{
-                    background: "linear-gradient(135deg, #0d9488 0%, #0f766e 100%)",
+                    background: "var(--gradient-primary)",
                     border: "none",
                     borderRadius: "0.5rem"
                   }}

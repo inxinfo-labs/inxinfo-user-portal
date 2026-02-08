@@ -111,13 +111,13 @@ const UploadProfilePic = () => {
                     width: "200px",
                     height: "200px",
                     borderRadius: "50%",
-                    background: "linear-gradient(135deg, #0d9488 0%, #0f766e 100%)",
+                    background: "var(--gradient-primary)",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
                     overflow: "hidden",
-                    border: "6px solid rgba(13, 148, 136, 0.2)",
-                    boxShadow: "0 10px 30px rgba(13, 148, 136, 0.2)",
+                    border: "6px solid rgba(234, 88, 12, 0.2)",
+                    boxShadow: "0 10px 30px rgba(234, 88, 12, 0.2)",
                   }}
                 >
                   {preview || avatar ? (
@@ -156,7 +156,7 @@ const UploadProfilePic = () => {
               </Form.Group>
 
               {preview && (
-                <div className="mb-4 p-3 rounded" style={{ background: "rgba(13, 148, 136, 0.05)" }}>
+                <div className="mb-4 p-3 rounded" style={{ background: "rgba(234, 88, 12, 0.08)" }}>
                   <div className="d-flex align-items-center justify-content-between">
                     <div>
                       <p className="mb-0 fw-semibold">{file?.name}</p>
@@ -183,7 +183,7 @@ const UploadProfilePic = () => {
                   disabled={!file || loading}
                   className="fw-semibold flex-grow-1"
                   style={{
-                    background: "linear-gradient(135deg, #0d9488 0%, #0f766e 100%)",
+                    background: "var(--gradient-primary)",
                     border: "none",
                     borderRadius: "10px",
                     padding: "0.75rem",
@@ -192,7 +192,7 @@ const UploadProfilePic = () => {
                   onMouseEnter={(e) => {
                     if (!e.target.disabled) {
                       e.target.style.transform = "translateY(-2px)";
-                      e.target.style.boxShadow = "0 10px 20px rgba(13, 148, 136, 0.3)";
+                      e.target.style.boxShadow = "0 10px 20px rgba(234, 88, 12, 0.25)";
                     }
                   }}
                   onMouseLeave={(e) => {
@@ -220,8 +220,8 @@ const UploadProfilePic = () => {
 
       <style>{`
         .form-control:focus {
-          border-color: #0d9488 !important;
-          box-shadow: 0 0 0 0.2rem rgba(13, 148, 136, 0.25) !important;
+          border-color: var(--primary-600) !important;
+          box-shadow: 0 0 0 0.2rem rgba(234, 88, 12, 0.25) !important;
         }
       `}</style>
     </div>

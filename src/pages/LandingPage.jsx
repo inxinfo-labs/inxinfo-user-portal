@@ -3,6 +3,8 @@ import Hero from "../features/landing/Hero";
 import Features from "../features/landing/Features";
 import LandingServices from "../features/landing/LandingServices";
 import PujaOffers from "../features/landing/PujaOffers";
+import PromoBanner from "../features/landing/PromoBanner";
+import FeaturedPujas from "../features/landing/FeaturedPujas";
 import MapSection from "../features/landing/MapSection";
 import CTA from "../features/landing/CTA";
 import About from "./About";
@@ -21,7 +23,13 @@ export default function LandingPage() {
       {/* Our Services at top so visible without scrolling */}
       <LandingServices />
 
-      {/* Puja offers / advertisements */}
+      {/* Advertisement: Shradh Puja & All Puja */}
+      <PromoBanner />
+
+      {/* Satyanarayan & Griha Pravesh with images */}
+      <FeaturedPujas />
+
+      {/* Puja offers / promotions */}
       <PujaOffers />
 
       <Features />
@@ -39,10 +47,10 @@ export default function LandingPage() {
       </section>
 
       <Modal open={modalOpen} onClose={() => setModalOpen(false)}>
-        <h3 className="fw-bold mb-3" style={{ color: "var(--primary-700)" }}>Get Started with INXINFO Labs</h3>
+        <h3 className="fw-bold mb-3" style={{ color: "var(--primary-700)" }}>Book Puja &amp; Pandit Ji</h3>
         <p className="mb-4 text-muted">
-          We&apos;d love to discuss your enterprise needs and how we can help transform
-          your business with our innovative solutions.
+          Get in touch to book traditional Hindu puja, Pandit Ji for your occasion, or order puja samagri.
+          We are here for all your ritual needs.
         </p>
         <div className="d-flex gap-2 flex-wrap">
           <a

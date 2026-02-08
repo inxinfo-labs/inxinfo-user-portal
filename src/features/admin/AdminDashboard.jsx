@@ -23,7 +23,7 @@ export default function AdminDashboard() {
             <Card.Body className="text-center py-4">
               <div
                 className="rounded-circle d-inline-flex align-items-center justify-content-center mb-2"
-                style={{ width: 56, height: 56, background: "rgba(13, 148, 136, 0.15)", color: "#0d9488" }}
+                style={{ width: 56, height: 56, background: "rgba(234, 88, 12, 0.15)", color: "var(--primary-600)" }}
               >
                 <FaBox size={28} />
               </div>
@@ -37,7 +37,7 @@ export default function AdminDashboard() {
             <Card.Body className="text-center py-4">
               <div
                 className="rounded-circle d-inline-flex align-items-center justify-content-center mb-2"
-                style={{ width: 56, height: 56, background: "rgba(13, 148, 136, 0.15)", color: "#0d9488" }}
+                style={{ width: 56, height: 56, background: "rgba(234, 88, 12, 0.15)", color: "var(--primary-600)" }}
               >
                 <FaClipboardList size={28} />
               </div>
@@ -51,7 +51,7 @@ export default function AdminDashboard() {
             <Card.Body className="text-center py-4">
               <div
                 className="rounded-circle d-inline-flex align-items-center justify-content-center mb-2"
-                style={{ width: 56, height: 56, background: "rgba(13, 148, 136, 0.15)", color: "#0d9488" }}
+                style={{ width: 56, height: 56, background: "rgba(234, 88, 12, 0.15)", color: "var(--primary-600)" }}
               >
                 <FaUserTie size={28} />
               </div>
@@ -65,7 +65,7 @@ export default function AdminDashboard() {
             <Card.Body className="text-center py-4">
               <div
                 className="rounded-circle d-inline-flex align-items-center justify-content-center mb-2"
-                style={{ width: 56, height: 56, background: "rgba(13, 148, 136, 0.15)", color: "#0d9488" }}
+                style={{ width: 56, height: 56, background: "rgba(234, 88, 12, 0.15)", color: "var(--primary-600)" }}
               >
                 <FaPrayingHands size={28} />
               </div>
@@ -80,7 +80,7 @@ export default function AdminDashboard() {
         <Col>
           <Card as={Link} to="/docs" className="border-0 shadow-sm text-decoration-none text-dark">
             <Card.Body className="d-flex align-items-center">
-              <FaBook className="me-3" style={{ fontSize: "1.5rem", color: "#0d9488" }} />
+              <FaBook className="me-3" style={{ fontSize: "1.5rem", color: "var(--primary-600)" }} />
               <div>
                 <Card.Title className="h6 mb-0">Documentation</Card.Title>
                 <p className="small text-muted mb-0">API reference, ritual types, categories, statuses</p>

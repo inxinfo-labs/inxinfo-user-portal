@@ -1,9 +1,11 @@
 import { Container, Row, Col, Card, Badge } from "react-bootstrap";
 import { FaPrayingHands, FaTag, FaGift } from "react-icons/fa";
+import { useContext } from "react";
+import { AuthContext } from "../../context/AuthContext";
 import { useServiceModal, SERVICE_TYPES } from "../../context/ServiceModalContext";
 import { useAuthModal, AUTH_MODES } from "../../context/AuthModalContext";
 
-const offers = [
+const getOffers = (isLoggedIn) => [
   {
     title: "Festival Special Puja",
     description: "Book a full puja package for upcoming festivals. Includes samagri and experienced Pandit Ji.",
@@ -11,17 +13,27 @@ const offers = [
     cta: "Book now",
     action: "puja",
     icon: <FaPrayingHands />,
-    color: "#0d9488",
+    color: "var(--primary-600)",
   },
-  {
-    title: "New Customer Offer",
-    description: "First-time customers get a welcome discount on puja services and product orders.",
-    discount: "10% off",
-    cta: "Register & claim",
-    action: "register",
-    icon: <FaGift />,
-    color: "#0f766e",
-  },
+  isLoggedIn
+    ? {
+        title: "Member Special Offers",
+        description: "Exclusive offers on puja services and product orders for registered members.",
+        discount: "10% off",
+        cta: "View offers",
+        action: "puja",
+        icon: <FaGift />,
+        color: "var(--primary-700)",
+      }
+    : {
+        title: "New Customer Offer",
+        description: "First-time customers get a welcome discount on puja services and product orders.",
+        discount: "10% off",
+        cta: "Register & claim",
+        action: "register",
+        icon: <FaGift />,
+        color: "var(--primary-700)",
+      },
   {
     title: "Pandit Ji at Home",
     description: "Get an experienced Pandit at your doorstep. Book for weddings, griha pravesh, and more.",
@@ -34,8 +46,11 @@ const offers = [
 ];
 
 export default function PujaOffers({ embedded = false }) {
+  const { token } = useContext(AuthContext);
   const { openService, closeService } = useServiceModal();
   const { openAuth } = useAuthModal();
+  const isLoggedIn = !!token;
+  const offers = getOffers(isLoggedIn);
 
   const handleOfferClick = (action) => {
     closeService();
@@ -63,7 +78,7 @@ export default function PujaOffers({ embedded = false }) {
             onKeyDown={(e) => e.key === "Enter" && handleOfferClick(offer.action)}
             onMouseEnter={(e) => {
               e.currentTarget.style.transform = "translateY(-4px)";
-              e.currentTarget.style.boxShadow = "0 12px 24px rgba(13, 148, 136, 0.2)";
+              e.currentTarget.style.boxShadow = "0 12px 24px rgba(234, 88, 12, 0.2)";
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.transform = "translateY(0)";
@@ -105,9 +120,9 @@ export default function PujaOffers({ embedded = false }) {
     <section id="puja-offers" className="py-5" style={{ background: "linear-gradient(180deg, #f0fdfa 0%, #fff 100%)" }}>
       <Container>
         <div className="text-center mb-4">
-          <h2 className="fw-bold mb-2">Puja Offers & Promotions</h2>
+          <h2 className="fw-bold mb-2">Puja Offers &amp; Promotions</h2>
           <p className="text-muted mb-0" style={{ maxWidth: "560px", margin: "0 auto" }}>
-            Special deals on puja services, products, and Pandit Ji bookings. Click to open in popup.
+            Special deals on Hindu puja services, puja samagri, and Pandit Ji bookings.
           </p>
         </div>
         {cards}

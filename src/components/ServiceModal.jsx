@@ -30,7 +30,7 @@ function SignInPrompt({ service, onClose, onOpenLogin, onOpenRegister }) {
     <div className="text-center py-5 px-4">
       <p className="text-muted mb-4">{copy[service] || "Sign in to continue."}</p>
       <div className="d-flex gap-2 justify-content-center flex-wrap">
-        <Button variant="primary" onClick={() => { onClose(); onOpenLogin?.(); }} style={{ background: "linear-gradient(135deg, #0d9488 0%, #0f766e 100%)", border: "none", borderRadius: "0.75rem" }}>
+        <Button variant="primary" onClick={() => { onClose(); onOpenLogin?.(); }} style={{ background: "var(--gradient-primary)", border: "none", borderRadius: "0.75rem" }}>
           Login
         </Button>
         <Button variant="outline-primary" onClick={() => { onClose(); onOpenRegister?.(); }} style={{ borderRadius: "0.75rem" }}>
@@ -188,7 +188,7 @@ export default function ServiceModal() {
           className="d-flex align-items-center justify-content-between border-bottom px-4 py-3"
           style={{ flexShrink: 0 }}
         >
-          <h4 className="fw-bold mb-0" style={{ color: "#0d9488" }}>
+          <h4 className="fw-bold mb-0" style={{ color: "var(--primary-600)" }}>
             {title}
           </h4>
           <button

@@ -162,9 +162,9 @@ const UpdateProfile = () => {
                   width: "120px",
                   height: "120px",
                   borderRadius: "50%",
-                  background: "linear-gradient(135deg, #0d9488 0%, #0f766e 100%)",
+                  background: "var(--gradient-primary)",
                   overflow: "hidden",
-                  border: "4px solid rgba(13, 148, 136, 0.2)"
+                  border: "4px solid rgba(234, 88, 12, 0.25)"
                 }}
               >
                 {avatar ? (
@@ -401,7 +401,7 @@ const UpdateProfile = () => {
                     disabled={loading}
                     className="fw-semibold"
                     style={{
-                      background: "linear-gradient(135deg, #0d9488 0%, #0f766e 100%)",
+                      background: "var(--gradient-primary)",
                       border: "none",
                       borderRadius: "10px",
                       padding: "0.75rem 2rem",
@@ -409,7 +409,7 @@ const UpdateProfile = () => {
                     }}
                     onMouseEnter={(e) => {
                       e.target.style.transform = "translateY(-2px)";
-                      e.target.style.boxShadow = "0 10px 20px rgba(13, 148, 136, 0.3)";
+                      e.target.style.boxShadow = "0 10px 20px rgba(234, 88, 12, 0.25)";
                     }}
                     onMouseLeave={(e) => {
                       e.target.style.transform = "translateY(0)";
@@ -437,8 +437,8 @@ const UpdateProfile = () => {
 
       <style>{`
         .form-control:focus, .form-select:focus {
-          border-color: #0d9488 !important;
-          box-shadow: 0 0 0 0.2rem rgba(13, 148, 136, 0.25) !important;
+          border-color: var(--primary-600) !important;
+          box-shadow: 0 0 0 0.2rem rgba(234, 88, 12, 0.25) !important;
         }
       `}</style>
     </div>

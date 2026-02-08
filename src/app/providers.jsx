@@ -6,6 +6,8 @@ import { AuthProvider } from "../context/AuthContext";
 // eslint-disable-next-line no-unused-vars -- used as JSX <AuthModalProvider>
 import { AuthModalProvider } from "../context/AuthModalContext";
 import { ServiceModalProvider } from "../context/ServiceModalContext";
+import { PageModalProvider } from "../context/PageModalContext";
+import { UserModalProvider } from "../context/UserModalContext";
 import { ThemeProvider, ThemeContext } from "../context/ThemeContext";
 import { lightTheme, darkTheme } from "../theme/muiTheme";
 
@@ -28,7 +30,11 @@ export default function Providers({ children }) {
           <BrowserRouter>
             <ServiceModalProvider>
               <AuthModalProvider>
-                {children}
+                <PageModalProvider>
+                  <UserModalProvider>
+                    {children}
+                  </UserModalProvider>
+                </PageModalProvider>
               </AuthModalProvider>
             </ServiceModalProvider>
           </BrowserRouter>

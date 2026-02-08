@@ -47,7 +47,7 @@ export default function ResetPassword() {
       <div
         className="min-vh-100 d-flex align-items-center justify-content-center p-3"
         style={{
-          background: "linear-gradient(160deg, #0f766e 0%, #0d9488 35%, #14b8a6 70%, #2dd4bf 100%)",
+          background: "var(--gradient-hero)",
         }}
       >
         <div
@@ -59,13 +59,13 @@ export default function ResetPassword() {
             style={{
               width: 56,
               height: 56,
-              background: "linear-gradient(135deg, #0d9488 0%, #0f766e 100%)",
+              background: "linear-gradient(135deg, var(--primary-600) 0%, var(--primary-700) 100%)",
               color: "white",
             }}
           >
             <FaLock style={{ fontSize: "1.5rem" }} />
           </div>
-          <h3 className="h5 fw-bold mb-2" style={{ color: "#0f766e" }}>
+          <h3 className="h5 fw-bold mb-2" style={{ color: "var(--primary-700)" }}>
             Password updated
           </h3>
           <p className="text-muted small mb-4">You can now sign in with your new password.</p>
@@ -74,7 +74,7 @@ export default function ResetPassword() {
             to="/auth/login"
             variant="primary"
             className="rounded-3"
-            style={{ background: "linear-gradient(135deg, #0d9488 0%, #0f766e 100%)", border: "none" }}
+            style={{ background: "linear-gradient(135deg, var(--primary-600) 0%, var(--primary-700) 100%)", border: "none" }}
           >
             Sign in
           </Button>
@@ -87,7 +87,7 @@ export default function ResetPassword() {
     <div
       className="min-vh-100 d-flex align-items-center justify-content-center p-3"
       style={{
-        background: "linear-gradient(160deg, #0f766e 0%, #0d9488 35%, #14b8a6 70%, #2dd4bf 100%)",
+        background: "var(--gradient-hero)",
       }}
     >
       <div
@@ -100,13 +100,13 @@ export default function ResetPassword() {
             style={{
               width: 56,
               height: 56,
-              background: "linear-gradient(135deg, #0d9488 0%, #0f766e 100%)",
+              background: "linear-gradient(135deg, var(--primary-600) 0%, var(--primary-700) 100%)",
               color: "white",
             }}
           >
             <FaLeaf style={{ fontSize: "1.5rem" }} />
           </div>
-          <h1 className="h4 fw-bold mb-2" style={{ color: "#0f766e" }}>
+          <h1 className="h4 fw-bold mb-2" style={{ color: "var(--primary-700)" }}>
             Set new password
           </h1>
           <p className="text-muted small mb-0">Enter your new password below.</p>
@@ -120,7 +120,7 @@ export default function ResetPassword() {
 
         {!token ? (
           <p className="text-center">
-            <Link to="/auth/forgot-password" className="fw-semibold" style={{ color: "#0d9488" }}>
+            <Link to="/auth/forgot-password" className="fw-semibold" style={{ color: "var(--primary-600)" }}>
               Request a new reset link
             </Link>
           </p>
@@ -128,7 +128,7 @@ export default function ResetPassword() {
           <Form onSubmit={handleSubmit}>
             <Form.Group className="mb-3">
               <Form.Label className="small fw-semibold text-secondary">
-                <FaLock className="me-1" style={{ color: "#0d9488" }} /> New password
+                <FaLock className="me-1" style={{ color: "var(--primary-600)" }} /> New password
               </Form.Label>
               <Form.Control
                 type="password"
@@ -159,7 +159,7 @@ export default function ResetPassword() {
               type="submit"
               className="w-100 rounded-3 py-2 fw-semibold border-0"
               disabled={loading}
-              style={{ background: "linear-gradient(135deg, #0d9488 0%, #0f766e 100%)", fontSize: "1rem" }}
+              style={{ background: "linear-gradient(135deg, var(--primary-600) 0%, var(--primary-700) 100%)", fontSize: "1rem" }}
             >
               {loading ? (
                 <>
@@ -173,7 +173,7 @@ export default function ResetPassword() {
         )}
 
         <p className="text-center mt-4 mb-0 small text-muted">
-          <Link to="/auth/login" className="fw-semibold text-decoration-none" style={{ color: "#0d9488" }}>
+          <Link to="/auth/login" className="fw-semibold text-decoration-none" style={{ color: "var(--primary-600)" }}>
             Back to sign in
           </Link>
         </p>

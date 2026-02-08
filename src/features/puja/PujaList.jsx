@@ -119,7 +119,7 @@ export default function PujaList() {
                     className="w-100 fw-semibold"
                     onClick={() => navigate(`/user/puja/${puja.id}/book`)}
                     style={{
-                      background: "linear-gradient(135deg, #0d9488 0%, #0f766e 100%)",
+                      background: "var(--gradient-primary)",
                       border: "none",
                       borderRadius: "0.75rem",
                       padding: "0.75rem"

@@ -22,7 +22,7 @@ export default function Docs() {
     <div className="py-5">
       <Container>
         <div className="text-center mb-5">
-          <FaBook className="mb-3" style={{ fontSize: "3rem", color: "#0d9488" }} />
+          <FaBook className="mb-3" style={{ fontSize: "3rem", color: "var(--primary-600)" }} />
           <h1 className="fw-bold">Documentation</h1>
           <p className="text-muted">Admin setup, catalog management, and how customers use the portal.</p>
         </div>
@@ -33,7 +33,7 @@ export default function Docs() {
               <Card.Header
                 className="border-0 py-3 d-flex align-items-center"
                 style={{
-                  background: "linear-gradient(135deg, #0d9488 0%, #0f766e 100%)",
+                  background: "var(--gradient-primary)",
                   color: "white",
                   borderRadius: "16px 16px 0 0",
                 }}
@@ -91,7 +91,7 @@ export default function Docs() {
               <Card.Header
                 className="border-0 py-3"
                 style={{
-                  background: "linear-gradient(135deg, #0d9488 0%, #0f766e 100%)",
+                  background: "var(--gradient-primary)",
                   color: "white",
                   borderRadius: "16px 16px 0 0",
                 }}

@@ -70,7 +70,7 @@ const ViewProfile = () => {
             <div 
               className="p-4 text-white"
               style={{ 
-                background: "linear-gradient(135deg, #0d9488 0%, #0f766e 100%)"
+                background: "var(--gradient-primary)"
               }}
             >
               <Row className="align-items-center">
@@ -138,7 +138,7 @@ const ViewProfile = () => {
             <Card.Body className="p-4">
               <ListGroup variant="flush">
                 <ListGroup.Item className="border-0 px-0 py-3 d-flex align-items-center">
-                  <div className="me-3" style={{ width: "40px", height: "40px", borderRadius: "10px", background: "rgba(13, 148, 136, 0.1)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <div className="me-3" style={{ width: "40px", height: "40px", borderRadius: "10px", background: "rgba(234, 88, 12, 0.12)", display: "flex", alignItems: "center", justifyContent: "center" }}>
                     <FaUser className="text-teal" />
                   </div>
                   <div className="flex-grow-1">
@@ -150,7 +150,7 @@ const ViewProfile = () => {
                 </ListGroup.Item>
 
                 <ListGroup.Item className="border-0 px-0 py-3 d-flex align-items-center">
-                  <div className="me-3" style={{ width: "40px", height: "40px", borderRadius: "10px", background: "rgba(13, 148, 136, 0.1)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <div className="me-3" style={{ width: "40px", height: "40px", borderRadius: "10px", background: "rgba(234, 88, 12, 0.12)", display: "flex", alignItems: "center", justifyContent: "center" }}>
                     <FaEnvelope className="text-teal" />
                   </div>
                   <div className="flex-grow-1">
@@ -158,7 +158,7 @@ const ViewProfile = () => {
                     <div 
                       className="fw-semibold d-flex align-items-center"
                       style={{ 
-                        color: "#0d9488",
+                        color: "var(--primary-600)",
                         cursor: "pointer"
                       }}
                       onClick={() => handleEmailClick(user.email)}
@@ -179,7 +179,7 @@ const ViewProfile = () => {
 
                 {user.mobileNumber && (
                   <ListGroup.Item className="border-0 px-0 py-3 d-flex align-items-center">
-                    <div className="me-3" style={{ width: "40px", height: "40px", borderRadius: "10px", background: "rgba(13, 148, 136, 0.1)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    <div className="me-3" style={{ width: "40px", height: "40px", borderRadius: "10px", background: "rgba(234, 88, 12, 0.12)", display: "flex", alignItems: "center", justifyContent: "center" }}>
                       <FaPhone className="text-teal" />
                     </div>
                     <div className="flex-grow-1">
@@ -190,7 +190,7 @@ const ViewProfile = () => {
                 )}
 
                 <ListGroup.Item className="border-0 px-0 py-3 d-flex align-items-center">
-                  <div className="me-3" style={{ width: "40px", height: "40px", borderRadius: "10px", background: "rgba(13, 148, 136, 0.1)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <div className="me-3" style={{ width: "40px", height: "40px", borderRadius: "10px", background: "rgba(234, 88, 12, 0.12)", display: "flex", alignItems: "center", justifyContent: "center" }}>
                     <FaCalendarAlt className="text-teal" />
                   </div>
                   <div className="flex-grow-1">
@@ -201,7 +201,7 @@ const ViewProfile = () => {
 
                 {user.gender && (
                   <ListGroup.Item className="border-0 px-0 py-3 d-flex align-items-center">
-                    <div className="me-3" style={{ width: "40px", height: "40px", borderRadius: "10px", background: "rgba(13, 148, 136, 0.1)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    <div className="me-3" style={{ width: "40px", height: "40px", borderRadius: "10px", background: "rgba(234, 88, 12, 0.12)", display: "flex", alignItems: "center", justifyContent: "center" }}>
                       <FaVenusMars className="text-teal" />
                     </div>
                     <div className="flex-grow-1">
@@ -238,7 +238,7 @@ const ViewProfile = () => {
                     style={{ cursor: "pointer" }}
                     onClick={() => handleLocationClick(user.location, user.country)}
                     onMouseEnter={(e) => {
-                      e.target.style.background = "rgba(13, 148, 136, 0.05)";
+                      e.target.style.background = "rgba(234, 88, 12, 0.08)";
                       e.target.style.borderRadius = "8px";
                     }}
                     onMouseLeave={(e) => {
@@ -249,7 +249,7 @@ const ViewProfile = () => {
                       <FaGlobe className="me-2" />
                       Country
                     </div>
-                    <div className="fw-semibold d-flex align-items-center" style={{ color: "#0d9488" }}>
+                    <div className="fw-semibold d-flex align-items-center" style={{ color: "var(--primary-600)" }}>
                       {user.country}
                       <FaExternalLinkAlt className="ms-2" style={{ fontSize: "0.75rem" }} />
                     </div>
@@ -267,7 +267,7 @@ const ViewProfile = () => {
                     style={{ cursor: "pointer" }}
                     onClick={() => handleLocationClick(user.location, user.country)}
                     onMouseEnter={(e) => {
-                      e.target.style.background = "rgba(13, 148, 136, 0.05)";
+                      e.target.style.background = "rgba(234, 88, 12, 0.08)";
                       e.target.style.borderRadius = "8px";
                     }}
                     onMouseLeave={(e) => {
@@ -278,7 +278,7 @@ const ViewProfile = () => {
                       <FaMapMarkerAlt className="me-2" />
                       City/Location
                     </div>
-                    <div className="fw-semibold d-flex align-items-center" style={{ color: "#0d9488" }}>
+                    <div className="fw-semibold d-flex align-items-center" style={{ color: "var(--primary-600)" }}>
                       {user.location}
                       <FaExternalLinkAlt className="ms-2" style={{ fontSize: "0.75rem" }} />
                     </div>
@@ -297,7 +297,7 @@ const ViewProfile = () => {
                     style={{ cursor: "pointer" }}
                     onClick={() => handleWebsiteClick(user.website)}
                     onMouseEnter={(e) => {
-                      e.target.style.background = "rgba(13, 148, 136, 0.05)";
+                      e.target.style.background = "rgba(234, 88, 12, 0.08)";
                       e.target.style.borderRadius = "8px";
                     }}
                     onMouseLeave={(e) => {
@@ -308,7 +308,7 @@ const ViewProfile = () => {
                       <FaLink className="me-2" />
                       Website
                     </div>
-                    <div className="fw-semibold d-flex align-items-center" style={{ color: "#0d9488" }}>
+                    <div className="fw-semibold d-flex align-items-center" style={{ color: "var(--primary-600)" }}>
                       {user.website}
                       <FaExternalLinkAlt className="ms-2" style={{ fontSize: "0.75rem" }} />
                     </div>
@@ -317,7 +317,7 @@ const ViewProfile = () => {
               </ListGroup>
 
               {(!user.country && !user.location) && (
-                <div className="mt-3 p-3 rounded" style={{ background: "rgba(13, 148, 136, 0.05)" }}>
+                <div className="mt-3 p-3 rounded" style={{ background: "rgba(234, 88, 12, 0.08)" }}>
                   <p className="small text-muted mb-0">
                     <FaMapMarkerAlt className="me-2 text-teal" />
                     Update your location to help us serve you better

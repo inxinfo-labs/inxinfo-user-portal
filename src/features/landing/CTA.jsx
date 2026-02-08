@@ -1,5 +1,5 @@
 import { Button, Container, Row, Col } from "react-bootstrap";
-import { FaArrowRight, FaRocket } from "react-icons/fa";
+import { FaArrowRight, FaPrayingHands } from "react-icons/fa";
 
 export default function CTA({ onOpenModal }) {
   return (
@@ -11,7 +11,7 @@ export default function CTA({ onOpenModal }) {
         overflow: "hidden"
       }}
     >
-      {/* Background Pattern */}
+      {/* Background */}
       <div 
         style={{
           position: "absolute",
@@ -19,8 +19,8 @@ export default function CTA({ onOpenModal }) {
           left: 0,
           right: 0,
           bottom: 0,
-          backgroundImage: "radial-gradient(circle at 30% 50%, rgba(255,255,255,0.1) 0%, transparent 50%)",
-          opacity: 0.5
+          backgroundImage: "radial-gradient(circle at 30% 50%, rgba(255,255,255,0.08) 0%, transparent 50%)",
+          opacity: 0.8
         }}
       />
       
@@ -28,14 +28,14 @@ export default function CTA({ onOpenModal }) {
         <Row className="justify-content-center">
           <Col md={8}>
             <div className="mb-4">
-              <FaRocket style={{ fontSize: "3rem", opacity: 0.9 }} />
+              <FaPrayingHands style={{ fontSize: "3rem", opacity: 0.9 }} />
             </div>
             <h2 className="fw-bold mb-3" style={{ fontSize: "clamp(1.75rem, 4vw, 2.5rem)" }}>
-              Ready to Transform Your Business?
+              Book Your Puja &amp; Pandit Ji Today
             </h2>
             <p className="lead mb-4" style={{ opacity: 0.95, fontSize: "1.25rem" }}>
-              Let's discuss how INXINFO Labs can help you build scalable, secure, 
-              and innovative solutions that drive growth.
+              From festival pujas to Shradh, griha pravesh to weddings — traditional Hindu rituals 
+              at your doorstep with experienced Pandit Ji and puja samagri.
             </p>
             <div className="d-flex flex-wrap justify-content-center gap-3">
               <Button
@@ -56,7 +56,7 @@ export default function CTA({ onOpenModal }) {
                 className="px-5 py-3 fw-semibold"
                 style={{ borderRadius: "12px", borderWidth: "2px" }}
               >
-                Contact Sales
+                Contact Us
               </Button>
             </div>
             

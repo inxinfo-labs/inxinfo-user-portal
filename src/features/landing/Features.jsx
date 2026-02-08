@@ -1,54 +1,54 @@
 import { Card, Col, Row, Container } from "react-bootstrap";
-import { FaShieldAlt, FaCloud, FaHeadset, FaRocket, FaLock, FaServer, FaCode, FaChartLine } from "react-icons/fa";
+import { FaPrayingHands, FaUserTie, FaBox, FaCalendarAlt, FaShieldAlt, FaRupeeSign, FaHeadset, FaStar } from "react-icons/fa";
 
 const featureData = [
   { 
-    title: "Secure Authentication", 
+    title: "Traditional Puja Services", 
+    icon: <FaPrayingHands />, 
+    description: "Authentic Hindu puja — festival pujas, Shradh, Satyanarayan, griha pravesh, and all rituals at home.",
+    color: "var(--primary-600)"
+  },
+  { 
+    title: "Experienced Pandit Ji", 
+    icon: <FaUserTie />, 
+    description: "Book verified Pandit Ji for weddings, mundan, puja at home. Choose by location and ritual.",
+    color: "var(--primary-700)"
+  },
+  { 
+    title: "Puja Samagri &amp; Products", 
+    icon: <FaBox />, 
+    description: "Order puja samagri, idols, and everything you need for your puja and rituals.",
+    color: "#14b8a6"
+  },
+  { 
+    title: "Festival &amp; Occasion Pujas", 
+    icon: <FaCalendarAlt />, 
+    description: "Book puja for Diwali, Navratri, Satyanarayan, housewarming, and every Hindu occasion.",
+    color: "#059669"
+  },
+  { 
+    title: "Secure Booking", 
     icon: <FaShieldAlt />, 
-    description: "Enterprise-grade security with OAuth, JWT, and multi-factor authentication to protect your data.",
-    color: "#ef4444"
+    description: "Safe, easy booking with confirmed slots and transparent pricing for puja and Pandit Ji.",
+    color: "var(--primary-600)"
   },
   { 
-    title: "Cloud-Native Architecture", 
-    icon: <FaCloud />, 
-    description: "Built for scale with microservices, containerization, and auto-scaling capabilities.",
-    color: "#3b82f6"
+    title: "Transparent Pricing", 
+    icon: <FaRupeeSign />, 
+    description: "Clear rates for puja packages and Pandit Ji. No hidden charges.",
+    color: "var(--primary-700)"
   },
   { 
-    title: "24/7 Expert Support", 
+    title: "Dedicated Support", 
     icon: <FaHeadset />, 
-    description: "Round-the-clock technical support and dedicated account management for your peace of mind.",
+    description: "Help with booking, ritual guidance, and support for your puja and Pandit Ji needs.",
     color: "#10b981"
   },
   { 
-    title: "Modern UI & UX", 
-    icon: <FaRocket />, 
-    description: "Beautiful, intuitive interfaces designed with user experience and accessibility in mind.",
-    color: "#f59e0b"
-  },
-  { 
-    title: "Data Security", 
-    icon: <FaLock />, 
-    description: "End-to-end encryption, compliance with industry standards, and regular security audits.",
-    color: "#8b5cf6"
-  },
-  { 
-    title: "High Performance", 
-    icon: <FaServer />, 
-    description: "Optimized for speed with CDN integration, caching strategies, and performance monitoring.",
-    color: "#06b6d4"
-  },
-  { 
-    title: "Developer-Friendly", 
-    icon: <FaCode />, 
-    description: "Clean APIs, comprehensive documentation, and SDKs for seamless integration.",
-    color: "#ec4899"
-  },
-  { 
-    title: "Analytics & Insights", 
-    icon: <FaChartLine />, 
-    description: "Real-time analytics, custom dashboards, and actionable insights to drive decisions.",
-    color: "#14b8a6"
+    title: "Trusted by Families", 
+    icon: <FaStar />, 
+    description: "Thousands of families book puja and Pandit Ji for their sacred occasions.",
+    color: "#d97706"
   },
 ];
 
@@ -57,9 +57,9 @@ export default function Features() {
     <section className="py-5" style={{ background: "#f8fafc" }}>
       <Container>
         <div className="text-center mb-5">
-          <h2 className="fw-bold mb-3">Why Choose INXINFO Labs?</h2>
+          <h2 className="fw-bold mb-3">Why Choose Us for Puja &amp; Pandit Ji?</h2>
           <p className="lead text-muted" style={{ maxWidth: "600px", margin: "0 auto" }}>
-            We combine cutting-edge technology with proven methodologies to deliver exceptional results
+            Traditional Hindu rituals, experienced Pandit Ji, and puja samagri — all for your sacred occasions
           </p>
         </div>
         

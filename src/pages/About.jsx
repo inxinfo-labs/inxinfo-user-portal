@@ -3,9 +3,9 @@ import { FaCheckCircle, FaUsers, FaLightbulb, FaAward } from "react-icons/fa";
 
 export default function About() {
   const values = [
-    { icon: <FaUsers />, title: "Collaboration", desc: "We work closely with our clients as partners" },
-    { icon: <FaLightbulb />, title: "Innovation", desc: "Pushing boundaries with cutting-edge technology" },
-    { icon: <FaAward />, title: "Excellence", desc: "Delivering quality that exceeds expectations" },
+    { icon: <FaUsers />, title: "Trust & Tradition", desc: "Authentic Hindu rituals and experienced Pandit Ji" },
+    { icon: <FaLightbulb />, title: "Easy Booking", desc: "Book puja and Pandit Ji from home, hassle-free" },
+    { icon: <FaAward />, title: "Quality Samagri", desc: "Genuine puja items and samagri for every ritual" },
   ];
 
   return (
@@ -14,7 +14,7 @@ export default function About() {
         <div className="text-center mb-5">
           <h2 className="fw-bold mb-3">About INXINFO Labs</h2>
           <p className="lead text-muted" style={{ maxWidth: "700px", margin: "0 auto" }}>
-            Transforming ideas into enterprise-ready digital solutions
+            Your trusted platform for Hindu puja, Pandit Ji booking, and puja samagri
           </p>
         </div>
 
@@ -23,22 +23,22 @@ export default function About() {
             <div 
               className="p-4 rounded"
               style={{
-                background: "linear-gradient(135deg, #667eea15 0%, #764ba215 100%)",
-                border: "1px solid rgba(102, 126, 234, 0.2)"
+                background: "linear-gradient(135deg, rgba(234, 88, 12, 0.08) 0%, rgba(194, 65, 12, 0.12) 100%)",
+                border: "1px solid rgba(234, 88, 12, 0.2)"
               }}
             >
               <h3 className="fw-bold mb-4">Our Story</h3>
               <p className="text-muted mb-3" style={{ lineHeight: 1.8 }}>
-                INXINFO Labs is a technology innovation hub specializing in enterprise-grade platforms 
-                with a strong focus on security, scalability, and exceptional developer experience.
+                INXINFO Labs brings traditional Hindu puja and rituals to your doorstep. We connect families 
+                with experienced Pandit Ji for every occasion — from festival pujas to Shradh, weddings to griha pravesh.
               </p>
               <p className="text-muted mb-3" style={{ lineHeight: 1.8 }}>
-                We partner with startups and enterprises worldwide to transform innovative ideas into 
-                reliable, production-ready solutions that scale with your business.
+                We offer puja samagri, idols, and full puja services so you can perform rituals with authenticity 
+                and ease. Our platform is built to preserve and simplify Hindu traditions for modern families.
               </p>
               <p className="text-muted" style={{ lineHeight: 1.8 }}>
-                Our team combines deep technical expertise with business acumen to deliver solutions 
-                that not only meet today's requirements but are built to evolve with tomorrow's challenges.
+                Whether you need a Pandit Ji at home, puja items, or a complete puja package for your occasion, 
+                we are here to support your spiritual and ritual needs.
               </p>
             </div>
           </Col>
@@ -48,14 +48,14 @@ export default function About() {
               <h4 className="fw-bold mb-4">What We Offer</h4>
               <div className="d-flex flex-column gap-3">
                 {[
-                  "Cloud Native Architecture",
-                  "Secure Authentication & Authorization",
-                  "Modular & Scalable Systems",
-                  "Enterprise SaaS Solutions",
-                  "Microservices & API Development",
-                  "DevOps & CI/CD Implementation",
-                  "Data Analytics & AI Integration",
-                  "24/7 Monitoring & Support"
+                  "Puja at home — all rituals",
+                  "Book Pandit Ji by location & ritual",
+                  "Puja samagri & ritual items",
+                  "Festival & occasion pujas",
+                  "Shradh, Satyanarayan, griha pravesh",
+                  "Wedding & mundan ceremonies",
+                  "Transparent pricing & booking",
+                  "Dedicated support for your puja needs"
                 ].map((item, idx) => (
                   <div key={idx} className="d-flex align-items-start">
                     <FaCheckCircle className="text-success me-3 mt-1" style={{ fontSize: "1.2rem", flexShrink: 0 }} />
@@ -88,25 +88,25 @@ export default function About() {
           ))}
         </Row>
 
-        {/* Platform Architecture & Capabilities */}
+        {/* Rituals & Services */}
         <Row className="mt-5 pt-5" style={{ borderTop: "1px solid #e2e8f0" }}>
           <Col md={12}>
             <div className="text-center mb-4">
-              <h4 className="fw-bold mb-3">Platform Architecture &amp; Capabilities</h4>
+              <h4 className="fw-bold mb-3">Rituals &amp; Puja We Support</h4>
               <p className="text-muted" style={{ maxWidth: "720px", margin: "0 auto 1.5rem" }}>
-                Our platform is built for reliability, security, and scale.
+                Traditional Hindu puja and ceremonies for every occasion.
               </p>
             </div>
             <div className="d-flex flex-wrap justify-content-center gap-3">
               {[
-                "Distributed microservices",
-                "Secure authentication (JWT & OAuth2)",
-                "Scalable design",
-                "Fault tolerance",
-                "Saga-based consistency",
-                "API Gateway routing",
-                "Event-driven communication",
-                "Independent deployment"
+                "Satyanarayan Puja",
+                "Shradh & Pitru Paksha",
+                "Griha Pravesh",
+                "Wedding ceremonies",
+                "Mundan & naming",
+                "Festival pujas (Diwali, Navratri)",
+                "Puja samagri & items",
+                "Custom rituals"
               ].map((item, idx) => (
                 <span 
                   key={idx}

@@ -153,7 +153,7 @@ export default function Login({ embedded = false, onSuccess }) {
         </Form>
         <p className="text-center mt-3 mb-0 small text-muted">
           Don&apos;t have an account?{" "}
-          <button type="button" className="btn btn-link p-0 fw-semibold text-decoration-none" style={{ color: "#0d9488" }} onClick={() => openAuth(AUTH_MODES.REGISTER)}>
+          <button type="button" className="btn btn-link p-0 fw-semibold text-decoration-none" style={{ color: "var(--primary-600)" }} onClick={() => openAuth(AUTH_MODES.REGISTER)}>
             Register
           </button>
         </p>
@@ -165,7 +165,7 @@ export default function Login({ embedded = false, onSuccess }) {
     <div
       className="min-vh-100 d-flex align-items-center justify-content-center p-3"
       style={{
-        background: "linear-gradient(160deg, #0f766e 0%, #0d9488 35%, #14b8a6 70%, #2dd4bf 100%)",
+        background: "var(--gradient-hero)",
         position: "relative",
         overflow: "hidden",
       }}
@@ -221,13 +221,13 @@ export default function Login({ embedded = false, onSuccess }) {
               style={{
                 width: 56,
                 height: 56,
-                background: "linear-gradient(135deg, #0d9488 0%, #0f766e 100%)",
+                background: "linear-gradient(135deg, var(--primary-600) 0%, var(--primary-700) 100%)",
                 color: "white",
               }}
             >
               <FaLeaf style={{ fontSize: "1.5rem" }} />
             </div>
-            <h1 className="h3 fw-bold mb-2" style={{ color: "#0f766e" }}>
+            <h1 className="h3 fw-bold mb-2" style={{ color: "var(--primary-700)" }}>
               Welcome back
             </h1>
             <p className="text-muted small mb-0">
@@ -259,7 +259,7 @@ export default function Login({ embedded = false, onSuccess }) {
               <Form onSubmit={submitPassword}>
                 <Form.Group className="mb-3">
                   <Form.Label className="small fw-semibold text-secondary">
-                    <FaEnvelope className="me-1" style={{ color: "#0d9488" }} /> Email or phone number
+                    <FaEnvelope className="me-1" style={{ color: "var(--primary-600)" }} /> Email or phone number
                   </Form.Label>
                   <Form.Control
                     type="text"
@@ -276,7 +276,7 @@ export default function Login({ embedded = false, onSuccess }) {
                 </Form.Group>
                 <Form.Group className="mb-4">
                   <Form.Label className="small fw-semibold text-secondary">
-                    <FaLock className="me-1" style={{ color: "#0d9488" }} /> Password
+                    <FaLock className="me-1" style={{ color: "var(--primary-600)" }} /> Password
                   </Form.Label>
                   <Form.Control
                     type="password"
@@ -288,7 +288,7 @@ export default function Login({ embedded = false, onSuccess }) {
                     style={{ borderColor: "#e2e8f0" }}
                   />
                   <div className="d-flex justify-content-end mt-1">
-                    <Link to="/auth/forgot-password" className="small text-decoration-none" style={{ color: "#0d9488" }}>
+                    <Link to="/auth/forgot-password" className="small text-decoration-none" style={{ color: "var(--primary-600)" }}>
                       Forgot password?
                     </Link>
                   </div>
@@ -298,7 +298,7 @@ export default function Login({ embedded = false, onSuccess }) {
                   className="w-100 rounded-3 py-2 fw-semibold border-0"
                   disabled={loading}
                   style={{
-                    background: "linear-gradient(135deg, #0d9488 0%, #0f766e 100%)",
+                    background: "linear-gradient(135deg, var(--primary-600) 0%, var(--primary-700) 100%)",
                     fontSize: "1rem",
                   }}
                 >
@@ -315,7 +315,7 @@ export default function Login({ embedded = false, onSuccess }) {
                 <Form onSubmit={sendOtp}>
                   <Form.Group className="mb-4">
                     <Form.Label className="small fw-semibold text-secondary">
-                      <FaEnvelope className="me-1" style={{ color: "#0d9488" }} /> Email address
+                      <FaEnvelope className="me-1" style={{ color: "var(--primary-600)" }} /> Email address
                     </Form.Label>
                     <Form.Control
                       type="email"
@@ -335,7 +335,7 @@ export default function Login({ embedded = false, onSuccess }) {
                     className="w-100 rounded-3 py-2 fw-semibold border-0"
                     disabled={sendOtpLoading}
                     style={{
-                      background: "linear-gradient(135deg, #0d9488 0%, #0f766e 100%)",
+                      background: "linear-gradient(135deg, var(--primary-600) 0%, var(--primary-700) 100%)",
                       fontSize: "1rem",
                     }}
                   >
@@ -387,7 +387,7 @@ export default function Login({ embedded = false, onSuccess }) {
                     className="w-100 rounded-3 py-2 fw-semibold border-0"
                     disabled={loading || otpCode.length < 4}
                     style={{
-                      background: "linear-gradient(135deg, #0d9488 0%, #0f766e 100%)",
+                      background: "linear-gradient(135deg, var(--primary-600) 0%, var(--primary-700) 100%)",
                       fontSize: "1rem",
                     }}
                   >
@@ -400,7 +400,7 @@ export default function Login({ embedded = false, onSuccess }) {
 
           <p className="text-center mt-4 mb-0 small text-muted">
             Don’t have an account?{" "}
-            <Link to="/auth/register" className="fw-semibold text-decoration-none" style={{ color: "#0d9488" }}>
+            <Link to="/auth/register" className="fw-semibold text-decoration-none" style={{ color: "var(--primary-600)" }}>
               Create account
             </Link>
           </p>
@@ -409,8 +409,8 @@ export default function Login({ embedded = false, onSuccess }) {
 
       <style>{`
         .nav-tabs .nav-link { border: none; color: #64748b; font-weight: 600; }
-        .nav-tabs .nav-link.active { color: #0f766e; background: transparent; border-bottom: 2px solid #0d9488; }
-        .form-control:focus { border-color: #0d9488 !important; box-shadow: 0 0 0 0.2rem rgba(13, 148, 136, 0.2) !important; }
+        .nav-tabs .nav-link.active { color: var(--primary-700); background: transparent; border-bottom: 2px solid var(--primary-600); }
+        .form-control:focus { border-color: var(--primary-600) !important; box-shadow: 0 0 0 0.2rem rgba(234, 88, 12, 0.2) !important; }
       `}</style>
     </div>
   );

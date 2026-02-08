@@ -77,7 +77,7 @@ export default function OrderList() {
           onClick={() => navigate("/user/order/create")}
           className="fw-semibold"
           style={{
-            background: "linear-gradient(135deg, #0d9488 0%, #0f766e 100%)",
+            background: "var(--gradient-primary)",
             border: "none",
             borderRadius: "0.75rem",
             padding: "0.75rem 1.5rem"
@@ -106,7 +106,7 @@ export default function OrderList() {
               variant="primary"
               onClick={() => navigate("/user/order/create")}
               style={{
-                background: "linear-gradient(135deg, #0d9488 0%, #0f766e 100%)",
+                background: "var(--gradient-primary)",
                 border: "none",
                 borderRadius: "0.75rem"
               }}

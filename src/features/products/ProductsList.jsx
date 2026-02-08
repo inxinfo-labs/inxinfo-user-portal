@@ -80,7 +80,7 @@ export default function ProductsList() {
                         variant="primary"
                         size="sm"
                         className="rounded-pill"
-                        style={{ background: "linear-gradient(135deg, #0d9488 0%, #0f766e 100%)", border: "none" }}
+                        style={{ background: "var(--gradient-primary)", border: "none" }}
                         as={Link}
                         to="/user/order/create"
                         state={{ addItemId: item.id ?? item._id, addItemName: item.name, addItemPrice: item.price }}

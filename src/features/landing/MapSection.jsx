@@ -11,7 +11,7 @@ export default function MapSection() {
       <Container>
         <div className="text-center mb-4">
           <h2 className="fw-bold mb-2">Find Us</h2>
-          <p className="text-muted mb-0">Visit our office or get in touch</p>
+          <p className="text-muted mb-0">Visit us for puja bookings, Pandit Ji, and puja samagri</p>
         </div>
         <Card className="border-0 shadow-sm overflow-hidden" style={{ borderRadius: "16px" }}>
           <Row className="g-0">

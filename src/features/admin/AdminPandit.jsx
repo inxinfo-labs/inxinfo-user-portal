@@ -193,7 +193,7 @@ export default function AdminPandit() {
           </Button>
           <Button
             variant="primary"
-            style={{ background: "linear-gradient(135deg, #0d9488 0%, #0f766e 100%)", border: "none" }}
+            style={{ background: "var(--gradient-primary)", border: "none" }}
             onClick={() => setShowForm(true)}
           >
             <FaPlus className="me-2" /> Add Pandit
@@ -315,7 +315,7 @@ export default function AdminPandit() {
           </Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={() => setShowForm(false)}>Cancel</Button>
-            <Button type="submit" disabled={saving} style={{ background: "#0d9488", border: "none" }}>
+            <Button type="submit" disabled={saving} style={{ background: "var(--primary-600)", border: "none" }}>
               {saving ? <Spinner animation="border" size="sm" /> : "Add Pandit"}
             </Button>
           </Modal.Footer>
@@ -396,7 +396,7 @@ export default function AdminPandit() {
           </Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={() => setShowApproveForm(false)}>Cancel</Button>
-            <Button type="submit" disabled={approveSaving} style={{ background: "#0d9488", border: "none" }}>
+            <Button type="submit" disabled={approveSaving} style={{ background: "var(--primary-600)", border: "none" }}>
               {approveSaving ? <Spinner animation="border" size="sm" /> : "Approve as Pandit"}
             </Button>
           </Modal.Footer>

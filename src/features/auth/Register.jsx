@@ -188,13 +188,13 @@ export default function Register({ defaultRegisterAs = "CUSTOMER", embedded = fa
               style={{
                 width: 56,
                 height: 56,
-                background: "linear-gradient(135deg, #0d9488 0%, #0f766e 100%)",
+                background: "var(--gradient-primary)",
                 color: "white",
               }}
             >
               <FaLeaf style={{ fontSize: "1.5rem" }} />
             </div>
-            <h1 className="h3 fw-bold mb-2" style={{ color: "#0f766e" }}>
+            <h1 className="h3 fw-bold mb-2" style={{ color: "var(--primary-700)" }}>
               Create your account
             </h1>
             <p className="text-muted small mb-0">
@@ -236,7 +236,7 @@ export default function Register({ defaultRegisterAs = "CUSTOMER", embedded = fa
             {/* Optional profile picture */}
             <Form.Group className="mb-4 text-center">
               <Form.Label className="small fw-semibold text-secondary d-block mb-2">
-                <FaCamera className="me-1" style={{ color: "#0d9488" }} /> Profile photo (optional)
+                <FaCamera className="me-1" style={{ color: "var(--primary-600)" }} /> Profile photo (optional)
               </Form.Label>
               <div className="d-flex flex-column align-items-center gap-2">
                 <div
@@ -295,7 +295,7 @@ export default function Register({ defaultRegisterAs = "CUSTOMER", embedded = fa
               <Col md={6}>
                 <Form.Group className="mb-3">
                   <Form.Label className="small fw-semibold text-secondary">
-                    <FaUser className="me-1" style={{ color: "#0d9488" }} /> First name
+                    <FaUser className="me-1" style={{ color: "var(--primary-600)" }} /> First name
                   </Form.Label>
                   <Form.Control
                     type="text"
@@ -312,7 +312,7 @@ export default function Register({ defaultRegisterAs = "CUSTOMER", embedded = fa
               <Col md={6}>
                 <Form.Group className="mb-3">
                   <Form.Label className="small fw-semibold text-secondary">
-                    <FaUser className="me-1" style={{ color: "#0d9488" }} /> Last name
+                    <FaUser className="me-1" style={{ color: "var(--primary-600)" }} /> Last name
                   </Form.Label>
                   <Form.Control
                     type="text"
@@ -332,7 +332,7 @@ export default function Register({ defaultRegisterAs = "CUSTOMER", embedded = fa
               <Col md={6}>
                 <Form.Group className="mb-3">
                   <Form.Label className="small fw-semibold text-secondary">
-                    <FaEnvelope className="me-1" style={{ color: "#0d9488" }} /> Email (Gmail only)
+                    <FaEnvelope className="me-1" style={{ color: "var(--primary-600)" }} /> Email (Gmail only)
                   </Form.Label>
                   <Form.Control
                     type="email"
@@ -350,7 +350,7 @@ export default function Register({ defaultRegisterAs = "CUSTOMER", embedded = fa
               <Col md={6}>
                 <Form.Group className="mb-3">
                   <Form.Label className="small fw-semibold text-secondary">
-                    <FaPhone className="me-1" style={{ color: "#0d9488" }} /> Mobile (optional)
+                    <FaPhone className="me-1" style={{ color: "var(--primary-600)" }} /> Mobile (optional)
                   </Form.Label>
                   <div className="d-flex gap-1">
                     <Form.Select
@@ -383,7 +383,7 @@ export default function Register({ defaultRegisterAs = "CUSTOMER", embedded = fa
               <Col md={6}>
                 <Form.Group className="mb-3">
                   <Form.Label className="small fw-semibold text-secondary">
-                    <FaLock className="me-1" style={{ color: "#0d9488" }} /> Password
+                    <FaLock className="me-1" style={{ color: "var(--primary-600)" }} /> Password
                   </Form.Label>
                   <Form.Control
                     type="password"
@@ -402,7 +402,7 @@ export default function Register({ defaultRegisterAs = "CUSTOMER", embedded = fa
               <Col md={6}>
                 <Form.Group className="mb-3">
                   <Form.Label className="small fw-semibold text-secondary">
-                    <FaLock className="me-1" style={{ color: "#0d9488" }} /> Confirm password
+                    <FaLock className="me-1" style={{ color: "var(--primary-600)" }} /> Confirm password
                   </Form.Label>
                   <Form.Control
                     type="password"
@@ -423,7 +423,7 @@ export default function Register({ defaultRegisterAs = "CUSTOMER", embedded = fa
               <Col md={6}>
                 <Form.Group className="mb-3">
                   <Form.Label className="small fw-semibold text-secondary">
-                    <FaCalendarAlt className="me-1" style={{ color: "#0d9488" }} /> Date of birth
+                    <FaCalendarAlt className="me-1" style={{ color: "var(--primary-600)" }} /> Date of birth
                   </Form.Label>
                   <Form.Control
                     type="date"
@@ -439,7 +439,7 @@ export default function Register({ defaultRegisterAs = "CUSTOMER", embedded = fa
               <Col md={6}>
                 <Form.Group className="mb-3">
                   <Form.Label className="small fw-semibold text-secondary">
-                    <FaVenusMars className="me-1" style={{ color: "#0d9488" }} /> Gender
+                    <FaVenusMars className="me-1" style={{ color: "var(--primary-600)" }} /> Gender
                   </Form.Label>
                   <Form.Select
                     name="gender"
@@ -460,7 +460,7 @@ export default function Register({ defaultRegisterAs = "CUSTOMER", embedded = fa
               <Col md={4}>
                 <Form.Group className="mb-3">
                   <Form.Label className="small fw-semibold text-secondary">
-                    <FaMapMarkerAlt className="me-1" style={{ color: "#0d9488" }} /> Country
+                    <FaMapMarkerAlt className="me-1" style={{ color: "var(--primary-600)" }} /> Country
                   </Form.Label>
                   <Form.Select
                     name="countryCode"
@@ -480,7 +480,7 @@ export default function Register({ defaultRegisterAs = "CUSTOMER", embedded = fa
               <Col md={4}>
                 <Form.Group className="mb-3">
                   <Form.Label className="small fw-semibold text-secondary">
-                    <FaMapMarkerAlt className="me-1" style={{ color: "#0d9488" }} /> State
+                    <FaMapMarkerAlt className="me-1" style={{ color: "var(--primary-600)" }} /> State
                   </Form.Label>
                   <Form.Select
                     name="stateCode"
@@ -501,7 +501,7 @@ export default function Register({ defaultRegisterAs = "CUSTOMER", embedded = fa
               <Col md={4}>
                 <Form.Group className="mb-3">
                   <Form.Label className="small fw-semibold text-secondary">
-                    <FaMapMarkerAlt className="me-1" style={{ color: "#0d9488" }} /> City
+                    <FaMapMarkerAlt className="me-1" style={{ color: "var(--primary-600)" }} /> City
                   </Form.Label>
                   <Form.Select
                     name="city"
@@ -526,13 +526,13 @@ export default function Register({ defaultRegisterAs = "CUSTOMER", embedded = fa
               className="w-100 rounded-3 py-2 mt-2 fw-semibold border-0"
               disabled={loading}
               style={{
-                background: "linear-gradient(135deg, #0d9488 0%, #0f766e 100%)",
+                background: "var(--gradient-primary)",
                 fontSize: "1rem",
                 transition: "transform 0.2s, box-shadow 0.2s",
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.transform = "translateY(-2px)";
-                e.currentTarget.style.boxShadow = "0 10px 25px rgba(13, 148, 136, 0.35)";
+                e.currentTarget.style.boxShadow = "0 10px 25px rgba(234, 88, 12, 0.25)";
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.transform = "translateY(0)";
@@ -552,11 +552,11 @@ export default function Register({ defaultRegisterAs = "CUSTOMER", embedded = fa
           <p className="text-center mt-4 mb-0 small text-muted">
             Already have an account?{" "}
             {embedded ? (
-              <button type="button" className="btn btn-link p-0 fw-semibold text-decoration-none" style={{ color: "#0d9488" }} onClick={() => authModal.openAuth(AUTH_MODES.LOGIN)}>
+              <button type="button" className="btn btn-link p-0 fw-semibold text-decoration-none" style={{ color: "var(--primary-600)" }} onClick={() => authModal.openAuth(AUTH_MODES.LOGIN)}>
                 Sign in
               </button>
             ) : (
-              <Link to="/auth/login" className="fw-semibold text-decoration-none" style={{ color: "#0d9488" }}>
+              <Link to="/auth/login" className="fw-semibold text-decoration-none" style={{ color: "var(--primary-600)" }}>
                 Sign in
               </Link>
             )}
@@ -574,7 +574,7 @@ export default function Register({ defaultRegisterAs = "CUSTOMER", embedded = fa
     <div
       className="min-vh-100 d-flex align-items-center justify-content-center p-3"
       style={{
-        background: "linear-gradient(160deg, #0f766e 0%, #0d9488 35%, #14b8a6 70%, #2dd4bf 100%)",
+        background: "var(--gradient-hero)",
         position: "relative",
         overflow: "hidden",
       }}
@@ -585,7 +585,7 @@ export default function Register({ defaultRegisterAs = "CUSTOMER", embedded = fa
         {formContent}
       </div>
       <style>{`
-        .form-control:focus, .form-select:focus { border-color: #0d9488 !important; box-shadow: 0 0 0 0.2rem rgba(13, 148, 136, 0.2) !important; }
+        .form-control:focus, .form-select:focus { border-color: var(--primary-600) !important; box-shadow: 0 0 0 0.2rem rgba(234, 88, 12, 0.2) !important; }
       `}</style>
     </div>
   );

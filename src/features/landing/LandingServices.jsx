@@ -8,14 +8,14 @@ const services = [
     description: "Browse puja samagri, idols & more. Anyone can view; sign in to order",
     serviceType: SERVICE_TYPES.PRODUCTS,
     icon: <FaBox />,
-    color: "#0d9488",
+    color: "var(--primary-600)",
   },
   {
     title: "Puja Services",
     description: "Book traditional puja services for your occasions",
     serviceType: SERVICE_TYPES.PUJA,
     icon: <FaPrayingHands />,
-    color: "#0f766e",
+    color: "var(--primary-700)",
   },
   {
     title: "Orders",
@@ -29,7 +29,7 @@ const services = [
     description: "Find and book experienced pandits",
     serviceType: SERVICE_TYPES.PANDIT,
     icon: <FaUserTie />,
-    color: "#0d9488",
+    color: "var(--primary-600)",
   },
 ];
 
@@ -40,9 +40,9 @@ export default function LandingServices() {
     <section id="our-services" className="py-4" style={{ background: "#fff" }}>
       <Container>
         <div className="text-center mb-4">
-          <h2 className="fw-bold mb-3">Our Services</h2>
+          <h2 className="fw-bold mb-3">Our Puja &amp; Ritual Services</h2>
           <p className="lead text-muted" style={{ maxWidth: "600px", margin: "0 auto" }}>
-            Book Puja services, Book PanditJi, and get puja-related products — all in one place
+            Book puja, Pandit Ji, and order puja samagri — Hindu rituals and offerings in one place
           </p>
         </div>
         <Row className="g-4">
@@ -62,7 +62,7 @@ export default function LandingServices() {
                 onKeyDown={(e) => e.key === "Enter" && openService(s.serviceType)}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.transform = "translateY(-6px)";
-                  e.currentTarget.style.boxShadow = "0 12px 24px rgba(13, 148, 136, 0.15)";
+                  e.currentTarget.style.boxShadow = "0 12px 24px rgba(234, 88, 12, 0.15)";
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.transform = "translateY(0)";
@@ -94,7 +94,7 @@ export default function LandingServices() {
           ))}
         </Row>
         <p className="text-center text-muted small mt-3 mb-0">
-          Products open for everyone; sign in to book Puja, PanditJi, or view Orders.
+          Browse puja samagri anytime; sign in to book puja, Pandit Ji, or view your orders.
         </p>
       </Container>
     </section>

@@ -18,3 +18,30 @@ export function getDisplayName(user) {
   }
   return "Username";
 }
+
+/**
+ * For navbar/header: show only actual name (first + last or name). Never show email.
+ */
+export function getDisplayNameForNav(user) {
+  if (!user) return "My Account";
+  const first = user.firstName ?? user.first_name;
+  const last = user.lastName ?? user.last_name;
+  const firstLast = [first, last].filter(Boolean).join(" ").trim();
+  if (firstLast) return firstLast;
+  if (user.name) return user.name;
+  return "My Account";
+}
+
+/**
+ * For dashboard welcome: show name, then username. Never show email.
+ */
+export function getDisplayNameForDashboard(user) {
+  if (!user) return "Member";
+  const first = user.firstName ?? user.first_name;
+  const last = user.lastName ?? user.last_name;
+  const firstLast = [first, last].filter(Boolean).join(" ").trim();
+  if (firstLast) return firstLast;
+  if (user.name) return user.name;
+  if (user.username) return user.username;
+  return "Member";
+}
