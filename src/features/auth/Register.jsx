@@ -3,7 +3,9 @@ import { Button, Form, Spinner, Alert, Row, Col } from "react-bootstrap";
 import { useNavigate, Link } from "react-router-dom";
 import api from "../../services/api";
 import { AuthContext } from "../../context/AuthContext";
+import { useAuthModal, AUTH_MODES } from "../../context/AuthModalContext";
 import { getApiErrorMessage } from "../../utils/apiError";
+import { getGmailValidationError } from "../../utils/emailValidation";
 import { Country, State, City } from "country-state-city";
 import {
   ApiCodeMessages,
@@ -27,8 +29,9 @@ const ACCEPT_IMAGE = "image/jpeg,image/png,image/webp";
 const MAX_IMAGE_MB = 2;
 const DEFAULT_DIAL = COUNTRY_PHONE_CODES.find((c) => c.code === DEFAULT_COUNTRY_CODE)?.dial || "+91";
 
-export default function Register() {
+export default function Register({ defaultRegisterAs = "CUSTOMER", embedded = false, onSuccess }) {
   const { login, refreshAvatar } = useContext(AuthContext);
+  const authModal = useAuthModal();
   const fileInputRef = useRef(null);
   const [formData, setFormData] = useState({
     firstName: "",
@@ -36,6 +39,7 @@ export default function Register() {
     email: "",
     password: "",
     confirmPassword: "",
+    registerAs: defaultRegisterAs,
     phoneCode: DEFAULT_DIAL,
     phoneNumber: "",
     dob: "",
@@ -98,6 +102,11 @@ export default function Register() {
   const submit = async (e) => {
     e.preventDefault();
     setError("");
+    const emailErr = getGmailValidationError(formData.email);
+    if (emailErr) {
+      setError(emailErr);
+      return;
+    }
     if (formData.password !== formData.confirmPassword) {
       setError("Passwords do not match.");
       return;
@@ -131,7 +140,12 @@ export default function Register() {
       const res = await api.post("/auth/register", registerData);
 
       if (res.data?.accessToken) {
-        login(res.data.accessToken);
+        const userInfo = {
+          role: res.data.role ?? (formData.registerAs === "PANDIT" ? "USER" : "USER"),
+          userId: res.data.userId,
+          email: res.data.email,
+        };
+        login(res.data.accessToken, userInfo);
 
         if (profilePic) {
           try {
@@ -146,7 +160,12 @@ export default function Register() {
           }
         }
 
-        navigate("/user/home");
+        onSuccess?.();
+        if (formData.registerAs === "PANDIT") {
+          navigate("/user/home", { state: { message: "You have applied as Pandit. Admin will approve you shortly." } });
+        } else {
+          navigate("/user/home");
+        }
       } else {
         setError("Registration succeeded but no token received. Please sign in.");
       }
@@ -161,47 +180,7 @@ export default function Register() {
     }
   };
 
-  return (
-    <div
-      className="min-vh-100 d-flex align-items-center justify-content-center p-3"
-      style={{
-        background: "linear-gradient(160deg, #0f766e 0%, #0d9488 35%, #14b8a6 70%, #2dd4bf 100%)",
-        position: "relative",
-        overflow: "hidden",
-      }}
-    >
-      <div
-        style={{
-          position: "absolute",
-          top: "10%",
-          right: "8%",
-          width: 220,
-          height: 220,
-          borderRadius: "50%",
-          background: "rgba(255,255,255,0.08)",
-        }}
-      />
-      <div
-        style={{
-          position: "absolute",
-          bottom: "20%",
-          left: "5%",
-          width: 180,
-          height: 180,
-          borderRadius: "50%",
-          background: "rgba(255,255,255,0.06)",
-        }}
-      />
-
-      <div
-        className="w-100 shadow-lg border-0 rounded-4 overflow-hidden"
-        style={{
-          maxWidth: 640,
-          background: "rgba(255, 255, 255, 0.98)",
-          backdropFilter: "blur(20px)",
-          boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255,255,255,0.5)",
-        }}
-      >
+  const formContent = (
         <div className="p-4 p-md-5">
           <div className="text-center mb-4">
             <div
@@ -222,6 +201,25 @@ export default function Register() {
               Join to book Puja services, orders & Pandit Ji
             </p>
           </div>
+
+          <Form.Group className="mb-3">
+            <Form.Label className="small fw-semibold text-secondary">Register as</Form.Label>
+            <Form.Select
+              name="registerAs"
+              value={formData.registerAs}
+              onChange={handleChange}
+              className="border-2 rounded-3 py-2"
+              style={{ borderColor: "#e2e8f0" }}
+            >
+              <option value="CUSTOMER">Customer (book puja, order products, book Pandit Ji)</option>
+              <option value="PANDIT">Pandit (admin will approve you as Pandit after registration)</option>
+            </Form.Select>
+            {formData.registerAs === "PANDIT" && (
+              <Form.Text className="small text-muted d-block mt-1">
+                You will be registered as a user. Admin will approve you as Pandit; you can then accept bookings.
+              </Form.Text>
+            )}
+          </Form.Group>
 
           {error && (
             <Alert
@@ -334,18 +332,19 @@ export default function Register() {
               <Col md={6}>
                 <Form.Group className="mb-3">
                   <Form.Label className="small fw-semibold text-secondary">
-                    <FaEnvelope className="me-1" style={{ color: "#0d9488" }} /> Email
+                    <FaEnvelope className="me-1" style={{ color: "#0d9488" }} /> Email (Gmail only)
                   </Form.Label>
                   <Form.Control
                     type="email"
                     name="email"
-                    placeholder="you@example.com"
+                    placeholder="you@gmail.com"
                     value={formData.email}
                     onChange={handleChange}
                     required
                     className="border-2 rounded-3 py-2"
                     style={{ borderColor: "#e2e8f0" }}
                   />
+                  <Form.Text className="small text-muted">Only Gmail addresses are allowed for registration.</Form.Text>
                 </Form.Group>
               </Col>
               <Col md={6}>
@@ -552,13 +551,39 @@ export default function Register() {
 
           <p className="text-center mt-4 mb-0 small text-muted">
             Already have an account?{" "}
-            <Link to="/auth/login" className="fw-semibold text-decoration-none" style={{ color: "#0d9488" }}>
-              Sign in
-            </Link>
+            {embedded ? (
+              <button type="button" className="btn btn-link p-0 fw-semibold text-decoration-none" style={{ color: "#0d9488" }} onClick={() => authModal.openAuth(AUTH_MODES.LOGIN)}>
+                Sign in
+              </button>
+            ) : (
+              <Link to="/auth/login" className="fw-semibold text-decoration-none" style={{ color: "#0d9488" }}>
+                Sign in
+              </Link>
+            )}
           </p>
         </div>
+  );
+  if (embedded) {
+    return (
+      <div className="p-3 rounded-3 bg-white shadow-sm" style={{ maxWidth: 640 }}>
+        {formContent}
       </div>
-
+    );
+  }
+  return (
+    <div
+      className="min-vh-100 d-flex align-items-center justify-content-center p-3"
+      style={{
+        background: "linear-gradient(160deg, #0f766e 0%, #0d9488 35%, #14b8a6 70%, #2dd4bf 100%)",
+        position: "relative",
+        overflow: "hidden",
+      }}
+    >
+      <div style={{ position: "absolute", top: "10%", right: "8%", width: 220, height: 220, borderRadius: "50%", background: "rgba(255,255,255,0.08)" }} />
+      <div style={{ position: "absolute", bottom: "20%", left: "5%", width: 180, height: 180, borderRadius: "50%", background: "rgba(255,255,255,0.06)" }} />
+      <div className="w-100 shadow-lg border-0 rounded-4 overflow-hidden" style={{ maxWidth: 640, background: "rgba(255, 255, 255, 0.98)", backdropFilter: "blur(20px)", boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255,255,255,0.5)" }}>
+        {formContent}
+      </div>
       <style>{`
         .form-control:focus, .form-select:focus { border-color: #0d9488 !important; box-shadow: 0 0 0 0.2rem rgba(13, 148, 136, 0.2) !important; }
       `}</style>

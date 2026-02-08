@@ -2,13 +2,17 @@ import { useContext, useState } from "react";
 import { Navbar as BootstrapNavbar, Nav, Container, Button, Dropdown } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
+import { useAuthModal, AUTH_MODES } from "../../context/AuthModalContext";
+import { useServiceModal, SERVICE_TYPES } from "../../context/ServiceModalContext";
 import { getDisplayName } from "../../utils/displayName";
 import { isAdmin } from "../../utils/admin";
-import { FaUser, FaSignOutAlt, FaHome, FaInfoCircle, FaEnvelope, FaBars, FaTimes, FaSearch, FaUserShield } from "react-icons/fa";
+import { FaUser, FaSignOutAlt, FaHome, FaInfoCircle, FaEnvelope, FaBars, FaTimes, FaSearch, FaUserShield, FaBox, FaPrayingHands, FaShoppingCart, FaUserTie, FaTag } from "react-icons/fa";
 
 export default function Navbar() {
   const navigate = useNavigate();
   const { token, user, avatar, logout } = useContext(AuthContext);
+  const { openService } = useServiceModal();
+  const { openAuth } = useAuthModal();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const admin = isAdmin(user);
 
@@ -84,6 +88,41 @@ export default function Navbar() {
               <FaEnvelope className="me-1" />
               Contact
             </Nav.Link>
+            <Dropdown as={Nav.Item} className="d-flex align-items-center">
+              <Dropdown.Toggle
+                as={Nav.Link}
+                className="fw-semibold"
+                style={{ color: "#475569" }}
+              >
+                Services
+              </Dropdown.Toggle>
+              <Dropdown.Menu
+                className="shadow-lg border-0"
+                style={{ borderRadius: "12px", marginTop: "0.5rem", minWidth: "200px" }}
+              >
+                <Dropdown.Item onClick={() => openService(SERVICE_TYPES.PRODUCTS)} className="py-2">
+                  <FaBox className="me-2 text-teal" />
+                  Products
+                </Dropdown.Item>
+                <Dropdown.Item onClick={() => openService(SERVICE_TYPES.PUJA)} className="py-2">
+                  <FaPrayingHands className="me-2 text-teal" />
+                  Puja Services
+                </Dropdown.Item>
+                <Dropdown.Item onClick={() => openService(SERVICE_TYPES.ORDER)} className="py-2">
+                  <FaShoppingCart className="me-2 text-teal" />
+                  Orders
+                </Dropdown.Item>
+                <Dropdown.Item onClick={() => openService(SERVICE_TYPES.PANDIT)} className="py-2">
+                  <FaUserTie className="me-2 text-teal" />
+                  Book PanditJi
+                </Dropdown.Item>
+                <Dropdown.Divider />
+                <Dropdown.Item onClick={() => openService(SERVICE_TYPES.PUJA_OFFERS)} className="py-2">
+                  <FaTag className="me-2 text-teal" />
+                  Puja Offers & Promotions
+                </Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
             {admin && (
               <Nav.Link as={Link} to="/user/admin" className="fw-semibold d-flex align-items-center" style={{ color: "#0d9488" }}>
                 <FaUserShield className="me-1" />
@@ -97,8 +136,6 @@ export default function Navbar() {
             {!token ? (
               <>
                 <Button
-                  as={Link}
-                  to="/auth/login"
                   variant="outline-primary"
                   className="me-2 fw-semibold"
                   style={{
@@ -106,20 +143,28 @@ export default function Navbar() {
                     borderColor: "#0d9488",
                     color: "#0d9488"
                   }}
+                  onClick={() => openAuth(AUTH_MODES.LOGIN)}
                 >
                   Login
                 </Button>
                 <Button
-                  as={Link}
-                  to="/auth/register"
+                  variant="outline-secondary"
+                  className="me-2 fw-semibold"
+                  style={{ borderRadius: "8px" }}
+                  onClick={() => openAuth(AUTH_MODES.REGISTER)}
+                >
+                  Register
+                </Button>
+                <Button
                   className="fw-semibold"
                   style={{
                     background: "linear-gradient(135deg, #0d9488 0%, #0f766e 100%)",
                     border: "none",
                     borderRadius: "8px"
                   }}
+                  onClick={() => openAuth(AUTH_MODES.REGISTER_PANDIT)}
                 >
-                  Register
+                  Join as PanditJi
                 </Button>
               </>
             ) : (

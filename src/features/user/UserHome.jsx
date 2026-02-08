@@ -1,7 +1,7 @@
 import { useContext, useState, useEffect } from "react";
-import { Card, Row, Col, Button, Spinner } from "react-bootstrap";
+import { Card, Row, Col, Button, Spinner, Alert } from "react-bootstrap";
 import { AuthContext } from "../../context/AuthContext";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { FaMapMarkerAlt, FaUser, FaEdit, FaExternalLinkAlt, FaPrayingHands, FaShoppingCart, FaUserTie, FaSearch } from "react-icons/fa";
 import { getDisplayName } from "../../utils/displayName";
 
@@ -11,6 +11,7 @@ const OFFICE_ADDRESS = "Bangalore, Karnataka, India";
 
 export default function UserHome() {
   const { user, avatar } = useContext(AuthContext);
+  const location = useLocation();
   const [userLocation, setUserLocation] = useState(null);
   const [locationLoading, setLocationLoading] = useState(false);
   const [locationError, setLocationError] = useState(null);
@@ -51,6 +52,11 @@ export default function UserHome() {
 
   return (
     <div className="user-home">
+      {location.state?.message && (
+        <Alert variant="info" dismissible className="mb-4">
+          {location.state.message}
+        </Alert>
+      )}
       {/* Welcome Section */}
       <div className="mb-5">
         <h1 className="fw-bold mb-2">Welcome back, {getDisplayName(user)}!</h1>

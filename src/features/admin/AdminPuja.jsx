@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import api from "../../services/api";
 import { getApiErrorMessage } from "../../utils/apiError";
 import { RITUAL_TYPES } from "../../constants";
-import { FaPrayingHands, FaPlus, FaArrowLeft } from "react-icons/fa";
+import { FaPlus, FaArrowLeft } from "react-icons/fa";
 
 export default function AdminPuja() {
   const [list, setList] = useState([]);

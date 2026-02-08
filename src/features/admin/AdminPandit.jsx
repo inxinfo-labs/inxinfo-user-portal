@@ -3,15 +3,31 @@ import { Container, Card, Button, Form, Row, Col, Table, Alert, Spinner, Modal }
 import { Link } from "react-router-dom";
 import api from "../../services/api";
 import { getApiErrorMessage } from "../../utils/apiError";
-import { RITUAL_TYPES, RITUAL_LANGUAGES } from "../../constants";
-import { FaUserTie, FaPlus, FaArrowLeft } from "react-icons/fa";
+import { RITUAL_TYPES } from "../../constants";
+import { FaPlus, FaArrowLeft, FaUserCheck } from "react-icons/fa";
+
+const INIT_FROM_USER = {
+  userId: "",
+  experienceYears: "5",
+  hourlyRate: "500",
+  bio: "",
+  address: "",
+  city: "",
+  state: "",
+  pincode: "",
+  specializations: "Wedding,Griha Pravesh,Satyanarayan",
+};
 
 export default function AdminPandit() {
   const [list, setList] = useState([]);
+  const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [showForm, setShowForm] = useState(false);
+  const [showApproveForm, setShowApproveForm] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [approveSaving, setApproveSaving] = useState(false);
+  const [fromUserData, setFromUserData] = useState({ ...INIT_FROM_USER });
   const [formData, setFormData] = useState({
     userId: "",
     displayName: "",
@@ -43,6 +59,62 @@ export default function AdminPandit() {
   useEffect(() => {
     fetchList();
   }, []);
+
+  const fetchUsers = async () => {
+    try {
+      const res = await api.get("/admin/users");
+      const raw = res.data?.data ?? res.data?.users ?? res.data;
+      setUsers(Array.isArray(raw) ? raw : []);
+    } catch (err) {
+      setUsers([]);
+    }
+  };
+
+  const openApproveModal = () => {
+    setFromUserData({ ...INIT_FROM_USER });
+    fetchUsers();
+    setShowApproveForm(true);
+  };
+
+  const handleFromUserChange = (e) => {
+    const { name, value } = e.target;
+    setFromUserData((p) => ({ ...p, [name]: value }));
+  };
+
+  const handleApproveSubmit = async (e) => {
+    e.preventDefault();
+    const uid = fromUserData.userId?.trim();
+    if (!uid) {
+      setError("Select a user to approve as Pandit.");
+      return;
+    }
+    setApproveSaving(true);
+    setError("");
+    try {
+      const specializations = (fromUserData.specializations || "")
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean);
+      await api.post("/admin/pandit/from-user", {
+        userId: Number(uid) || uid,
+        experienceYears: Number(fromUserData.experienceYears) || 0,
+        hourlyRate: Number(fromUserData.hourlyRate) || 0,
+        bio: (fromUserData.bio || "").trim() || undefined,
+        address: (fromUserData.address || "").trim() || undefined,
+        city: (fromUserData.city || "").trim() || undefined,
+        state: (fromUserData.state || "").trim() || undefined,
+        pincode: (fromUserData.pincode || "").trim() || undefined,
+        specializations: specializations.length ? specializations : undefined,
+      });
+      setShowApproveForm(false);
+      setFromUserData({ ...INIT_FROM_USER });
+      fetchList();
+    } catch (err) {
+      setError(getApiErrorMessage(err, "Failed to approve user as Pandit."));
+    } finally {
+      setApproveSaving(false);
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -112,13 +184,21 @@ export default function AdminPandit() {
           </Link>
           <h2 className="mb-0 fw-bold">Pandit Ji</h2>
         </div>
-        <Button
-          variant="primary"
-          style={{ background: "linear-gradient(135deg, #0d9488 0%, #0f766e 100%)", border: "none" }}
-          onClick={() => setShowForm(true)}
-        >
-          <FaPlus className="me-2" /> Add Pandit
-        </Button>
+        <div className="d-flex gap-2">
+          <Button
+            variant="outline-primary"
+            onClick={openApproveModal}
+          >
+            <FaUserCheck className="me-2" /> Approve user as Pandit
+          </Button>
+          <Button
+            variant="primary"
+            style={{ background: "linear-gradient(135deg, #0d9488 0%, #0f766e 100%)", border: "none" }}
+            onClick={() => setShowForm(true)}
+          >
+            <FaPlus className="me-2" /> Add Pandit
+          </Button>
+        </div>
       </div>
 
       {error && (
@@ -237,6 +317,87 @@ export default function AdminPandit() {
             <Button variant="secondary" onClick={() => setShowForm(false)}>Cancel</Button>
             <Button type="submit" disabled={saving} style={{ background: "#0d9488", border: "none" }}>
               {saving ? <Spinner animation="border" size="sm" /> : "Add Pandit"}
+            </Button>
+          </Modal.Footer>
+        </Form>
+      </Modal>
+
+      <Modal show={showApproveForm} onHide={() => setShowApproveForm(false)} centered size="lg">
+        <Modal.Header closeButton>
+          <Modal.Title>Approve user as Pandit</Modal.Title>
+        </Modal.Header>
+        <p className="px-3 pt-2 text-muted small mb-0">
+          Select a user who registered as &quot;Pandit&quot;. They will become a Pandit and can accept bookings.
+        </p>
+        <Form onSubmit={handleApproveSubmit}>
+          <Modal.Body>
+            <Form.Group className="mb-3">
+              <Form.Label>User</Form.Label>
+              <Form.Select
+                name="userId"
+                value={fromUserData.userId}
+                onChange={handleFromUserChange}
+                required
+              >
+                <option value="">Select user...</option>
+                {users.map((u) => (
+                  <option key={u.id ?? u.userId} value={u.id ?? u.userId}>
+                    {u.email ?? u.name ?? u.displayName ?? `User #${u.id ?? u.userId}`}
+                  </option>
+                ))}
+              </Form.Select>
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Bio</Form.Label>
+              <Form.Control name="bio" value={fromUserData.bio} onChange={handleFromUserChange} as="textarea" rows={2} placeholder="Short bio" />
+            </Form.Group>
+            <Row>
+              <Col md={6}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Experience (years)</Form.Label>
+                  <Form.Control name="experienceYears" type="number" min={0} value={fromUserData.experienceYears} onChange={handleFromUserChange} />
+                </Form.Group>
+              </Col>
+              <Col md={6}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Hourly rate (₹)</Form.Label>
+                  <Form.Control name="hourlyRate" type="number" min={0} value={fromUserData.hourlyRate} onChange={handleFromUserChange} />
+                </Form.Group>
+              </Col>
+            </Row>
+            <Form.Group className="mb-3">
+              <Form.Label>Address</Form.Label>
+              <Form.Control name="address" value={fromUserData.address} onChange={handleFromUserChange} placeholder="Street address" />
+            </Form.Group>
+            <Row>
+              <Col md={4}>
+                <Form.Group className="mb-3">
+                  <Form.Label>City</Form.Label>
+                  <Form.Control name="city" value={fromUserData.city} onChange={handleFromUserChange} />
+                </Form.Group>
+              </Col>
+              <Col md={4}>
+                <Form.Group className="mb-3">
+                  <Form.Label>State</Form.Label>
+                  <Form.Control name="state" value={fromUserData.state} onChange={handleFromUserChange} />
+                </Form.Group>
+              </Col>
+              <Col md={4}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Pincode</Form.Label>
+                  <Form.Control name="pincode" value={fromUserData.pincode} onChange={handleFromUserChange} maxLength={6} />
+                </Form.Group>
+              </Col>
+            </Row>
+            <Form.Group className="mb-3">
+              <Form.Label>Specializations (comma-separated)</Form.Label>
+              <Form.Control name="specializations" value={fromUserData.specializations} onChange={handleFromUserChange} placeholder="Wedding, Griha Pravesh, Satyanarayan" />
+            </Form.Group>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={() => setShowApproveForm(false)}>Cancel</Button>
+            <Button type="submit" disabled={approveSaving} style={{ background: "#0d9488", border: "none" }}>
+              {approveSaving ? <Spinner animation="border" size="sm" /> : "Approve as Pandit"}
             </Button>
           </Modal.Footer>
         </Form>

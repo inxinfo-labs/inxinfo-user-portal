@@ -3,6 +3,9 @@ import { BrowserRouter } from "react-router-dom";
 import { ThemeProvider as MuiThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import { AuthProvider } from "../context/AuthContext";
+// eslint-disable-next-line no-unused-vars -- used as JSX <AuthModalProvider>
+import { AuthModalProvider } from "../context/AuthModalContext";
+import { ServiceModalProvider } from "../context/ServiceModalContext";
 import { ThemeProvider, ThemeContext } from "../context/ThemeContext";
 import { lightTheme, darkTheme } from "../theme/muiTheme";
 
@@ -22,7 +25,13 @@ export default function Providers({ children }) {
     <ThemeProvider>
       <MuiThemeWrapper>
         <AuthProvider>
-          <BrowserRouter>{children}</BrowserRouter>
+          <BrowserRouter>
+            <ServiceModalProvider>
+              <AuthModalProvider>
+                {children}
+              </AuthModalProvider>
+            </ServiceModalProvider>
+          </BrowserRouter>
         </AuthProvider>
       </MuiThemeWrapper>
     </ThemeProvider>

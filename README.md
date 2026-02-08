@@ -60,6 +60,8 @@ A modern React.js frontend for the **Puja Store** platform — suitable for port
    ```
 5. Backend will be at **http://localhost:8080**. API base for frontend: **http://localhost:8080/api**.
 
+**Distributed backend (optional):** To run auth, puja, pandit, order, and API gateway as separate services, see **inxinfo-auth-service** docs: `docs/RUN_E2E.md` and `docs/DISTRIBUTED_ARCHITECTURE.md`. Use the same `REACT_APP_API_URL=http://localhost:8080/api` (gateway); no frontend changes needed.
+
 ---
 
 ## ⚙️ Installation (Frontend — inxinfo-user-portal)

@@ -3,12 +3,14 @@ import { Button, Form, Spinner, Alert, Tab, Tabs } from "react-bootstrap";
 import { useNavigate, Link } from "react-router-dom";
 import api from "../../services/api";
 import { AuthContext } from "../../context/AuthContext";
+import { useAuthModal, AUTH_MODES } from "../../context/AuthModalContext";
 import { getApiErrorMessage } from "../../utils/apiError";
 import { ApiCodeMessages } from "../../constants";
 import { FaEnvelope, FaLock, FaSignInAlt, FaLeaf, FaMobileAlt, FaKey } from "react-icons/fa";
 
-export default function Login({ embedded = false }) {
+export default function Login({ embedded = false, onSuccess }) {
   const { login } = useContext(AuthContext);
+  const { openAuth } = useAuthModal();
   const [activeTab, setActiveTab] = useState("password");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -33,7 +35,13 @@ export default function Login({ embedded = false }) {
     try {
       const res = await api.post("/auth/login", { username: u, password: p });
       if (res.data?.accessToken) {
-        login(res.data.accessToken);
+        const userInfo = {
+          role: res.data.role ?? "USER",
+          userId: res.data.userId,
+          email: res.data.email,
+        };
+        login(res.data.accessToken, userInfo);
+        onSuccess?.();
         navigate("/user/home");
       } else {
         setError("Invalid response from server. Please try again.");
@@ -87,7 +95,13 @@ export default function Login({ embedded = false }) {
     try {
       const res = await api.post("/auth/verify-otp", { emailOrPhone: input, otp: code });
       if (res.data?.accessToken) {
-        login(res.data.accessToken);
+        const userInfo = {
+          role: res.data.role ?? "USER",
+          userId: res.data.userId,
+          email: res.data.email,
+        };
+        login(res.data.accessToken, userInfo);
+        onSuccess?.();
         navigate("/user/home");
       } else {
         setError("Verification failed. Please try again.");
@@ -137,6 +151,12 @@ export default function Login({ embedded = false }) {
             {loading ? <Spinner size="sm" /> : "Login"}
           </Button>
         </Form>
+        <p className="text-center mt-3 mb-0 small text-muted">
+          Don&apos;t have an account?{" "}
+          <button type="button" className="btn btn-link p-0 fw-semibold text-decoration-none" style={{ color: "#0d9488" }} onClick={() => openAuth(AUTH_MODES.REGISTER)}>
+            Register
+          </button>
+        </p>
       </div>
     );
   }
@@ -268,7 +288,7 @@ export default function Login({ embedded = false }) {
                     style={{ borderColor: "#e2e8f0" }}
                   />
                   <div className="d-flex justify-content-end mt-1">
-                    <Link to="#" className="small text-decoration-none" style={{ color: "#0d9488" }}>
+                    <Link to="/auth/forgot-password" className="small text-decoration-none" style={{ color: "#0d9488" }}>
                       Forgot password?
                     </Link>
                   </div>

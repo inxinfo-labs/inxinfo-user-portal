@@ -6,7 +6,7 @@ export default function PrivateLayout() {
   return (
     <ProtectedRoute>
       <Navbar />
-      <main className="container mt-4">
+      <main className="container-fluid mt-3 mt-md-4 mb-4">
         <Outlet />
       </main>
     </ProtectedRoute>

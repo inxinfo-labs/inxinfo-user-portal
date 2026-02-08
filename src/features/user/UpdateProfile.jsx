@@ -82,6 +82,7 @@ const UpdateProfile = () => {
       stateCode,
       city,
     });
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- sync form from user only; countries from lib is stable
   }, [user]);
 
   const handleChange = (e) => {

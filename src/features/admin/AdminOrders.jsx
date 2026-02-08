@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
-import { Container, Card, Button, Table, Alert, Spinner, Form } from "react-bootstrap";
+import { Container, Card, Table, Alert, Spinner, Form } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import api from "../../services/api";
 import { getApiErrorMessage } from "../../utils/apiError";
 import { ORDER_STATUS, ORDER_STATUS_LABELS } from "../../constants";
-import { FaClipboardList, FaArrowLeft } from "react-icons/fa";
+import { FaArrowLeft } from "react-icons/fa";
 
 export default function AdminOrders() {
   const [list, setList] = useState([]);

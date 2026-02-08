@@ -1,5 +1,3 @@
-import { Modal as BootstrapModal, Button } from "react-bootstrap";
-
 const Modal = ({ open, onClose, children }) => {
   if (!open) return null;
 

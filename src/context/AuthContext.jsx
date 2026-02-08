@@ -1,15 +1,21 @@
 import { createContext, useCallback, useEffect, useState } from "react";
 import api, { setUnauthorizedHandler } from "../services/api";
 
+const STORAGE_ROLE = "userRole";
+
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem("accessToken"));
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(() => {
+    const role = localStorage.getItem(STORAGE_ROLE);
+    return role ? { role } : null;
+  });
   const [avatar, setAvatar] = useState(null);
 
   const logout = useCallback(() => {
     localStorage.removeItem("accessToken");
+    localStorage.removeItem(STORAGE_ROLE);
     setToken(null);
     setUser(null);
     setAvatar(null);
@@ -22,8 +28,16 @@ export const AuthProvider = ({ children }) => {
   // fetch user info & avatar when token exists
   useEffect(() => {
     if (token) {
+      const savedRole = localStorage.getItem(STORAGE_ROLE);
+      if (savedRole) setUser((u) => (u ? { ...u, role: savedRole } : { role: savedRole }));
+
       api.get("/user/me")
-        .then(res => setUser(res.data.data))
+        .then((res) => {
+          const data = res.data?.data ?? res.data;
+          const role = data?.role ?? savedRole;
+          if (role) localStorage.setItem(STORAGE_ROLE, role);
+          setUser((prev) => ({ ...prev, ...data, role: role ?? prev?.role }));
+        })
         .catch(() => logout());
 
       loadAvatar();
@@ -42,9 +56,14 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const login = (newToken) => {
+  /** Call with token and optional user info from login/register (role, userId, email) so admin UI works before /user/me loads */
+  const login = (newToken, userInfo = null) => {
     localStorage.setItem("accessToken", newToken);
     setToken(newToken);
+    if (userInfo?.role) {
+      localStorage.setItem(STORAGE_ROLE, userInfo.role);
+      setUser((prev) => ({ ...prev, ...userInfo }));
+    }
     loadAvatar();
   };
 

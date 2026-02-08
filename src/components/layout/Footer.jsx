@@ -113,7 +113,9 @@ export default function AppFooter() {
             </Typography>
             {links.legal.map((link) => (
               <Box key={link.path} sx={{ mb: 1 }}>
-                <MuiLink href={link.path} sx={linkSx}>{link.label}</MuiLink>
+                <Link to={link.path} style={{ textDecoration: "none" }}>
+                  <Typography sx={linkSx}>{link.label}</Typography>
+                </Link>
               </Box>
             ))}
           </Grid>
