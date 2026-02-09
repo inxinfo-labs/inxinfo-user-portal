@@ -2,6 +2,7 @@ import { useContext, useState } from "react";
 import { Navbar as BootstrapNavbar, Nav, Container, Button, Dropdown } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
+import { useCart } from "../../context/CartContext";
 import { useAuthModal, AUTH_MODES } from "../../context/AuthModalContext";
 import { useServiceModal, SERVICE_TYPES } from "../../context/ServiceModalContext";
 import { usePageModal, PAGE_MODAL_TYPES } from "../../context/PageModalContext";
@@ -13,6 +14,7 @@ import { FaUser, FaSignOutAlt, FaHome, FaInfoCircle, FaEnvelope, FaBars, FaTimes
 export default function Navbar() {
   const navigate = useNavigate();
   const { token, user, avatar, logout } = useContext(AuthContext);
+  const { cartCount } = useCart();
   const { openService } = useServiceModal();
   const { openAuth } = useAuthModal();
   const { openPage } = usePageModal();
@@ -135,7 +137,7 @@ export default function Navbar() {
               </Dropdown.Toggle>
               <Dropdown.Menu
                 className="shadow-lg border-0"
-                style={{ borderRadius: "12px", marginTop: "0.5rem", minWidth: "200px" }}
+                style={{ borderRadius: "12px", marginTop: "0.5rem", minWidth: "200px", zIndex: 1060 }}
               >
                 <Dropdown.Item onClick={() => openService(SERVICE_TYPES.PRODUCTS)} className="py-2">
                   <FaBox className="me-2 text-teal" />
@@ -220,6 +222,23 @@ export default function Navbar() {
                 </Button>
               </div>
             ) : (
+              <>
+                <Nav.Link
+                  as={Link}
+                  to="/user/cart"
+                  className="d-flex align-items-center position-relative me-3"
+                  style={{ color: "#475569", fontSize: "1.1rem" }}
+                >
+                  <FaShoppingCart />
+                  {cartCount > 0 && (
+                    <span
+                      className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary"
+                      style={{ fontSize: "0.65rem" }}
+                    >
+                      {cartCount}
+                    </span>
+                  )}
+                </Nav.Link>
               <Dropdown align="end">
                 <Dropdown.Toggle
                   variant="link"
@@ -275,6 +294,16 @@ export default function Navbar() {
                   Dashboard
                 </Dropdown.Item>
                 <Dropdown.Item
+                  as={Link}
+                  to="/user/cart"
+                  className="d-flex align-items-center py-2"
+                  style={{ borderRadius: "8px" }}
+                  onClick={closeUserModal}
+                >
+                  <FaShoppingCart className="me-2 text-teal" />
+                  Cart {cartCount > 0 && `(${cartCount})`}
+                </Dropdown.Item>
+                <Dropdown.Item
                   className="d-flex align-items-center py-2"
                   style={{ borderRadius: "8px" }}
                   onClick={() => {
@@ -317,6 +346,7 @@ export default function Navbar() {
                   </Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>
+              </>
             )}
           </Nav>
         </BootstrapNavbar.Collapse>

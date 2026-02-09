@@ -3,6 +3,7 @@ import { BrowserRouter } from "react-router-dom";
 import { ThemeProvider as MuiThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import { AuthProvider } from "../context/AuthContext";
+import { CartProvider } from "../context/CartContext";
 // eslint-disable-next-line no-unused-vars -- used as JSX <AuthModalProvider>
 import { AuthModalProvider } from "../context/AuthModalContext";
 import { ServiceModalProvider } from "../context/ServiceModalContext";
@@ -30,6 +31,7 @@ export default function Providers({ children }) {
       <MuiThemeWrapper>
         <AuthProvider>
           <BrowserRouter>
+            <CartProvider>
             <ServiceModalProvider>
               <AuthModalProvider>
                 <PageModalProvider>
@@ -39,6 +41,7 @@ export default function Providers({ children }) {
                 </PageModalProvider>
               </AuthModalProvider>
             </ServiceModalProvider>
+            </CartProvider>
           </BrowserRouter>
         </AuthProvider>
       </MuiThemeWrapper>

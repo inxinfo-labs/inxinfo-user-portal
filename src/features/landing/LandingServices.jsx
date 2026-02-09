@@ -1,40 +1,49 @@
 import { Container, Row, Col, Card } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
 import { FaPrayingHands, FaShoppingCart, FaUserTie, FaBox } from "react-icons/fa";
 import { useServiceModal, SERVICE_TYPES } from "../../context/ServiceModalContext";
+import { AuthContext } from "../../context/AuthContext";
 
 const services = [
+  {
+    title: "Book",
+    description: "Book PanditJi, order items, or book puja services — all in one place",
+    serviceType: SERVICE_TYPES.PANDIT,
+    path: "/user/book",
+    icon: <FaUserTie />,
+    color: "var(--primary-600)",
+  },
   {
     title: "Products",
     description: "Browse puja samagri, idols & more. Anyone can view; sign in to order",
     serviceType: SERVICE_TYPES.PRODUCTS,
+    path: "/products",
     icon: <FaBox />,
     color: "var(--primary-600)",
-  },
-  {
-    title: "Puja Services",
-    description: "Book traditional puja services for your occasions",
-    serviceType: SERVICE_TYPES.PUJA,
-    icon: <FaPrayingHands />,
-    color: "var(--primary-700)",
   },
   {
     title: "Orders",
     description: "View and manage your puja & product orders",
     serviceType: SERVICE_TYPES.ORDER,
+    path: "/user/order",
     icon: <FaShoppingCart />,
     color: "#14b8a6",
-  },
-  {
-    title: "Book PanditJi",
-    description: "Find and book experienced pandits",
-    serviceType: SERVICE_TYPES.PANDIT,
-    icon: <FaUserTie />,
-    color: "var(--primary-600)",
   },
 ];
 
 export default function LandingServices() {
+  const navigate = useNavigate();
+  const { token } = useContext(AuthContext);
   const { openService } = useServiceModal();
+
+  const handleServiceClick = (s) => {
+    if (token && s.path) {
+      navigate(s.path);
+    } else {
+      openService(s.serviceType);
+    }
+  };
 
   return (
     <section id="our-services" className="py-4" style={{ background: "#fff" }}>
@@ -58,8 +67,8 @@ export default function LandingServices() {
                   transition: "all 0.3s ease",
                   cursor: "pointer",
                 }}
-                onClick={() => openService(s.serviceType)}
-                onKeyDown={(e) => e.key === "Enter" && openService(s.serviceType)}
+                onClick={() => handleServiceClick(s)}
+                onKeyDown={(e) => e.key === "Enter" && handleServiceClick(s)}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.transform = "translateY(-6px)";
                   e.currentTarget.style.boxShadow = "0 12px 24px rgba(234, 88, 12, 0.15)";

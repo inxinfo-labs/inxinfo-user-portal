@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect } from "react";
+import { lazy, Suspense, useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import { Button, Spinner } from "react-bootstrap";
 import { useServiceModal, SERVICE_TYPES } from "../context/ServiceModalContext";
@@ -135,15 +135,19 @@ export default function ServiceModal() {
   const { openAuth } = useAuthModal();
   const { token } = useContext(AuthContext);
   const location = useLocation();
+  const prevPathRef = useRef(location.pathname);
 
-  // Close modal when user navigates to booking, order detail, or auth
+  // Close modal only when user *navigates* to booking, order detail, or auth (not when already on that page)
   useEffect(() => {
-    if (!open || !service) return;
     const path = location.pathname;
+    const prevPath = prevPathRef.current;
+    prevPathRef.current = path;
+    if (!open || !service) return;
     const isBooking = path.includes("/book");
     const isAuth = path.startsWith("/auth");
     const isOrderDetail = /^\/user\/order\/[^/]+$/.test(path);
-    if (isBooking || isAuth || isOrderDetail) {
+    const navigatedToCloseable = (isBooking || isAuth || isOrderDetail) && prevPath !== path;
+    if (navigatedToCloseable) {
       closeService();
     }
   }, [location.pathname, open, service, closeService]);

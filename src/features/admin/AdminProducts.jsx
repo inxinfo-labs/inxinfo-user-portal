@@ -3,10 +3,10 @@ import { Container, Card, Button, Form, Row, Col, Table, Alert, Spinner, Modal }
 import { Link } from "react-router-dom";
 import api from "../../services/api";
 import { getApiErrorMessage } from "../../utils/apiError";
+import { PRODUCT_CATEGORIES } from "../../constants";
 import { FaPlus, FaArrowLeft } from "react-icons/fa";
 
-// Backend uses /api/admin/items with { name, description, price, sku, active }
-const INIT_FORM = { name: "", description: "", price: "", sku: "", active: true };
+const INIT_FORM = { name: "", description: "", category: "", price: "", discountPrice: "", stock: "0", images: "", sku: "", active: true };
 
 export default function AdminProducts() {
   const [list, setList] = useState([]);
@@ -50,7 +50,11 @@ export default function AdminProducts() {
       await api.post("/admin/items", {
         name: formData.name.trim(),
         description: (formData.description || "").trim(),
+        category: (formData.category || "").trim() || undefined,
         price: Number(formData.price) || 0,
+        discountPrice: formData.discountPrice ? Number(formData.discountPrice) : null,
+        stock: Math.max(0, parseInt(formData.stock, 10) || 0),
+        images: (formData.images || "").trim() || undefined,
         sku: (formData.sku || "").trim() || undefined,
         active: Boolean(formData.active),
       });
@@ -99,26 +103,39 @@ export default function AdminProducts() {
               No products yet. Add one using the button above.
             </p>
           ) : (
-            <Table responsive hover>
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>SKU</th>
-                  <th>Price</th>
-                  <th>Active</th>
-                </tr>
-              </thead>
-              <tbody>
-                {list.map((p) => (
-                  <tr key={p.id ?? p._id}>
-                    <td>{p.name}</td>
-                    <td>{p.sku ?? "—"}</td>
-                    <td>₹{p.price}</td>
-                    <td>{p.active !== false ? "Yes" : "No"}</td>
+            <>
+              <h6 className="text-muted mb-2">Audit: Products with created and last updated date/time</h6>
+              <Table responsive hover>
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Category</th>
+                    <th>Price</th>
+                    <th>Discount</th>
+                    <th>Stock</th>
+                    <th>SKU</th>
+                    <th>Active</th>
+                    <th>Created At</th>
+                    <th>Updated At</th>
                   </tr>
-                ))}
-              </tbody>
-            </Table>
+                </thead>
+                <tbody>
+                  {list.map((p) => (
+                    <tr key={p.id ?? p._id}>
+                      <td>{p.name}</td>
+                      <td className="small">{p.category ?? "—"}</td>
+                      <td>₹{p.price ?? "—"}</td>
+                      <td>{p.discountPrice != null ? `₹${p.discountPrice}` : "—"}</td>
+                      <td>{p.stock ?? 0}</td>
+                      <td className="small">{p.sku ?? "—"}</td>
+                      <td>{p.active !== false ? "Yes" : "No"}</td>
+                      <td className="small">{p.createdAt ? new Date(p.createdAt).toLocaleString() : "—"}</td>
+                      <td className="small">{p.updatedAt ? new Date(p.updatedAt).toLocaleString() : "—"}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            </>
           )}
         </Card.Body>
       </Card>
@@ -137,6 +154,15 @@ export default function AdminProducts() {
               <Form.Label>Description</Form.Label>
               <Form.Control name="description" value={formData.description} onChange={handleChange} as="textarea" rows={2} placeholder="Description" />
             </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Category</Form.Label>
+              <Form.Select name="category" value={formData.category} onChange={handleChange}>
+                <option value="">— Select category —</option>
+                {PRODUCT_CATEGORIES.map((c) => (
+                  <option key={c} value={c}>{c}</option>
+                ))}
+              </Form.Select>
+            </Form.Group>
             <Row>
               <Col md={6}>
                 <Form.Group className="mb-3">
@@ -146,11 +172,29 @@ export default function AdminProducts() {
               </Col>
               <Col md={6}>
                 <Form.Group className="mb-3">
+                  <Form.Label>Discount price (₹, optional)</Form.Label>
+                  <Form.Control name="discountPrice" type="number" min={0} step={0.01} value={formData.discountPrice} onChange={handleChange} placeholder="0" />
+                </Form.Group>
+              </Col>
+            </Row>
+            <Row>
+              <Col md={6}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Stock (inventory)</Form.Label>
+                  <Form.Control name="stock" type="number" min={0} value={formData.stock} onChange={handleChange} />
+                </Form.Group>
+              </Col>
+              <Col md={6}>
+                <Form.Group className="mb-3">
                   <Form.Label>SKU (optional)</Form.Label>
                   <Form.Control name="sku" value={formData.sku} onChange={handleChange} placeholder="e.g. PUJA-001" />
                 </Form.Group>
               </Col>
             </Row>
+            <Form.Group className="mb-3">
+              <Form.Label>Images (comma-separated URLs, optional)</Form.Label>
+              <Form.Control name="images" value={formData.images} onChange={handleChange} placeholder="https://..." as="textarea" rows={2} />
+            </Form.Group>
             <Form.Group className="mb-3">
               <Form.Check type="switch" name="active" label="Active (visible to customers)" checked={formData.active} onChange={handleChange} />
             </Form.Group>

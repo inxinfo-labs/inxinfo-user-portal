@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
-import { Container, Table, Alert, Spinner, Badge } from "react-bootstrap";
+import { Container, Table, Alert, Spinner, Badge, Button } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 import api from "../../services/api";
 
 export default function PanditBookings() {
+  const navigate = useNavigate();
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -58,6 +60,7 @@ export default function PanditBookings() {
               <th>Amount</th>
               <th>Status</th>
               <th>Address</th>
+              <th>Action</th>
             </tr>
           </thead>
           <tbody>
@@ -70,6 +73,17 @@ export default function PanditBookings() {
                 <td>₹{booking.totalAmount}</td>
                 <td>{getStatusBadge(booking.status)}</td>
                 <td>{booking.address}, {booking.city}</td>
+                <td>
+                  {booking.status === "PENDING" && (
+                    <Button
+                      variant="primary"
+                      size="sm"
+                      onClick={() => navigate(`/user/pandit/booking/${booking.id}/pay`)}
+                    >
+                      Pay Now
+                    </Button>
+                  )}
+                </td>
               </tr>
             ))}
           </tbody>

@@ -34,20 +34,24 @@ export default function OrderList() {
       CONFIRMED: "success",
       PROCESSING: "info",
       SHIPPED: "primary",
+      OUT_FOR_DELIVERY: "info",
       DELIVERED: "success",
       CANCELLED: "danger",
+      RETURNED: "secondary",
       REFUNDED: "secondary",
     };
     return <Badge bg={variants[status] || "secondary"} className="px-3 py-2">{status}</Badge>;
   };
 
-  const formatDate = (dateString) => {
-    if (!dateString) return "N/A";
+  const formatDateTime = (dateString) => {
+    if (!dateString) return "—";
     try {
-      return new Date(dateString).toLocaleDateString("en-US", {
+      return new Date(dateString).toLocaleString("en-IN", {
         year: "numeric",
         month: "short",
-        day: "numeric"
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
       });
     } catch {
       return dateString;
@@ -127,7 +131,7 @@ export default function OrderList() {
                     <th className="px-4 py-3 fw-semibold">Items</th>
                     <th className="px-4 py-3 fw-semibold">Total Amount</th>
                     <th className="px-4 py-3 fw-semibold">Status</th>
-                    <th className="px-4 py-3 fw-semibold">Date</th>
+                    <th className="px-4 py-3 fw-semibold">Date &amp; Time</th>
                     <th className="px-4 py-3 fw-semibold text-center">Actions</th>
                   </tr>
                 </thead>
@@ -154,7 +158,7 @@ export default function OrderList() {
                       <td className="px-4 py-3">
                         <span className="text-muted d-flex align-items-center">
                           <FaCalendarAlt className="me-2" style={{ fontSize: "0.875rem" }} />
-                          {formatDate(order.createdAt)}
+                          {formatDateTime(order.createdAt)}
                         </span>
                       </td>
                       <td className="px-4 py-3 text-center">

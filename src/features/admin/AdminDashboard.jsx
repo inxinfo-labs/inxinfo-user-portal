@@ -1,8 +1,20 @@
-import { Row, Col, Card, Alert } from "react-bootstrap";
+import { useState, useEffect } from "react";
+import { Row, Col, Card, Alert, Spinner, Badge } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import { FaBox, FaClipboardList, FaUserTie, FaPrayingHands, FaBook, FaExclamationTriangle } from "react-icons/fa";
+import api from "../../services/api";
+import { FaBox, FaClipboardList, FaUserTie, FaPrayingHands, FaBook, FaExclamationTriangle, FaBell } from "react-icons/fa";
 
 export default function AdminDashboard() {
+  const [recentOrders, setRecentOrders] = useState([]);
+  const [loadingRecent, setLoadingRecent] = useState(true);
+
+  useEffect(() => {
+    api.get("/admin/orders")
+      .then((r) => setRecentOrders((r.data?.data ?? r.data ?? []).slice(0, 5)))
+      .catch(() => setRecentOrders([]))
+      .finally(() => setLoadingRecent(false));
+  }, []);
+
   return (
     <div className="py-4">
       <h2 className="fw-bold mb-4">Admin Dashboard</h2>
@@ -10,10 +22,7 @@ export default function AdminDashboard() {
       <Alert variant="info" className="mb-4 d-flex align-items-start">
         <FaExclamationTriangle className="me-2 mt-1" />
         <div>
-          <strong>Backend required.</strong> These pages call <code>/api/admin/*</code> APIs. Ensure your backend
-          exposes: <code>GET/POST /admin/products</code>, <code>GET/PATCH /admin/orders</code>,{" "}
-          <code>GET/POST /admin/pandit</code>, <code>GET/POST /admin/puja</code>. If APIs are not implemented yet,
-          you will see errors when listing or adding.
+          <strong>Backend required.</strong> These pages call <code>/api/admin/*</code> APIs. Set <code>ADMIN_EMAIL</code> in order-service to receive email when a new order is placed.
         </div>
       </Alert>
 
@@ -75,6 +84,38 @@ export default function AdminDashboard() {
           </Card>
         </Col>
       </Row>
+
+      {recentOrders.length > 0 && (
+        <Card className="border-0 shadow-sm mb-4">
+          <Card.Header className="d-flex align-items-center justify-content-between bg-white border-0 py-3">
+            <h5 className="mb-0 fw-bold d-flex align-items-center">
+              <FaBell className="me-2 text-primary" />
+              Recent orders (all users)
+            </h5>
+            <Link to="/user/admin/orders" className="btn btn-sm btn-outline-primary">View all</Link>
+          </Card.Header>
+          <Card.Body className="p-0">
+            {loadingRecent ? (
+              <div className="text-center py-4"><Spinner animation="border" size="sm" /></div>
+            ) : (
+              <table className="table table-hover mb-0">
+                <thead><tr><th>Order</th><th>User</th><th>Total</th><th>Payment</th><th>Status</th></tr></thead>
+                <tbody>
+                  {recentOrders.map((o) => (
+                    <tr key={o.id}>
+                      <td>{o.orderNumber ?? `#${o.id}`}</td>
+                      <td>{o.userName ?? `User #${o.userId}`}</td>
+                      <td>₹{o.totalAmount ?? "—"}</td>
+                      <td><Badge bg={o.paymentStatus === "PAID" ? "success" : "warning"}>{o.paymentStatus ?? "PENDING"}</Badge></td>
+                      <td><Badge bg="secondary">{o.status ?? "—"}</Badge></td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </Card.Body>
+        </Card>
+      )}
 
       <Row className="mt-4">
         <Col>

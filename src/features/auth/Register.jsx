@@ -135,13 +135,14 @@ export default function Register({ defaultRegisterAs = "CUSTOMER", embedded = fa
         gender: formData.gender || null,
         country: countryName || null,
         location,
+        ...(formData.registerAs === "PANDIT" ? { role: "PANDIT" } : {}),
       };
 
       const res = await api.post("/auth/register", registerData);
 
       if (res.data?.accessToken) {
         const userInfo = {
-          role: res.data.role ?? (formData.registerAs === "PANDIT" ? "USER" : "USER"),
+          role: res.data.role ?? (formData.registerAs === "PANDIT" ? "PANDIT" : "USER"),
           userId: res.data.userId,
           email: res.data.email,
         };

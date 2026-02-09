@@ -2,8 +2,10 @@ import { useEffect, useState } from "react";
 import { Container, Form, Button, Alert, Spinner, Card, Row, Col } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import api from "../../services/api";
+import { useCart } from "../../context/CartContext";
 
 export default function BookPandit() {
+  const { setPanditBooking } = useCart();
   const { id } = useParams();
   const navigate = useNavigate();
   const [pandit, setPandit] = useState(null);
@@ -67,11 +69,22 @@ export default function BookPandit() {
     setError(null);
 
     try {
-      await api.post("/pandit/book", {
+      const res = await api.post("/pandit/book", {
         panditId: parseInt(id),
         ...formData,
       });
-      navigate("/user/pandit/bookings");
+      const booking = res.data?.data ?? res.data;
+      const bookingId = booking?.id;
+      if (bookingId) {
+        setPanditBooking({
+          bookingId,
+          panditName: booking?.pandit?.name ?? pandit?.name,
+          totalAmount: booking?.totalAmount ?? (pandit?.hourlyRate * formData.durationHours),
+        });
+        navigate("/user/cart");
+      } else {
+        navigate("/user/pandit/bookings");
+      }
     } catch (err) {
       setError(err.response?.data?.message || "Failed to book pandit");
     } finally {

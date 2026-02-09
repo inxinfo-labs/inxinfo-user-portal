@@ -6,6 +6,23 @@ import { getApiErrorMessage } from "../../utils/apiError";
 import { RITUAL_TYPES } from "../../constants";
 import { FaPlus, FaArrowLeft } from "react-icons/fa";
 
+/** Map frontend ritual type label to backend PujaCategory enum. */
+function ritualTypeToCategory(ritualType) {
+  const map = {
+    "Satyanarayan Puja": "SATYANARAYAN_PUJA",
+    "Ganesh Puja": "GANESH_PUJA",
+    "Durga Puja": "DURGA_PUJA",
+    "Lakshmi Puja": "LAXMI_PUJA",
+    "Shiva Puja": "SHIV_PUJA",
+    "Vehicle Puja": "VEHICLE_PUJA",
+    "Griha Pravesh": "HOUSE_WARMING",
+    "Marriage Ceremony": "WEDDING_PUJA",
+    "Navratri Puja": "DURGA_PUJA",
+    "Diwali Puja": "LAXMI_PUJA",
+  };
+  return map[ritualType] || "OTHER";
+}
+
 export default function AdminPuja() {
   const [list, setList] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -50,11 +67,10 @@ export default function AdminPuja() {
     try {
       await api.post("/admin/puja", {
         name: formData.name.trim(),
-        ritualType: formData.ritualType,
-        type: formData.ritualType,
         description: formData.description?.trim() || undefined,
-        basePrice: Number(formData.basePrice) || 0,
+        price: Number(formData.basePrice) || 0,
         durationMinutes: Number(formData.durationMinutes) || 60,
+        category: ritualTypeToCategory(formData.ritualType),
       });
       setShowForm(false);
       setFormData({ name: "", ritualType: RITUAL_TYPES[0], description: "", basePrice: "500", durationMinutes: "60" });
@@ -101,26 +117,33 @@ export default function AdminPuja() {
               No puja services yet. Add one using the button above. Backend must expose <code>GET /api/admin/puja</code> and <code>POST /api/admin/puja</code>.
             </p>
           ) : (
-            <Table responsive hover>
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Ritual Type</th>
-                  <th>Price</th>
-                  <th>Duration</th>
-                </tr>
-              </thead>
-              <tbody>
-                {list.map((p) => (
-                  <tr key={p._id || p.id}>
-                    <td>{p.name}</td>
-                    <td>{p.ritualType || p.type || "—"}</td>
-                    <td>₹{p.basePrice ?? p.price ?? "—"}</td>
-                    <td>{p.durationMinutes ?? p.duration ?? "—"} min</td>
+            <>
+              <h6 className="text-muted mb-2">Audit: Puja services with created and last updated date/time</h6>
+              <Table responsive hover>
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Ritual Type</th>
+                    <th>Price</th>
+                    <th>Duration</th>
+                    <th>Created At</th>
+                    <th>Updated At</th>
                   </tr>
-                ))}
-              </tbody>
-            </Table>
+                </thead>
+                <tbody>
+                  {list.map((p) => (
+                    <tr key={p._id || p.id}>
+                      <td>{p.name}</td>
+                      <td>{p.category ?? p.ritualType ?? p.type ?? "—"}</td>
+                      <td>₹{p.price ?? p.basePrice ?? "—"}</td>
+                      <td>{p.durationMinutes ?? p.duration ?? "—"} min</td>
+                      <td className="small">{p.createdAt ? new Date(p.createdAt).toLocaleString() : "—"}</td>
+                      <td className="small">{p.updatedAt ? new Date(p.updatedAt).toLocaleString() : "—"}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            </>
           )}
         </Card.Body>
       </Card>

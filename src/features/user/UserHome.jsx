@@ -3,7 +3,7 @@ import { Card, Row, Col, Button, Spinner, Alert } from "react-bootstrap";
 import { AuthContext } from "../../context/AuthContext";
 import { useUserModal } from "../../context/UserModalContext";
 import { useLocation, useNavigate } from "react-router-dom";
-import { FaMapMarkerAlt, FaUser, FaEdit, FaExternalLinkAlt, FaPrayingHands, FaShoppingCart, FaUserTie, FaSearch } from "react-icons/fa";
+import { FaMapMarkerAlt, FaUser, FaEdit, FaExternalLinkAlt, FaPrayingHands, FaShoppingCart, FaUserTie, FaSearch, FaCalendarAlt } from "react-icons/fa";
 import { getDisplayNameForDashboard } from "../../utils/displayName";
 import { RITUAL_TYPES } from "../../constants";
 
@@ -90,6 +90,49 @@ export default function UserHome() {
             className="border-0 shadow-sm h-100 text-center"
             role="button"
             tabIndex={0}
+            onClick={() => goTo("/user/activity")}
+            onKeyDown={(e) => e.key === "Enter" && goTo("/user/activity")}
+            style={{
+              borderRadius: "1rem",
+              transition: "all 0.3s ease",
+              cursor: "pointer",
+              textDecoration: "none",
+              color: "inherit"
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = "translateY(-4px)";
+              e.currentTarget.style.boxShadow = "0 10px 25px rgba(234, 88, 12, 0.15)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = "translateY(0)";
+              e.currentTarget.style.boxShadow = "0 1px 3px rgba(0, 0, 0, 0.1)";
+            }}
+          >
+            <Card.Body className="p-4">
+              <div className="mb-3">
+                <div
+                  className="mx-auto d-flex align-items-center justify-content-center"
+                  style={{
+                    width: "64px",
+                    height: "64px",
+                    borderRadius: "1rem",
+                    background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+                    color: "white"
+                  }}
+                >
+                  <FaCalendarAlt style={{ fontSize: "2rem" }} />
+                </div>
+              </div>
+              <h5 className="fw-bold mb-2">My Activity</h5>
+              <p className="text-muted small mb-0">Bookings, orders &amp; status</p>
+            </Card.Body>
+          </Card>
+        </Col>
+        <Col md={3} sm={6}>
+          <Card
+            className="border-0 shadow-sm h-100 text-center"
+            role="button"
+            tabIndex={0}
             onClick={() => goTo("/user/search")}
             onKeyDown={(e) => e.key === "Enter" && goTo("/user/search")}
             style={{
@@ -133,8 +176,8 @@ export default function UserHome() {
             className="border-0 shadow-sm h-100 text-center"
             role="button"
             tabIndex={0}
-            onClick={() => goTo("/user/puja")}
-            onKeyDown={(e) => e.key === "Enter" && goTo("/user/puja")}
+            onClick={() => goTo("/user/book")}
+            onKeyDown={(e) => e.key === "Enter" && goTo("/user/book")}
             style={{
               borderRadius: "1rem",
               transition: "all 0.3s ease",
@@ -166,8 +209,8 @@ export default function UserHome() {
                   <FaPrayingHands style={{ fontSize: "2rem" }} />
                 </div>
               </div>
-              <h5 className="fw-bold mb-2">Puja Services</h5>
-              <p className="text-muted small mb-0">Book traditional puja services</p>
+              <h5 className="fw-bold mb-2">Book</h5>
+              <p className="text-muted small mb-0">PanditJi, products &amp; puja services</p>
             </Card.Body>
           </Card>
         </Col>
@@ -212,50 +255,6 @@ export default function UserHome() {
               </div>
               <h5 className="fw-bold mb-2">Orders</h5>
               <p className="text-muted small mb-0">View and manage orders</p>
-            </Card.Body>
-          </Card>
-        </Col>
-
-        <Col md={3} sm={6}>
-          <Card
-            className="border-0 shadow-sm h-100 text-center"
-            role="button"
-            tabIndex={0}
-            onClick={() => goTo("/user/pandit")}
-            onKeyDown={(e) => e.key === "Enter" && goTo("/user/pandit")}
-            style={{
-              borderRadius: "1rem",
-              transition: "all 0.3s ease",
-              cursor: "pointer",
-              textDecoration: "none",
-              color: "inherit"
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = "translateY(-4px)";
-              e.currentTarget.style.boxShadow = "0 10px 25px rgba(234, 88, 12, 0.15)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = "translateY(0)";
-              e.currentTarget.style.boxShadow = "0 1px 3px rgba(0, 0, 0, 0.1)";
-            }}
-          >
-            <Card.Body className="p-4">
-              <div className="mb-3">
-                <div
-                  className="mx-auto d-flex align-items-center justify-content-center"
-                  style={{
-                    width: "64px",
-                    height: "64px",
-                    borderRadius: "1rem",
-                    background: "linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%)",
-                    color: "white"
-                  }}
-                >
-                  <FaUserTie style={{ fontSize: "2rem" }} />
-                </div>
-              </div>
-              <h5 className="fw-bold mb-2">PanditJi</h5>
-              <p className="text-muted small mb-0">Find and book pandits</p>
             </Card.Body>
           </Card>
         </Col>

@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import { Container, Card, Alert, Spinner, Badge, Table, Button } from "react-bootstrap";
-import { useParams } from "react-router-dom";
+import { Container, Card, Alert, Spinner, Badge, Table, Button, Row, Col } from "react-bootstrap";
+import { useParams, useNavigate } from "react-router-dom";
 import api from "../../services/api";
 import { getApiErrorMessage } from "../../utils/apiError";
 
 export default function OrderDetail() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -14,7 +15,16 @@ export default function OrderDetail() {
   const fetchOrder = async () => {
     try {
       const response = await api.get(`/orders/${id}`);
-      setOrder(response.data?.data);
+      const raw = response.data?.data ?? response.data;
+      if (raw) {
+        setOrder({
+          ...raw,
+          orderItems: Array.isArray(raw.orderItems) ? raw.orderItems : [],
+          productItems: Array.isArray(raw.productItems) ? raw.productItems : [],
+        });
+      } else {
+        setOrder(null);
+      }
       setError(null);
     } catch (err) {
       setError(getApiErrorMessage(err, "Failed to load order details"));
@@ -47,8 +57,10 @@ export default function OrderDetail() {
       CONFIRMED: "success",
       PROCESSING: "info",
       SHIPPED: "primary",
+      OUT_FOR_DELIVERY: "info",
       DELIVERED: "success",
       CANCELLED: "danger",
+      RETURNED: "secondary",
       REFUNDED: "secondary",
     };
     return <Badge bg={variants[status] || "secondary"}>{status}</Badge>;
@@ -96,41 +108,90 @@ export default function OrderDetail() {
             </div>
             {order.paymentStatus === "PENDING" && (
               <div className="mb-3">
-                <Button variant="primary" onClick={handleConfirmPayment} disabled={paying}>
-                  {paying ? "Processing..." : "Confirm Payment (Mock)"}
-                </Button>
+                <strong className="d-block mb-2">Payment</strong>
+                <Row className="g-2 align-items-center">
+                  <Col xs="auto">
+                    <Button variant="primary" onClick={() => navigate(`/user/order/${id}/pay`)}>
+                      Pay with Card / UPI
+                    </Button>
+                  </Col>
+                  <Col xs="auto">
+                    <Button variant="outline-secondary" onClick={handleConfirmPayment} disabled={paying}>
+                      {paying ? "Processing..." : "Confirm Payment (Mock)"}
+                    </Button>
+                  </Col>
+                </Row>
+                <p className="text-muted small mb-0 mt-1">Use Mock for local testing when payment-service is not running.</p>
               </div>
             )}
+            <div className="mb-3">
+              <strong>Order Date &amp; Time:</strong> {order.createdAt ? new Date(order.createdAt).toLocaleString() : "—"}
+            </div>
             <div className="mb-3">
               <strong>Shipping Address:</strong> {order.shippingAddress}, {order.city}, {order.state} - {order.pincode}
             </div>
             <div className="mb-3">
               <strong>Contact:</strong> {order.contactPhone}
             </div>
-            <div className="mb-3">
-              <strong>Order Date:</strong> {new Date(order.createdAt).toLocaleString()}
-            </div>
             <h5 className="mt-4">Order Items</h5>
-            <Table striped bordered>
-              <thead>
-                <tr>
-                  <th>Puja Type</th>
-                  <th>Quantity</th>
-                  <th>Unit Price</th>
-                  <th>Subtotal</th>
-                </tr>
-              </thead>
-              <tbody>
-                {order.orderItems?.map((item) => (
-                  <tr key={item.id}>
-                    <td>{item.pujaTypeName}</td>
-                    <td>{item.quantity}</td>
-                    <td>₹{item.unitPrice}</td>
-                    <td>₹{item.subtotal}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </Table>
+            {(order.orderItems?.length > 0 || order.productItems?.length > 0) ? (
+              <>
+                {order.orderItems?.length > 0 && (
+                  <>
+                    <h6 className="text-muted mt-2 mb-1">Puja services</h6>
+                    <Table striped bordered size="sm">
+                      <thead>
+                        <tr>
+                          <th>Puja Type</th>
+                          <th>Quantity</th>
+                          <th>Unit Price</th>
+                          <th>Subtotal</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {order.orderItems.map((item) => (
+                          <tr key={`puja-${item.id}`}>
+                            <td>{item.pujaTypeName ?? "—"}</td>
+                            <td>{item.quantity}</td>
+                            <td>₹{item.unitPrice ?? 0}</td>
+                            <td>₹{item.subtotal ?? 0}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </Table>
+                  </>
+                )}
+                {order.productItems?.length > 0 && (
+                  <>
+                    <h6 className="text-muted mt-3 mb-1">Products</h6>
+                    <Table striped bordered size="sm">
+                      <thead>
+                        <tr>
+                          <th>Item</th>
+                          <th>Quantity</th>
+                          <th>Unit Price</th>
+                          <th>Date & Time</th>
+                          <th>Subtotal</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {order.productItems.map((item) => (
+                          <tr key={`product-${item.id}`}>
+                            <td>{item.itemName ?? "—"}</td>
+                            <td>{item.quantity}</td>
+                            <td>₹{item.unitPrice ?? 0}</td>
+                            <td>{item.createdAt ? new Date(item.createdAt).toLocaleString() : "—"}</td>
+                            <td>₹{item.subtotal ?? 0}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </Table>
+                  </>
+                )}
+              </>
+            ) : (
+              <p className="text-muted mb-0">No line items for this order.</p>
+            )}
           </Card.Body>
         </Card>
       )}

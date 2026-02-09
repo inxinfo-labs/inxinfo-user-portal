@@ -11,11 +11,14 @@ export function getApiErrorMessage(err, fallback = "Something went wrong. Please
   const data = err.response?.data;
   const code = data?.code;
   if (code != null && ApiCodeMessages[code]) return ApiCodeMessages[code];
-  const msg = data?.message;
+  const msg = data?.message ?? data?.error ?? data?.detail;
   if (typeof msg === "string" && msg.trim()) return msg.trim();
   if (err.response?.status === 401) return "Please log in again.";
   if (err.response?.status === 403) return "You don't have permission.";
   if (err.response?.status === 404) return "Not found.";
+  if (err.response?.status === 500) {
+    return "Server error. If this is payment, check Razorpay keys and that payment-service is running.";
+  }
   if (err.code === "ERR_NETWORK" || err.message === "Network Error") {
     return "Cannot reach the server. Check that the backend is running and try again.";
   }

@@ -2,9 +2,11 @@ import { useEffect, useState } from "react";
 import { Container, Row, Col, Card, Button, Spinner, Alert, Badge } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import api from "../../services/api";
-import { FaClock, FaRupeeSign, FaArrowRight } from "react-icons/fa";
+import { useCart } from "../../context/CartContext";
+import { FaClock, FaRupeeSign, FaArrowRight, FaShoppingCart } from "react-icons/fa";
 
 export default function PujaList() {
+  const { addPuja } = useCart();
   const [pujas, setPujas] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -114,19 +116,29 @@ export default function PujaList() {
                     </div>
                   </div>
 
-                  <Button 
-                    variant="primary" 
-                    className="w-100 fw-semibold"
-                    onClick={() => navigate(`/user/puja/${puja.id}/book`)}
-                    style={{
-                      background: "var(--gradient-primary)",
-                      border: "none",
-                      borderRadius: "0.75rem",
-                      padding: "0.75rem"
-                    }}
-                  >
-                    Book Now <FaArrowRight className="ms-2" />
-                  </Button>
+                  <div className="d-flex gap-2">
+                    <Button
+                      variant="outline-primary"
+                      className="flex-grow-1 fw-semibold"
+                      style={{ borderRadius: "0.75rem", padding: "0.75rem" }}
+                      onClick={() => addPuja(puja)}
+                    >
+                      <FaShoppingCart className="me-1" /> Add to cart
+                    </Button>
+                    <Button 
+                      variant="primary" 
+                      className="flex-grow-1 fw-semibold"
+                      onClick={() => navigate(`/user/puja/${puja.id}/book`)}
+                      style={{
+                        background: "var(--gradient-primary)",
+                        border: "none",
+                        borderRadius: "0.75rem",
+                        padding: "0.75rem"
+                      }}
+                    >
+                      Book Now <FaArrowRight className="ms-2" />
+                    </Button>
+                  </div>
                 </Card.Body>
               </Card>
             </Col>

@@ -106,6 +106,13 @@ export default function AdminPandit() {
         pincode: (fromUserData.pincode || "").trim() || undefined,
         specializations: specializations.length ? specializations : undefined,
       });
+      try {
+        await api.put(`/admin/users/${uid}/role`, "PANDIT", {
+          headers: { "Content-Type": "application/json" },
+        });
+      } catch (roleErr) {
+        console.warn("Role update failed (user is still pandit in pandit-service):", roleErr);
+      }
       setShowApproveForm(false);
       setFromUserData({ ...INIT_FROM_USER });
       fetchList();
@@ -218,26 +225,38 @@ export default function AdminPandit() {
               No pandits yet. Add one using the button above. Backend must expose <code>GET /api/admin/pandit</code> and <code>POST /api/admin/pandit</code>.
             </p>
           ) : (
-            <Table responsive hover>
-              <thead>
-                <tr>
-                  <th>Display Name</th>
-                  <th>Experience</th>
-                  <th>City</th>
-                  <th>Ritual types</th>
-                </tr>
-              </thead>
-              <tbody>
-                {list.map((p) => (
-                  <tr key={p._id || p.id}>
-                    <td>{p.profile?.displayName ?? p.displayName ?? "—"}</td>
-                    <td>{p.profile?.experience ?? p.experience ?? "—"} yrs</td>
-                    <td>{p.location?.address?.city ?? p.city ?? "—"}</td>
-                    <td>{(p.specializations ?? []).map((s) => s.ritualType).join(", ") || "—"}</td>
+            <>
+              <h6 className="text-muted mb-2">Audit: Pandits with created and last updated date/time</h6>
+              <Table responsive hover>
+                <thead>
+                  <tr>
+                    <th>Display Name</th>
+                    <th>Experience</th>
+                    <th>City</th>
+                    <th>Ritual types</th>
+                    <th>Created At</th>
+                    <th>Updated At</th>
                   </tr>
-                ))}
-              </tbody>
-            </Table>
+                </thead>
+                <tbody>
+                  {list.map((p) => (
+                    <tr key={p._id || p.id}>
+                      <td>{p.name ?? p.profile?.displayName ?? p.displayName ?? "—"}</td>
+                      <td>{p.experienceYears ?? p.profile?.experience ?? p.experience ?? "—"} yrs</td>
+                      <td>{p.city ?? p.location?.address?.city ?? "—"}</td>
+                      <td>
+                        {(Array.isArray(p.specializations) ? p.specializations : [])
+                          .map((s) => (typeof s === "string" ? s : s?.ritualType))
+                          .filter(Boolean)
+                          .join(", ") || "—"}
+                      </td>
+                      <td className="small">{p.createdAt ? new Date(p.createdAt).toLocaleString() : "—"}</td>
+                      <td className="small">{p.updatedAt ? new Date(p.updatedAt).toLocaleString() : "—"}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            </>
           )}
         </Card.Body>
       </Card>

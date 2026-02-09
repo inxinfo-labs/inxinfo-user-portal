@@ -54,6 +54,14 @@ export default function CreateOrder() {
     });
   }, [location.state?.addItemId, products]);
 
+  useEffect(() => {
+    if (!location.state?.fromCart || (pujas.length === 0 && products.length === 0)) return;
+    const fromCartPuja = location.state.pujaItems;
+    const fromCartProduct = location.state.productItems;
+    if (Array.isArray(fromCartPuja) && fromCartPuja.length > 0) setOrderItems(fromCartPuja);
+    if (Array.isArray(fromCartProduct) && fromCartProduct.length > 0) setProductItems(fromCartProduct);
+  }, [location.state?.fromCart, location.state?.pujaItems, location.state?.productItems, pujas.length, products.length]);
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -114,8 +122,11 @@ export default function CreateOrder() {
       };
       const res = await api.post("/orders", payload);
       const created = res.data?.data ?? res.data;
-      if (created?.id) navigate(`/user/order/${created.id}`);
-      else navigate("/user/order");
+      if (created?.id) {
+        navigate(location.state?.fromCart ? `/user/order/${created.id}/pay` : `/user/order/${created.id}`);
+      } else {
+        navigate("/user/order");
+      }
     } catch (err) {
       setError(getApiErrorMessage(err, "Failed to create order"));
     } finally {

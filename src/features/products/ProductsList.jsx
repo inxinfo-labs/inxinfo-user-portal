@@ -4,11 +4,13 @@ import { Link, useNavigate } from "react-router-dom";
 import api from "../../services/api";
 import { getApiErrorMessage } from "../../utils/apiError";
 import { AuthContext } from "../../context/AuthContext";
+import { useCart } from "../../context/CartContext";
 import { FaShoppingCart, FaRupeeSign } from "react-icons/fa";
 
 /** Public list of products (GET /api/items). Anyone can view; sign in to order. */
 export default function ProductsList() {
   const { token } = useContext(AuthContext);
+  const { addProduct } = useCart();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -76,17 +78,27 @@ export default function ProductsList() {
                       <FaRupeeSign /> {item.price}
                     </span>
                     {token ? (
-                      <Button
-                        variant="primary"
-                        size="sm"
-                        className="rounded-pill"
-                        style={{ background: "var(--gradient-primary)", border: "none" }}
-                        as={Link}
-                        to="/user/order/create"
-                        state={{ addItemId: item.id ?? item._id, addItemName: item.name, addItemPrice: item.price }}
-                      >
-                        <FaShoppingCart className="me-1" /> Add to order
-                      </Button>
+                      <div className="d-flex gap-1">
+                        <Button
+                          variant="outline-primary"
+                          size="sm"
+                          className="rounded-pill"
+                          onClick={() => addProduct(item)}
+                        >
+                          <FaShoppingCart className="me-1" /> Cart
+                        </Button>
+                        <Button
+                          variant="primary"
+                          size="sm"
+                          className="rounded-pill"
+                          style={{ background: "var(--gradient-primary)", border: "none" }}
+                          as={Link}
+                          to="/user/order/create"
+                          state={{ addItemId: item.id ?? item._id, addItemName: item.name, addItemPrice: item.price }}
+                        >
+                          Order
+                        </Button>
+                      </div>
                     ) : (
                       <Button
                         variant="outline-primary"
