@@ -421,7 +421,7 @@ export default function UserHome() {
             <div className="d-flex flex-wrap justify-content-center gap-2">
               {RITUAL_TYPES.map((item, idx) => (
                 <span
-                  key={idx}
+                  key={item.value ?? idx}
                   className="px-3 py-2 rounded-pill"
                   style={{
                     background: "rgba(255, 255, 255, 0.95)",
@@ -432,7 +432,7 @@ export default function UserHome() {
                     boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
                   }}
                 >
-                  {item}
+                  {item.displayName}
                 </span>
               ))}
             </div>

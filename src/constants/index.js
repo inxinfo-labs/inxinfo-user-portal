@@ -8,7 +8,7 @@ export {
 export { DEFAULT_ADMIN_USER } from "./admin";
 export { RITUAL_TYPES } from "./ritualTypes";
 export { RITUAL_LANGUAGES } from "./languages";
-export { PRODUCT_CATEGORIES } from "./productCategories";
+export { PRODUCT_CATEGORIES, PRODUCT_SUBCATEGORIES } from "./productCategories";
 export {
   BOOKING_STATUS,
   BOOKING_STATUS_LABELS,

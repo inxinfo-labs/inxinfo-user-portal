@@ -16,6 +16,7 @@ import LocationOnIcon from "@mui/icons-material/LocationOn";
 import SendIcon from "@mui/icons-material/Send";
 import { FaLinkedin, FaGithub, FaTwitter } from "react-icons/fa";
 import emailjs from "@emailjs/browser";
+import api from "../services/api";
 
 const CONTACT_EMAIL = "satish.prasad@inxinfo.com";
 const EMAILJS_SERVICE = process.env.REACT_APP_EMAILJS_SERVICE_ID;
@@ -45,9 +46,9 @@ export default function Contact() {
     setSubmitStatus(null);
     if (!validate()) return;
 
-    if (EMAILJS_CONFIGURED) {
-      setSending(true);
-      try {
+    setSending(true);
+    try {
+      if (EMAILJS_CONFIGURED) {
         await emailjs.send(
           EMAILJS_SERVICE,
           EMAILJS_TEMPLATE,
@@ -60,25 +61,22 @@ export default function Contact() {
           },
           { publicKey: EMAILJS_PUBLIC_KEY }
         );
-        setSubmitStatus("sent");
-        setForm({ name: "", email: "", subject: "", message: "" });
-        setErrors({});
-      } catch (err) {
-        setSubmitStatus("error");
-      } finally {
-        setSending(false);
+      } else {
+        await api.post("/contact", {
+          name: form.name.trim(),
+          email: form.email.trim(),
+          subject: form.subject?.trim() || "Contact from INXINFO Labs",
+          message: form.message?.trim(),
+        });
       }
-      return;
+      setSubmitStatus("sent");
+      setForm({ name: "", email: "", subject: "", message: "" });
+      setErrors({});
+    } catch (err) {
+      setSubmitStatus("error");
+    } finally {
+      setSending(false);
     }
-
-    const subject = encodeURIComponent(form.subject || "Contact from INXINFO Labs");
-    const body = encodeURIComponent(
-      `Name: ${form.name}\nEmail: ${form.email}\n\nMessage:\n${form.message}`
-    );
-    window.location.href = `mailto:${CONTACT_EMAIL}?subject=${subject}&body=${body}`;
-    setSubmitStatus("success");
-    setForm({ name: "", email: "", subject: "", message: "" });
-    setErrors({});
   };
 
   const copyEmail = async () => {

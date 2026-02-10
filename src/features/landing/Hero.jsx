@@ -35,12 +35,11 @@ export default function Hero({ onOpenModal }) {
             <div className="mb-4">
               <span 
                 className="badge px-3 py-2 mb-3"
-                style={{
-                  background: "rgba(255,255,255,0.2)",
-                  backdropFilter: "blur(10px)",
-                  fontSize: "0.9rem",
-                  fontWeight: 600
-                }}
+              style={{
+                background: "rgba(255,255,255,0.25)",
+                fontSize: "0.9rem",
+                fontWeight: 600
+              }}
               >
                 <FaPrayingHands className="me-2" />
                 Puja &amp; Hindu Rituals
@@ -125,16 +124,15 @@ export default function Hero({ onOpenModal }) {
           <Col md={5} className="text-center fade-in-up">
             <div 
               style={{
-                background: "rgba(255,255,255,0.1)",
-                backdropFilter: "blur(20px)",
+                background: "rgba(255,255,255,0.18)",
                 borderRadius: "24px",
                 padding: "3rem",
-                border: "1px solid rgba(255,255,255,0.2)"
+                border: "1px solid rgba(255,255,255,0.25)"
               }}
             >
-              <div style={{ fontSize: "5rem", opacity: 0.9 }}>🪔</div>
+              <div style={{ fontSize: "5rem" }}>🪔</div>
               <h4 className="mt-3 mb-2">Puja at Your Doorstep</h4>
-              <p style={{ opacity: 0.9 }}>
+              <p style={{ opacity: 1 }}>
                 Book traditional puja, get samagri, and experienced Pandit Ji for every occasion
               </p>
             </div>

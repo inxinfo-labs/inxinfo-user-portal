@@ -209,8 +209,7 @@ export default function Login({ embedded = false, onSuccess }) {
         className="w-100 shadow-lg border-0 rounded-4 overflow-hidden"
         style={{
           maxWidth: 460,
-          background: "rgba(255, 255, 255, 0.95)",
-          backdropFilter: "blur(20px)",
+          background: "rgba(255, 255, 255, 0.98)",
           boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255,255,255,0.5)",
         }}
       >

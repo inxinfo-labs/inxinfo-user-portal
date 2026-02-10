@@ -22,6 +22,7 @@ const titles = {
 
 function SignInPrompt({ service, onClose, onOpenLogin, onOpenRegister }) {
   const copy = {
+    [SERVICE_TYPES.PRODUCTS]: "Sign in to browse products and add to cart.",
     [SERVICE_TYPES.PUJA]: "Sign in to browse and book puja services.",
     [SERVICE_TYPES.ORDER]: "Sign in to view and manage your orders.",
     [SERVICE_TYPES.PANDIT]: "Sign in to find and book experienced pandits.",
@@ -45,6 +46,18 @@ function SignInPrompt({ service, onClose, onOpenLogin, onOpenRegister }) {
 }
 
 function ModalContent({ service, token, closeService, openAuth }) {
+  /* Products, Puja, Orders, Pandit: require login (admin adds catalog; customers use after login). */
+  const requiresLogin = [SERVICE_TYPES.PRODUCTS, SERVICE_TYPES.PUJA, SERVICE_TYPES.ORDER, SERVICE_TYPES.PANDIT].includes(service);
+  if (requiresLogin && !token) {
+    return (
+      <SignInPrompt
+        service={service}
+        onClose={closeService}
+        onOpenLogin={() => openAuth(AUTH_MODES.LOGIN)}
+        onOpenRegister={() => openAuth(AUTH_MODES.REGISTER)}
+      />
+    );
+  }
   if (service === SERVICE_TYPES.PRODUCTS) {
     return (
       <Suspense
@@ -58,18 +71,6 @@ function ModalContent({ service, token, closeService, openAuth }) {
         <ProductsList />
       </Suspense>
     );
-  }
-  if (service === SERVICE_TYPES.PUJA || service === SERVICE_TYPES.ORDER || service === SERVICE_TYPES.PANDIT) {
-    if (!token) {
-      return (
-        <SignInPrompt
-          service={service}
-          onClose={closeService}
-          onOpenLogin={() => openAuth(AUTH_MODES.LOGIN)}
-          onOpenRegister={() => openAuth(AUTH_MODES.REGISTER)}
-        />
-      );
-    }
   }
   if (service === SERVICE_TYPES.PUJA) {
     return (

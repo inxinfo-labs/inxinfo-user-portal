@@ -6,23 +6,6 @@ import { getApiErrorMessage } from "../../utils/apiError";
 import { RITUAL_TYPES } from "../../constants";
 import { FaPlus, FaArrowLeft } from "react-icons/fa";
 
-/** Map frontend ritual type label to backend PujaCategory enum. */
-function ritualTypeToCategory(ritualType) {
-  const map = {
-    "Satyanarayan Puja": "SATYANARAYAN_PUJA",
-    "Ganesh Puja": "GANESH_PUJA",
-    "Durga Puja": "DURGA_PUJA",
-    "Lakshmi Puja": "LAXMI_PUJA",
-    "Shiva Puja": "SHIV_PUJA",
-    "Vehicle Puja": "VEHICLE_PUJA",
-    "Griha Pravesh": "HOUSE_WARMING",
-    "Marriage Ceremony": "WEDDING_PUJA",
-    "Navratri Puja": "DURGA_PUJA",
-    "Diwali Puja": "LAXMI_PUJA",
-  };
-  return map[ritualType] || "OTHER";
-}
-
 export default function AdminPuja() {
   const [list, setList] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -31,7 +14,7 @@ export default function AdminPuja() {
   const [saving, setSaving] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
-    ritualType: RITUAL_TYPES[0],
+    ritualType: RITUAL_TYPES[0]?.value ?? "OTHER",
     description: "",
     basePrice: "500",
     durationMinutes: "60",
@@ -70,10 +53,10 @@ export default function AdminPuja() {
         description: formData.description?.trim() || undefined,
         price: Number(formData.basePrice) || 0,
         durationMinutes: Number(formData.durationMinutes) || 60,
-        category: ritualTypeToCategory(formData.ritualType),
+        ritualType: formData.ritualType || undefined,
       });
       setShowForm(false);
-      setFormData({ name: "", ritualType: RITUAL_TYPES[0], description: "", basePrice: "500", durationMinutes: "60" });
+      setFormData({ name: "", ritualType: RITUAL_TYPES[0]?.value ?? "OTHER", description: "", basePrice: "500", durationMinutes: "60" });
       fetchList();
     } catch (err) {
       setError(getApiErrorMessage(err, "Failed to add puja service"));
@@ -134,7 +117,7 @@ export default function AdminPuja() {
                   {list.map((p) => (
                     <tr key={p._id || p.id}>
                       <td>{p.name}</td>
-                      <td>{p.category ?? p.ritualType ?? p.type ?? "—"}</td>
+                      <td>{p.ritualType ? (RITUAL_TYPES.find((r) => r.value === p.ritualType)?.displayName ?? p.ritualType) : (p.category ?? p.type ?? "—")}</td>
                       <td>₹{p.price ?? p.basePrice ?? "—"}</td>
                       <td>{p.durationMinutes ?? p.duration ?? "—"} min</td>
                       <td className="small">{p.createdAt ? new Date(p.createdAt).toLocaleString() : "—"}</td>
@@ -159,10 +142,10 @@ export default function AdminPuja() {
               <Form.Control name="name" value={formData.name} onChange={handleChange} required placeholder="e.g. Satyanarayan Puja at Home" />
             </Form.Group>
             <Form.Group className="mb-3">
-              <Form.Label>Ritual Type</Form.Label>
+              <Form.Label>Ritual Type (Puja service type; used in bookings and Pandit specializations)</Form.Label>
               <Form.Select name="ritualType" value={formData.ritualType} onChange={handleChange}>
                 {RITUAL_TYPES.map((t) => (
-                  <option key={t} value={t}>{t}</option>
+                  <option key={t.value} value={t.value}>{t.displayName}</option>
                 ))}
               </Form.Select>
             </Form.Group>

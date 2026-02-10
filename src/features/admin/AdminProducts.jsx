@@ -6,7 +6,7 @@ import { getApiErrorMessage } from "../../utils/apiError";
 import { PRODUCT_CATEGORIES } from "../../constants";
 import { FaPlus, FaArrowLeft } from "react-icons/fa";
 
-const INIT_FORM = { name: "", description: "", category: "", price: "", discountPrice: "", stock: "0", images: "", sku: "", active: true };
+const INIT_FORM = { name: "", description: "", category: "", productCategory: "", subCategory: "", price: "", discountPrice: "", stock: "0", images: "", sku: "", active: true };
 
 export default function AdminProducts() {
   const [list, setList] = useState([]);
@@ -50,6 +50,8 @@ export default function AdminProducts() {
       await api.post("/admin/items", {
         name: formData.name.trim(),
         description: (formData.description || "").trim(),
+        productCategory: formData.productCategory || undefined,
+        subCategory: (formData.subCategory || "").trim() || undefined,
         category: (formData.category || "").trim() || undefined,
         price: Number(formData.price) || 0,
         discountPrice: formData.discountPrice ? Number(formData.discountPrice) : null,
@@ -123,7 +125,7 @@ export default function AdminProducts() {
                   {list.map((p) => (
                     <tr key={p.id ?? p._id}>
                       <td>{p.name}</td>
-                      <td className="small">{p.category ?? "—"}</td>
+                      <td className="small">{p.category ?? p.productCategory ?? "—"}{p.subCategory ? ` / ${p.subCategory}` : ""}</td>
                       <td>₹{p.price ?? "—"}</td>
                       <td>{p.discountPrice != null ? `₹${p.discountPrice}` : "—"}</td>
                       <td>{p.stock ?? 0}</td>
@@ -155,13 +157,17 @@ export default function AdminProducts() {
               <Form.Control name="description" value={formData.description} onChange={handleChange} as="textarea" rows={2} placeholder="Description" />
             </Form.Group>
             <Form.Group className="mb-3">
-              <Form.Label>Category</Form.Label>
-              <Form.Select name="category" value={formData.category} onChange={handleChange}>
+              <Form.Label>Category (Product = physical item; distinct from Puja Types)</Form.Label>
+              <Form.Select name="productCategory" value={formData.productCategory ?? formData.category} onChange={handleChange}>
                 <option value="">— Select category —</option>
                 {PRODUCT_CATEGORIES.map((c) => (
-                  <option key={c} value={c}>{c}</option>
+                  <option key={c.value} value={c.value}>{c.displayName}</option>
                 ))}
               </Form.Select>
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Subcategory (optional)</Form.Label>
+              <Form.Control name="subCategory" value={formData.subCategory ?? ""} onChange={handleChange} placeholder="e.g. Brass, Copper" />
             </Form.Group>
             <Row>
               <Col md={6}>
@@ -187,7 +193,10 @@ export default function AdminProducts() {
               <Col md={6}>
                 <Form.Group className="mb-3">
                   <Form.Label>SKU (optional)</Form.Label>
-                  <Form.Control name="sku" value={formData.sku} onChange={handleChange} placeholder="e.g. PUJA-001" />
+                  <Form.Control name="sku" value={formData.sku} onChange={handleChange} placeholder="e.g. INCENSE-001" />
+                  <Form.Text className="text-muted small">
+                    Stock Keeping Unit: unique code for inventory (e.g. PUJA-001, IDOL-GANESH-M). Must be unique across products. Leave blank to auto-manage.
+                  </Form.Text>
                 </Form.Group>
               </Col>
             </Row>

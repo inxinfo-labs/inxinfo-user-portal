@@ -90,6 +90,7 @@ export default function AdminOrders() {
               <tbody>
                 {list.map((o) => {
                   const currentStatus = (o.orderStatus || o.status || "").toUpperCase().replace(/-/g, "_");
+                  const statusLabel = o.statusDisplayName || ORDER_STATUS_LABELS[o.statusKey] || currentStatus;
                   return (
                   <tr key={o._id || o.id}>
                     <td>{o.orderNumber || o.orderId || o._id || o.id}</td>
@@ -102,7 +103,7 @@ export default function AdminOrders() {
                     </td>
                     <td>₹{o.totalAmount ?? o.pricing?.totalAmount ?? "—"}</td>
                     <td><span className={`badge ${o.paymentStatus === "PAID" ? "bg-success" : "bg-warning"}`}>{o.paymentStatus ?? "PENDING"}</span></td>
-                    <td><span className="badge bg-secondary">{currentStatus || "—"}</span></td>
+                    <td><span className="badge bg-secondary" title={currentStatus}>{statusLabel || "—"}</span></td>
                     <td className="small">{o.createdAt ? new Date(o.createdAt).toLocaleString() : "—"}</td>
                     <td className="small">{o.updatedAt ? new Date(o.updatedAt).toLocaleString() : "—"}</td>
                     <td>

@@ -112,7 +112,7 @@ export default function Docs() {
                     <p className="small mb-1 fw-semibold">Categories (use one per product):</p>
                     <ul className="small text-muted mb-0" style={{ columnCount: 2 }}>
                       {PRODUCT_CATEGORIES.map((c) => (
-                        <li key={c}>{c}</li>
+                        <li key={c.value}>{c.displayName}</li>
                       ))}
                     </ul>
                     <p className="small mt-2 mb-0">
@@ -166,7 +166,7 @@ export default function Docs() {
                     </p>
                     <ListGroup className="small mb-0" style={{ maxHeight: "200px", overflowY: "auto" }}>
                       {RITUAL_TYPES.map((t) => (
-                        <ListGroup.Item key={t} className="py-1">{t}</ListGroup.Item>
+                        <ListGroup.Item key={t.value} className="py-1">{t.displayName}</ListGroup.Item>
                       ))}
                     </ListGroup>
                     <p className="small mt-2 mb-0">

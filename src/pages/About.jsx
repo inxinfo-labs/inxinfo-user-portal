@@ -176,7 +176,7 @@ export default function About() {
               <div className="d-flex flex-wrap justify-content-center gap-2">
                 {RITUAL_TYPES.map((item, idx) => (
                   <span
-                    key={idx}
+                    key={item.value ?? idx}
                     className="px-3 py-2 rounded"
                     style={{
                       background: "rgba(255, 255, 255, 0.9)",
@@ -186,7 +186,7 @@ export default function About() {
                       border: "1px solid rgba(234, 88, 12, 0.15)",
                     }}
                   >
-                    {item}
+                    {item.displayName}
                   </span>
                 ))}
               </div>

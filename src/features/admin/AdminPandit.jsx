@@ -36,7 +36,7 @@ export default function AdminPandit() {
     city: "",
     state: "",
     pincode: "",
-    ritualType: RITUAL_TYPES[0],
+    ritualType: RITUAL_TYPES[0]?.value ?? "OTHER",
     basePrice: "1000",
     durationMin: "60",
     languages: "Hindi,English",
@@ -169,7 +169,7 @@ export default function AdminPandit() {
         city: "",
         state: "",
         pincode: "",
-        ritualType: RITUAL_TYPES[0],
+        ritualType: RITUAL_TYPES[0]?.value ?? "OTHER",
         basePrice: "1000",
         durationMin: "60",
         languages: "Hindi,English",
@@ -288,10 +288,10 @@ export default function AdminPandit() {
               </Col>
               <Col md={4}>
                 <Form.Group className="mb-3">
-                  <Form.Label>Ritual Type</Form.Label>
+                  <Form.Label>Ritual Type (specialization)</Form.Label>
                   <Form.Select name="ritualType" value={formData.ritualType} onChange={handleChange}>
                     {RITUAL_TYPES.map((t) => (
-                      <option key={t} value={t}>{t}</option>
+                      <option key={t.value} value={t.value}>{t.displayName}</option>
                     ))}
                   </Form.Select>
                 </Form.Group>

@@ -117,7 +117,7 @@ export default function OrderDetail() {
                   </Col>
                   <Col xs="auto">
                     <Button variant="outline-secondary" onClick={handleConfirmPayment} disabled={paying}>
-                      {paying ? "Processing..." : "Confirm Payment (Mock)"}
+                      {paying ? "Processing..." : "Confirm Payment"}
                     </Button>
                   </Col>
                 </Row>
@@ -145,6 +145,7 @@ export default function OrderDetail() {
                           <th>Puja Type</th>
                           <th>Quantity</th>
                           <th>Unit Price</th>
+                          <th>Date & Time</th>
                           <th>Subtotal</th>
                         </tr>
                       </thead>
@@ -154,6 +155,7 @@ export default function OrderDetail() {
                             <td>{item.pujaTypeName ?? "—"}</td>
                             <td>{item.quantity}</td>
                             <td>₹{item.unitPrice ?? 0}</td>
+                            <td>{item.createdAt ? new Date(item.createdAt).toLocaleString() : "—"}</td>
                             <td>₹{item.subtotal ?? 0}</td>
                           </tr>
                         ))}
