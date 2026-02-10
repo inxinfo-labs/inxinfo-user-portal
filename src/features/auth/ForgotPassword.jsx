@@ -64,7 +64,7 @@ export default function ForgotPassword() {
           </h3>
           <p className="text-muted small mb-4">
             If an account exists for <strong>{email}</strong>, we’ve sent a password reset link. Check your inbox and
-            spam folder.
+            spam folder. If you don't receive it, check spam or ensure the server has FRONTEND_URL and mail (MAIL_USERNAME / MAIL_PASSWORD) configured.
           </p>
           <Button
             as={Link}

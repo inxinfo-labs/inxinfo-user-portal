@@ -20,7 +20,11 @@ export default function AdminOrders() {
       setList(Array.isArray(res.data?.data) ? res.data.data : res.data?.orders ?? []);
     } catch (err) {
       setList([]);
-      setError(getApiErrorMessage(err, "Could not load orders. Is the backend /api/admin/orders running?"));
+      const base = typeof api.defaults?.baseURL === "string" ? api.defaults.baseURL : "";
+      setError(
+        getApiErrorMessage(err, "Could not load orders. ") +
+        (base ? ` Backend: ${base}. Ensure it is running and REACT_APP_API_URL is correct.` : " Set REACT_APP_API_URL (e.g. https://your-backend.onrender.com/api) and ensure the backend is running.")
+      );
     } finally {
       setLoading(false);
     }
@@ -39,7 +43,11 @@ export default function AdminOrders() {
       await api.patch(`/admin/orders/${orderId}`, { orderStatus: toBackendStatus(newStatus) });
       fetchList();
     } catch (err) {
-      setError(getApiErrorMessage(err, "Failed to update order status"));
+      const base = typeof api.defaults?.baseURL === "string" ? api.defaults.baseURL : "";
+      setError(
+        getApiErrorMessage(err, "Failed to update order status. ") +
+        (base ? ` Backend: ${base}. Check REACT_APP_API_URL and that the backend is running.` : " Check that the backend is running and REACT_APP_API_URL is set (e.g. https://your-backend.onrender.com/api).")
+      );
     } finally {
       setUpdatingId(null);
     }

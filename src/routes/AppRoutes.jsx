@@ -8,6 +8,7 @@ const PrivateLayout = lazy(() => import("../components/layout/PrivateLayout"));
 const LandingPage = lazy(() => import("../pages/LandingPage"));
 const About = lazy(() => import("../pages/About"));
 const Contact = lazy(() => import("../pages/Contact"));
+const FestivalsCalendar = lazy(() => import("../pages/FestivalsCalendar"));
 const Docs = lazy(() => import("../pages/Docs"));
 const Blog = lazy(() => import("../pages/Blog"));
 const AuthRoutes = lazy(() => import("../features/auth/auth.routes"));
@@ -27,6 +28,7 @@ export default function AppRoutes() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/calendar" element={<FestivalsCalendar />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/products/*" element={<ProductsRoutes />} />
           <Route path="/auth/*" element={<AuthRoutes />} />

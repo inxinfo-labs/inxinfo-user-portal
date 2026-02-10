@@ -9,15 +9,18 @@ import { AuthContext } from "../../context/AuthContext";
 import ViewProfile from "./ViewProfile";
 import UpdateProfile from "./UpdateProfile";
 import UploadProfilePic from "./UploadProfilePic";
+import ChangePassword from "./ChangePassword";
 import PersonIcon from "@mui/icons-material/Person";
 import EditIcon from "@mui/icons-material/Edit";
 import PhotoCameraIcon from "@mui/icons-material/PhotoCamera";
+import LockIcon from "@mui/icons-material/Lock";
 import CircularProgress from "@mui/material/CircularProgress";
 
 const tabs = [
   { key: "view", label: "View Profile", icon: <PersonIcon /> },
   { key: "edit", label: "Edit Profile", icon: <EditIcon /> },
   { key: "pic", label: "Profile Picture", icon: <PhotoCameraIcon /> },
+  { key: "password", label: "Change password", icon: <LockIcon /> },
 ];
 
 export default function Profile() {
@@ -75,6 +78,7 @@ export default function Profile() {
           {activeTab === 0 && <ViewProfile />}
           {activeTab === 1 && <UpdateProfile />}
           {activeTab === 2 && <UploadProfilePic />}
+          {activeTab === 3 && <ChangePassword />}
         </CardContent>
       </Card>
     </Box>

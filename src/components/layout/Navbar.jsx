@@ -9,7 +9,7 @@ import { usePageModal, PAGE_MODAL_TYPES } from "../../context/PageModalContext";
 import { useUserModal, USER_MODAL_VIEWS } from "../../context/UserModalContext";
 import { getDisplayNameForNav } from "../../utils/displayName";
 import { isAdmin } from "../../utils/admin";
-import { FaUser, FaSignOutAlt, FaHome, FaInfoCircle, FaEnvelope, FaBars, FaTimes, FaSearch, FaUserShield, FaBox, FaPrayingHands, FaShoppingCart, FaUserTie, FaTag } from "react-icons/fa";
+import { FaUser, FaSignOutAlt, FaHome, FaInfoCircle, FaEnvelope, FaCalendarAlt, FaBars, FaTimes, FaSearch, FaUserShield, FaBox, FaPrayingHands, FaShoppingCart, FaUserTie, FaTag } from "react-icons/fa";
 
 export default function Navbar() {
   const navigate = useNavigate();
@@ -126,6 +126,15 @@ export default function Navbar() {
               >
                 <FaEnvelope className="me-2 opacity-75" />
                 Contact
+              </Nav.Link>
+              <Nav.Link
+                as={Link}
+                to="/calendar"
+                className="fw-semibold rounded-2 px-3 py-2"
+                style={{ color: "#475569", fontSize: "0.95rem" }}
+              >
+                <FaCalendarAlt className="me-2 opacity-75" />
+                Calendar
               </Nav.Link>
             <Dropdown as={Nav.Item} className="d-flex align-items-center">
               <Dropdown.Toggle

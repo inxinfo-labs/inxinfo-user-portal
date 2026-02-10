@@ -28,6 +28,7 @@ export default function Contact() {
   const [form, setForm] = useState({ name: "", email: "", subject: "", message: "" });
   const [errors, setErrors] = useState({});
   const [submitStatus, setSubmitStatus] = useState(null);
+  const [submitError, setSubmitError] = useState("");
   const [sending, setSending] = useState(false);
 
   const validate = () => {
@@ -44,6 +45,7 @@ export default function Contact() {
   const submit = async (e) => {
     e.preventDefault();
     setSubmitStatus(null);
+    setSubmitError("");
     if (!validate()) return;
 
     setSending(true);
@@ -74,6 +76,7 @@ export default function Contact() {
       setErrors({});
     } catch (err) {
       setSubmitStatus("error");
+      setSubmitError(err.response?.data?.message || "Something went wrong. Please try again or email us directly at " + CONTACT_EMAIL);
     } finally {
       setSending(false);
     }
@@ -176,8 +179,8 @@ export default function Contact() {
                 </Alert>
               )}
               {submitStatus === "error" && (
-                <Alert severity="error" onClose={() => setSubmitStatus(null)} sx={{ mb: 2 }}>
-                  Something went wrong. Please try again or email us directly at {CONTACT_EMAIL}.
+                <Alert severity="error" onClose={() => { setSubmitStatus(null); setSubmitError(""); }} sx={{ mb: 2 }}>
+                  {submitError || `Something went wrong. Please try again or email us directly at ${CONTACT_EMAIL}.`}
                 </Alert>
               )}
               <Box sx={{ mb: 2, display: "flex", alignItems: "center", gap: 1, flexWrap: "wrap" }}>

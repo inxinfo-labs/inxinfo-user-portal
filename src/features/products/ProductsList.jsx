@@ -1,11 +1,11 @@
 import { useEffect, useState, useContext } from "react";
-import { Container, Row, Col, Card, Button, Spinner, Alert } from "react-bootstrap";
+import { Container, Row, Col, Card, Button, Spinner, Alert, Badge } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import api from "../../services/api";
 import { getApiErrorMessage } from "../../utils/apiError";
 import { AuthContext } from "../../context/AuthContext";
 import { useCart } from "../../context/CartContext";
-import { FaShoppingCart, FaRupeeSign } from "react-icons/fa";
+import { FaShoppingCart, FaRupeeSign, FaBox } from "react-icons/fa";
 
 /** Public list of products (GET /api/items). Anyone can view; sign in to order. */
 export default function ProductsList() {
@@ -64,25 +64,41 @@ export default function ProductsList() {
       ) : (
         <Row className="g-4">
           {items.map((item) => (
-            <Col md={6} lg={4} key={item.id ?? item._id}>
-              <Card className="h-100 border-0 shadow-sm" style={{ borderRadius: "1rem" }}>
-                <Card.Body className="p-4">
-                  <Card.Title className="fw-bold mb-2">{item.name}</Card.Title>
+            <Col xs={12} sm={6} lg={4} key={item.id ?? item._id}>
+              <Card className="h-100 border-0 shadow-sm overflow-hidden" style={{ borderRadius: "12px" }}>
+                <div
+                  className="d-flex align-items-center justify-content-center text-white"
+                  style={{
+                    height: 140,
+                    background: "linear-gradient(135deg, var(--primary-500) 0%, var(--primary-700) 100%)",
+                  }}
+                >
+                  <FaBox style={{ fontSize: "3rem", opacity: 0.9 }} />
+                </div>
+                <Card.Body className="d-flex flex-column p-4">
+                  <div className="mb-2">
+                    {item.productCategory && (
+                      <Badge bg="light" text="dark" className="mb-2 me-1">{item.productCategory}</Badge>
+                    )}
+                    <Card.Title className="fw-bold mb-2" style={{ fontSize: "1.1rem", lineHeight: 1.3 }}>
+                      {item.name}
+                    </Card.Title>
+                  </div>
                   {item.description && (
-                    <Card.Text className="text-muted small mb-3" style={{ minHeight: "2.5rem" }}>
-                      {item.description.length > 100 ? `${item.description.slice(0, 100)}...` : item.description}
+                    <Card.Text className="text-muted small flex-grow-1" style={{ minHeight: "2.5rem" }}>
+                      {item.description.length > 120 ? `${item.description.slice(0, 120)}...` : item.description}
                     </Card.Text>
                   )}
-                  <div className="d-flex align-items-center justify-content-between mt-auto">
-                    <span className="fw-bold text-primary" style={{ fontSize: "1.25rem" }}>
+                  <div className="d-flex align-items-center justify-content-between mt-3 pt-3 border-top">
+                    <span className="fw-bold text-primary" style={{ fontSize: "1.2rem" }}>
                       <FaRupeeSign /> {item.price}
                     </span>
                     {token ? (
-                      <div className="d-flex gap-1">
+                      <div className="d-flex gap-2">
                         <Button
                           variant="outline-primary"
                           size="sm"
-                          className="rounded-pill"
+                          style={{ borderRadius: "8px" }}
                           onClick={() => addProduct(item)}
                         >
                           <FaShoppingCart className="me-1" /> Cart
@@ -90,8 +106,7 @@ export default function ProductsList() {
                         <Button
                           variant="primary"
                           size="sm"
-                          className="rounded-pill"
-                          style={{ background: "var(--gradient-primary)", border: "none" }}
+                          style={{ borderRadius: "8px", background: "var(--gradient-primary)", border: "none" }}
                           as={Link}
                           to="/user/order/create"
                           state={{ addItemId: item.id ?? item._id, addItemName: item.name, addItemPrice: item.price }}
@@ -103,7 +118,7 @@ export default function ProductsList() {
                       <Button
                         variant="outline-primary"
                         size="sm"
-                        className="rounded-pill"
+                        style={{ borderRadius: "8px" }}
                         as={Link}
                         to="/auth/login"
                       >
