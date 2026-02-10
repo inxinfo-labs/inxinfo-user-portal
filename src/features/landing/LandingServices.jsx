@@ -56,7 +56,7 @@ export default function LandingServices() {
         </div>
         <Row className="g-4">
           {services.map((s, i) => (
-            <Col md={6} lg={3} key={i}>
+            <Col md={6} lg={4} key={i} className="text-center">
               <Card
                 role="button"
                 tabIndex={0}

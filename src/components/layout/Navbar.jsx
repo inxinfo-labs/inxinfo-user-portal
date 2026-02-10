@@ -127,15 +127,6 @@ export default function Navbar() {
                 <FaEnvelope className="me-2 opacity-75" />
                 Contact
               </Nav.Link>
-              <Nav.Link
-                as={Link}
-                to="/calendar"
-                className="fw-semibold rounded-2 px-3 py-2"
-                style={{ color: "#475569", fontSize: "0.95rem" }}
-              >
-                <FaCalendarAlt className="me-2 opacity-75" />
-                Calendar
-              </Nav.Link>
             <Dropdown as={Nav.Item} className="d-flex align-items-center">
               <Dropdown.Toggle
                 as={Nav.Link}
@@ -163,6 +154,10 @@ export default function Navbar() {
                 <Dropdown.Item onClick={() => openService(SERVICE_TYPES.PANDIT)} className="py-2">
                   <FaUserTie className="me-2 text-teal" />
                   Book PanditJi
+                </Dropdown.Item>
+                <Dropdown.Item as={Link} to="/calendar" className="py-2">
+                  <FaCalendarAlt className="me-2 text-teal" />
+                  Festivals &amp; Calendar
                 </Dropdown.Item>
                 <Dropdown.Divider />
                 <Dropdown.Item onClick={() => openService(SERVICE_TYPES.PUJA_OFFERS)} className="py-2">
