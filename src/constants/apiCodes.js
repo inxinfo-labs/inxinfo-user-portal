@@ -25,7 +25,7 @@ export const ApiCodes = {
 export const ApiCodeMessages = {
   [ApiCodes.VALIDATION_ERROR]: "Please check your input and try again.",
   [ApiCodes.NOT_FOUND]: "The requested resource was not found.",
-  [ApiCodes.UNAUTHORIZED]: "Please sign in again.",
+  [ApiCodes.UNAUTHORIZED]: "Invalid email/username or password.",
   [ApiCodes.DUPLICATE]: "This value is already in use.",
   [ApiCodes.SERVER_ERROR]: "Something went wrong. Please try again.",
 };

@@ -50,7 +50,7 @@ export default function Login({ embedded = false, onSuccess }) {
       const code = err.response?.data?.code;
       const msg =
         (code != null && ApiCodeMessages[code]) ||
-        getApiErrorMessage(err, "Sign-in failed. Check your email and password, and that the server is running.");
+        getApiErrorMessage(err, "Invalid email/username or password. Please check and try again.");
       setError(msg);
     } finally {
       setLoading(false);
@@ -122,8 +122,11 @@ export default function Login({ embedded = false, onSuccess }) {
       <div className="border-0 shadow-sm p-4 rounded-3">
         <h5 className="mb-4 fw-bold">Sign In</h5>
         {error && (
-          <Alert variant="danger" className="mb-3" dismissible onClose={() => setError("")}>
-            {error}
+          <Alert variant="danger" className="mb-3 py-3" dismissible onClose={() => setError("")}>
+            <small className="d-block">{error}</small>
+            <Link to="/auth/forgot-password" className="small fw-semibold mt-2 d-inline-block text-decoration-none" style={{ color: "var(--primary-600)" }}>
+              Reset password
+            </Link>
           </Alert>
         )}
         <Form onSubmit={submitPassword}>
@@ -237,11 +240,18 @@ export default function Login({ embedded = false, onSuccess }) {
           {error && (
             <Alert
               variant="danger"
-              className="py-2 mb-3 rounded-3"
+              className="py-3 mb-3 rounded-3"
               dismissible
               onClose={() => setError("")}
             >
-              <small>{error}</small>
+              <small className="d-block">{error}</small>
+              <Link
+                to="/auth/forgot-password"
+                className="small fw-semibold mt-2 d-inline-block text-decoration-none"
+                style={{ color: "var(--primary-600)" }}
+              >
+                Reset password
+              </Link>
             </Alert>
           )}
 

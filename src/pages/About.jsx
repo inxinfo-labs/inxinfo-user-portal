@@ -1,6 +1,8 @@
+import { useState } from "react";
 import { Container, Row, Col, Card } from "react-bootstrap";
 import { FaCheckCircle, FaUsers, FaLightbulb, FaAward, FaPrayingHands } from "react-icons/fa";
 import { RITUAL_TYPES } from "../constants";
+import RitualDetailModal from "../components/RitualDetailModal";
 
 const FEATURED_RITUALS = [
   "Satyanarayan Puja",
@@ -13,6 +15,11 @@ const FEATURED_RITUALS = [
   "Custom rituals",
 ];
 
+function getRitualForDisplayName(displayName) {
+  const found = RITUAL_TYPES.find((r) => r.displayName === displayName);
+  return found || { value: "OTHER", displayName };
+}
+
 const values = [
   { icon: <FaUsers />, title: "Trust & Tradition", desc: "Authentic Hindu rituals and experienced Pandit Ji for every occasion." },
   { icon: <FaLightbulb />, title: "Easy Booking", desc: "Book puja and Pandit Ji from home, hassle-free, with transparent pricing." },
@@ -20,6 +27,7 @@ const values = [
 ];
 
 export default function About() {
+  const [selectedRitual, setSelectedRitual] = useState(null);
   return (
     <section id="about" className="py-5">
       <Container>
@@ -158,7 +166,9 @@ export default function About() {
                 {FEATURED_RITUALS.map((item, idx) => (
                   <span
                     key={idx}
-                    className="px-3 py-2 rounded-pill"
+                    role="button"
+                    tabIndex={0}
+                    className="px-3 py-2 rounded-pill ritual-pill"
                     style={{
                       background: "white",
                       color: "var(--primary-800)",
@@ -166,7 +176,10 @@ export default function About() {
                       fontWeight: 600,
                       border: "1px solid rgba(234, 88, 12, 0.25)",
                       boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
+                      cursor: "pointer",
                     }}
+                    onClick={() => setSelectedRitual(getRitualForDisplayName(item))}
+                    onKeyDown={(e) => e.key === "Enter" && setSelectedRitual(getRitualForDisplayName(item))}
                   >
                     {item}
                   </span>
@@ -177,14 +190,19 @@ export default function About() {
                 {RITUAL_TYPES.map((item, idx) => (
                   <span
                     key={item.value ?? idx}
-                    className="px-3 py-2 rounded"
+                    role="button"
+                    tabIndex={0}
+                    className="px-3 py-2 rounded ritual-pill"
                     style={{
                       background: "rgba(255, 255, 255, 0.9)",
                       color: "#475569",
                       fontSize: "0.8125rem",
                       fontWeight: 500,
                       border: "1px solid rgba(234, 88, 12, 0.15)",
+                      cursor: "pointer",
                     }}
+                    onClick={() => setSelectedRitual(item)}
+                    onKeyDown={(e) => e.key === "Enter" && setSelectedRitual(item)}
                   >
                     {item.displayName}
                   </span>
@@ -193,6 +211,12 @@ export default function About() {
             </div>
           </Col>
         </Row>
+
+      <RitualDetailModal
+        show={!!selectedRitual}
+        onHide={() => setSelectedRitual(null)}
+        ritual={selectedRitual}
+      />
       </Container>
     </section>
   );

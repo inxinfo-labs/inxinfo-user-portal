@@ -28,4 +28,31 @@ export const RITUAL_TYPES = [
   { value: "OTHER", displayName: "Other" },
 ];
 
+/** Fallback descriptions when no PujaType exists for a ritual (for Rituals & Puja detail modal). */
+export const RITUAL_DESCRIPTIONS = {
+  GRIHA_PRAVESH: "Housewarming and Griha Pravesh ceremonies for your new home. Traditional rituals to bless the home and bring good fortune.",
+  MARRIAGE_CEREMONY: "Wedding ceremonies and marriage rituals performed by experienced Pandit Ji. Customized to your tradition and region.",
+  HAVAN_HOMA: "Sacred Havan and Homa ceremonies for purification and blessings. Fire rituals for auspicious beginnings.",
+  SATYANARAYAN_PUJA: "Sacred Satyanarayan puja for peace, prosperity, and blessings. Performed at home for family welfare and auspicious beginnings.",
+  GANESH_PUJA: "Ganesh puja for removing obstacles and inviting wisdom. Ideal for new ventures and festivals like Ganesh Chaturthi.",
+  DURGA_PUJA: "Durga puja for strength and protection. Especially popular during Navratri and festival celebrations.",
+  LAKSHMI_PUJA: "Lakshmi puja for wealth and prosperity. Commonly performed on Diwali and Fridays.",
+  SHIVA_PUJA: "Shiva puja and Maha Shivaratri ceremonies. Worship of Lord Shiva for devotion and blessings.",
+  HANUMAN_PUJA: "Hanuman puja for strength and devotion. Popular on Tuesdays and Hanuman Jayanti.",
+  NAVRATRI_PUJA: "Navratri puja and nine-day worship. Durga, Lakshmi, and Saraswati pujas during the festival.",
+  DIWALI_PUJA: "Diwali puja and Lakshmi puja for the festival of lights. Bring prosperity to your home.",
+  KARVA_CHAUTH: "Karva Chauth fasting and puja for married couples. Moonrise rituals and blessings.",
+  THREAD_CEREMONY: "Sacred thread ceremony (Upanayanam). Traditional rites for the occasion.",
+  NAMING_CEREMONY: "Namkaran and naming ceremony for newborns. Blessings and traditional naming rituals.",
+  MUNDAN_CEREMONY: "Mundan (chudakarana) ceremony. First haircut ritual with Vedic rites.",
+  FUNERAL_RITES: "Antim Sanskar and funeral rites. Respectful last rites and Shradh guidance.",
+  ANNIVERSARY_PUJA: "Wedding anniversary and other anniversary pujas. Blessings for the couple.",
+  BUSINESS_OPENING: "Business opening and inauguration pujas. Blessings for success and prosperity.",
+  VEHICLE_PUJA: "Vehicle puja for new cars and vehicles. For safe travels and blessings.",
+  FESTIVAL_CELEBRATIONS: "Festival pujas for Diwali, Navratri, Holi, and other Hindu festivals.",
+  PERSONAL_CONSULTATION: "Personal consultation with experienced Pandit Ji for rituals and guidance.",
+  KUNDLI_READING: "Kundli and horoscope reading. Vedic astrology consultation.",
+  OTHER: "Custom rituals and puja services. Contact us for your specific occasion.",
+};
+
 export default RITUAL_TYPES;

@@ -174,20 +174,13 @@ export default function Navbar() {
             )}
           </Nav>
 
-          {/* Auth Section - Login | Register | Join as PanditJi (no overlap) */}
+          {/* Auth: Login + Sign up dropdown (Register | Join as Pandit Ji) — no overlap */}
           <Nav className="align-items-center">
             {!token ? (
-              <div
-                className="d-flex align-items-center flex-wrap justify-content-end nav-auth-buttons"
-                style={{
-                  columnGap: "1rem",
-                  rowGap: "0.5rem",
-                  minWidth: 0,
-                }}
-              >
+              <div className="d-flex align-items-center gap-2 nav-auth-buttons">
                 <Button
                   variant="outline-primary"
-                  className="fw-semibold flex-shrink-0"
+                  className="fw-semibold"
                   style={{
                     borderRadius: "10px",
                     borderColor: "var(--primary-600)",
@@ -199,31 +192,39 @@ export default function Navbar() {
                 >
                   Login
                 </Button>
-                <span className="d-none d-sm-inline text-muted flex-shrink-0" style={{ fontSize: "0.75rem" }} aria-hidden>|</span>
-                <Button
-                  variant="outline-secondary"
-                  className="fw-semibold flex-shrink-0"
-                  style={{ borderRadius: "10px", padding: "0.5rem 0.85rem", fontSize: "0.9rem" }}
-                  onClick={() => openAuth(AUTH_MODES.REGISTER)}
-                >
-                  Register
-                </Button>
-                <span className="d-none d-sm-inline text-muted flex-shrink-0" style={{ fontSize: "0.75rem", marginLeft: "0.1rem" }} aria-hidden>|</span>
-                <Button
-                  className="fw-semibold flex-shrink-0"
-                  style={{
-                    background: "var(--gradient-primary)",
-                    border: "none",
-                    borderRadius: "10px",
-                    padding: "0.5rem 0.85rem",
-                    fontSize: "0.9rem",
-                    whiteSpace: "nowrap",
-                    marginLeft: "0.15rem",
-                  }}
-                  onClick={() => openAuth(AUTH_MODES.REGISTER_PANDIT)}
-                >
-                  Join as PanditJi
-                </Button>
+                <Dropdown align="end">
+                  <Dropdown.Toggle
+                    variant="outline-secondary"
+                    className="fw-semibold d-flex align-items-center gap-1"
+                    style={{
+                      borderRadius: "10px",
+                      padding: "0.5rem 0.85rem",
+                      fontSize: "0.9rem",
+                      borderColor: "#d1d5db",
+                      color: "#374151",
+                    }}
+                  >
+                    Sign up
+                  </Dropdown.Toggle>
+                  <Dropdown.Menu
+                    className="shadow border-0 py-1"
+                    style={{ borderRadius: "12px", minWidth: "220px" }}
+                  >
+                    <Dropdown.Item
+                      onClick={() => openAuth(AUTH_MODES.REGISTER)}
+                      className="fw-semibold py-2 px-3"
+                    >
+                      Register
+                    </Dropdown.Item>
+                    <Dropdown.Item
+                      onClick={() => openAuth(AUTH_MODES.REGISTER_PANDIT)}
+                      className="fw-semibold py-2 px-3 d-flex align-items-center"
+                      style={{ color: "var(--primary-700)" }}
+                    >
+                      Join as Pandit Ji
+                    </Dropdown.Item>
+                  </Dropdown.Menu>
+                </Dropdown>
               </div>
             ) : (
               <>

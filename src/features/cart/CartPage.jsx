@@ -42,11 +42,26 @@ export default function CartPage() {
       <Container className="my-5">
         <h2 className="mb-4">Cart</h2>
         <Alert variant="info">Your cart is empty. Add products, puja services, or book a PanditJi.</Alert>
-        <div className="d-flex gap-2">
-          <Button variant="primary" onClick={() => navigate("/products")}>Browse Products</Button>
-          <Button variant="outline-primary" onClick={() => navigate("/user/puja")}>Puja Services</Button>
-          <Button variant="outline-primary" onClick={() => navigate("/user/pandit")}>Book PanditJi</Button>
-          <Button variant="outline-secondary" onClick={() => navigate("/user/activity")}>My Activity</Button>
+        <div className="d-flex flex-wrap gap-2">
+          <Button variant="primary" onClick={() => navigate("/products")}>
+            <FaShoppingBag className="me-2" /> Browse Products
+          </Button>
+          <Button variant="outline-primary" onClick={() => navigate("/user/puja")}>
+            <FaPrayingHands className="me-2" /> Puja Services
+          </Button>
+          <Button variant="outline-primary" onClick={() => navigate("/user/pandit")}>
+            <FaUserTie className="me-2" /> Book PanditJi
+          </Button>
+          <Button
+            variant="outline-secondary"
+            onClick={() => navigate("/user/activity")}
+            className="d-flex align-items-center justify-content-center gap-2 my-activity-btn"
+          >
+            <span className="my-activity-icon">
+              <FaCalendarAlt />
+            </span>
+            <span>My Activity</span>
+          </Button>
         </div>
       </Container>
     );
@@ -135,10 +150,11 @@ export default function CartPage() {
               </Button>
               <Link
                 to="/user/activity"
-                className="d-flex align-items-center justify-content-center gap-2 w-100 py-2 text-decoration-none border rounded"
+                className="d-flex align-items-center justify-content-center gap-2 w-100 py-2 text-decoration-none border rounded-3 my-activity-link"
                 style={{ color: "#475569", borderColor: "#e2e8f0", fontSize: "0.9rem" }}
               >
-                <FaCalendarAlt /> My Activity
+                <span className="my-activity-icon"><FaCalendarAlt /></span>
+                <span>My Activity</span>
               </Link>
             </Card.Body>
           </Card>

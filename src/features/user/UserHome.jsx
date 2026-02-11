@@ -6,6 +6,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { FaMapMarkerAlt, FaUser, FaEdit, FaExternalLinkAlt, FaPrayingHands, FaShoppingCart, FaUserTie, FaSearch, FaCalendarAlt } from "react-icons/fa";
 import { getDisplayNameForDashboard } from "../../utils/displayName";
 import { RITUAL_TYPES } from "../../constants";
+import RitualDetailModal from "../../components/RitualDetailModal";
 
 const OFFICE_LAT = 12.9716;
 const OFFICE_LNG = 77.5946;
@@ -17,6 +18,7 @@ export default function UserHome() {
   const navigate = useNavigate();
   const { closeUserModal } = useUserModal();
   const [userLocation, setUserLocation] = useState(null);
+  const [selectedRitual, setSelectedRitual] = useState(null);
 
   const goTo = (path) => {
     closeUserModal();
@@ -422,7 +424,9 @@ export default function UserHome() {
               {RITUAL_TYPES.map((item, idx) => (
                 <span
                   key={item.value ?? idx}
-                  className="px-3 py-2 rounded-pill"
+                  role="button"
+                  tabIndex={0}
+                  className="px-3 py-2 rounded-pill ritual-pill"
                   style={{
                     background: "rgba(255, 255, 255, 0.95)",
                     color: "var(--primary-800)",
@@ -430,7 +434,10 @@ export default function UserHome() {
                     fontWeight: 600,
                     border: "1px solid rgba(234, 88, 12, 0.2)",
                     boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
+                    cursor: "pointer",
                   }}
+                  onClick={() => setSelectedRitual(item)}
+                  onKeyDown={(e) => e.key === "Enter" && setSelectedRitual(item)}
                 >
                   {item.displayName}
                 </span>
@@ -439,6 +446,12 @@ export default function UserHome() {
           </div>
         </Col>
       </Row>
+
+      <RitualDetailModal
+        show={!!selectedRitual}
+        onHide={() => setSelectedRitual(null)}
+        ritual={selectedRitual}
+      />
 
       {/* User Location Card */}
       {user && (

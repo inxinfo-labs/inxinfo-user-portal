@@ -5,7 +5,7 @@ import api from "../../services/api";
 import { AuthContext } from "../../context/AuthContext";
 import { useAuthModal, AUTH_MODES } from "../../context/AuthModalContext";
 import { getApiErrorMessage } from "../../utils/apiError";
-import { getGmailValidationError } from "../../utils/emailValidation";
+import { getGmailValidationError, isGmailEmail } from "../../utils/emailValidation";
 import { Country, State, City } from "country-state-city";
 import {
   ApiCodeMessages,
@@ -99,20 +99,32 @@ export default function Register({ defaultRegisterAs = "CUSTOMER", embedded = fa
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
+  const isStrongPassword = (pwd) => {
+    if (!pwd || pwd.length < 8) return false;
+    // At least one upper, one lower, one digit, one special character
+    return /[A-Z]/.test(pwd) && /[a-z]/.test(pwd) && /\d/.test(pwd) && /[^A-Za-z0-9]/.test(pwd);
+  };
+
   const submit = async (e) => {
     e.preventDefault();
     setError("");
-    const emailErr = getGmailValidationError(formData.email);
-    if (emailErr) {
-      setError(emailErr);
+    const emailTrimmed = formData.email.trim();
+    if (!emailTrimmed) {
+      setError("Email is required.");
+      return;
+    }
+    if (!isGmailEmail(emailTrimmed)) {
+      setError("Please enter a valid Gmail address. Only Gmail addresses are accepted for registration.");
       return;
     }
     if (formData.password !== formData.confirmPassword) {
       setError("Passwords do not match.");
       return;
     }
-    if (formData.password.length < 6) {
-      setError("Password must be at least 6 characters.");
+    if (!isStrongPassword(formData.password)) {
+      setError(
+        "Password must be at least 8 characters and include upper & lower case letters, a number, and a special character."
+      );
       return;
     }
     setLoading(true);
@@ -341,11 +353,18 @@ export default function Register({ defaultRegisterAs = "CUSTOMER", embedded = fa
                     placeholder="you@gmail.com"
                     value={formData.email}
                     onChange={handleChange}
+                    onBlur={() => {
+                    const v = formData.email.trim();
+                    if (v && !isGmailEmail(v)) setError("Please enter a valid Gmail address (e.g. name@gmail.com).");
+                    else if (v && isGmailEmail(v)) setError("");
+                  }}
                     required
                     className="border-2 rounded-3 py-2"
-                    style={{ borderColor: "#e2e8f0" }}
+                    style={{ borderColor: formData.email && !isGmailEmail(formData.email) ? "var(--bs-danger)" : "#e2e8f0" }}
                   />
-                  <Form.Text className="small text-muted">Only Gmail addresses are allowed for registration.</Form.Text>
+                  <div className="mt-1 px-2 py-1 rounded small" style={{ background: "#f1f5f9", color: "#64748b", fontSize: "0.8rem" }}>
+                    Use a valid Gmail address (e.g. name@gmail.com). Others will be rejected.
+                  </div>
                 </Form.Group>
               </Col>
               <Col md={6}>
@@ -393,11 +412,13 @@ export default function Register({ defaultRegisterAs = "CUSTOMER", embedded = fa
                     value={formData.password}
                     onChange={handleChange}
                     required
-                    minLength={6}
+                    minLength={8}
                     className="border-2 rounded-3 py-2"
                     style={{ borderColor: "#e2e8f0" }}
                   />
-                  <Form.Text className="small text-muted">Min 6 characters</Form.Text>
+                  <div className="mt-1 px-2 py-1 rounded small" style={{ background: "#f1f5f9", color: "#64748b", fontSize: "0.8rem" }}>
+                    At least 8 characters; include uppercase, lowercase, a number and a symbol.
+                  </div>
                 </Form.Group>
               </Col>
               <Col md={6}>
@@ -412,7 +433,7 @@ export default function Register({ defaultRegisterAs = "CUSTOMER", embedded = fa
                     value={formData.confirmPassword}
                     onChange={handleChange}
                     required
-                    minLength={6}
+                    minLength={8}
                     className="border-2 rounded-3 py-2"
                     style={{ borderColor: "#e2e8f0" }}
                   />
