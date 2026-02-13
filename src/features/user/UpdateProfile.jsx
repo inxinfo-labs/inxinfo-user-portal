@@ -125,7 +125,7 @@ const UpdateProfile = () => {
         location: location || null,
         mobileNumber: mobileNumber || null,
       });
-      setSuccess("Profile updated successfully!");
+      setSuccess("Profile updated successfully! Admin has been notified.");
       setTimeout(() => setSuccess(""), 3000);
       window.location.reload();
     } catch (err) {

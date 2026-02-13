@@ -9,6 +9,7 @@ import { FaLinkedin, FaGithub, FaTwitter, FaEnvelope } from "react-icons/fa";
 import { AuthContext } from "../../context/AuthContext";
 import { usePageModal, PAGE_MODAL_TYPES } from "../../context/PageModalContext";
 import { isAdmin } from "../../utils/admin";
+import AdSlot from "../AdSlot";
 
 const footerLinks = (admin) => ({
   company: [
@@ -167,6 +168,9 @@ export default function AppFooter() {
           </Grid>
         </Grid>
         <Box sx={{ borderTop: "1px solid rgba(255, 153, 51, 0.2)", pt: 3, textAlign: "center" }}>
+            <Box sx={{ mb: 3, display: "flex", justifyContent: "center" }}>
+              <AdSlot size="banner" slotId="footer-banner" />
+            </Box>
             <Typography variant="body2" sx={{ color: "#94a3b8", fontSize: "0.875rem" }}>
               © {currentYear} INXINFO Labs. All rights reserved. • v1.0.0
             </Typography>

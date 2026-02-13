@@ -3,6 +3,7 @@ import { Container, Card, Table, Badge, Spinner, Alert, Button, Row, Col } from 
 import { useNavigate, Link } from "react-router-dom";
 import api from "../../services/api";
 import { FaUserTie, FaPrayingHands, FaShoppingCart, FaRupeeSign, FaArrowLeft, FaEye } from "react-icons/fa";
+import AdSlot from "../../components/AdSlot";
 
 const LIMIT = 5;
 
@@ -145,7 +146,33 @@ export default function MyActivity() {
     }).catch(() => setErrorOrders("Failed to load orders")).finally(() => setLoadingOrders(false));
   }, []);
 
+  const allLoaded = !loadingPandit && !loadingPuja && !loadingOrders;
+  const hasNoActivity =
+    allLoaded &&
+    (!orders?.length && !panditBookings?.length && !pujaBookings?.length);
+
+  useEffect(() => {
+    if (hasNoActivity) {
+      navigate("/user/home", {
+        replace: true,
+        state: {
+          message:
+            "You don't have any activity yet. Book a puja, order products, or book a Pandit Ji to see your activity here.",
+        },
+      });
+    }
+  }, [hasNoActivity, navigate]);
+
   const activityAsOf = new Date().toLocaleString();
+
+  if (hasNoActivity) {
+    return (
+      <Container className="my-4 text-center py-5">
+        <Spinner animation="border" size="sm" />
+        <p className="text-muted small mt-2">Redirecting...</p>
+      </Container>
+    );
+  }
 
   return (
     <Container className="my-4">
@@ -162,67 +189,88 @@ export default function MyActivity() {
 
       <Row>
         <Col lg={8}>
-          <Card className="mb-4 border-0 shadow-sm">
-            <Card.Header className="bg-white d-flex align-items-center justify-content-between flex-wrap">
-              <span><FaShoppingCart className="me-2 text-primary" /><strong>Orders</strong></span>
-              <span className="text-muted small">{orders.length} total</span>
-            </Card.Header>
-            <Card.Body className="p-0">
-              <OrdersSection orders={orders} loading={loadingOrders} error={errorOrders} />
-            </Card.Body>
-          </Card>
+          {(loadingOrders || orders.length > 0) && (
+            <Card className="mb-4 border-0 shadow-sm">
+              <Card.Header className="bg-white d-flex align-items-center justify-content-between flex-wrap">
+                <span><FaShoppingCart className="me-2 text-primary" /><strong>Orders</strong></span>
+                <span className="text-muted small">{orders.length} total</span>
+              </Card.Header>
+              <Card.Body className="p-0">
+                <OrdersSection orders={orders} loading={loadingOrders} error={errorOrders} />
+              </Card.Body>
+            </Card>
+          )}
 
-          <Card className="mb-4 border-0 shadow-sm">
-            <Card.Header className="bg-white d-flex align-items-center justify-content-between flex-wrap">
-              <span><FaUserTie className="me-2 text-primary" /><strong>PanditJi bookings</strong></span>
-              <span className="text-muted small">{panditBookings.length} total</span>
-            </Card.Header>
-            <Card.Body className="p-0">
-              <PanditBookingsSection bookings={panditBookings} loading={loadingPandit} error={errorPandit} />
-            </Card.Body>
-          </Card>
+          {(loadingPandit || panditBookings.length > 0) && (
+            <Card className="mb-4 border-0 shadow-sm">
+              <Card.Header className="bg-white d-flex align-items-center justify-content-between flex-wrap">
+                <span><FaUserTie className="me-2 text-primary" /><strong>PanditJi bookings</strong></span>
+                <span className="text-muted small">{panditBookings.length} total</span>
+              </Card.Header>
+              <Card.Body className="p-0">
+                <PanditBookingsSection bookings={panditBookings} loading={loadingPandit} error={errorPandit} />
+              </Card.Body>
+            </Card>
+          )}
 
-          <Card className="mb-4 border-0 shadow-sm">
-            <Card.Header className="bg-white d-flex align-items-center justify-content-between flex-wrap">
-              <span><FaPrayingHands className="me-2 text-primary" /><strong>Puja bookings</strong></span>
-              <span className="text-muted small">{pujaBookings.length} total</span>
-            </Card.Header>
-            <Card.Body className="p-0">
-              <PujaBookingsSection bookings={pujaBookings} loading={loadingPuja} error={errorPuja} />
-            </Card.Body>
-          </Card>
+          {(loadingPuja || pujaBookings.length > 0) && (
+            <Card className="mb-4 border-0 shadow-sm">
+              <Card.Header className="bg-white d-flex align-items-center justify-content-between flex-wrap">
+                <span><FaPrayingHands className="me-2 text-primary" /><strong>Puja bookings</strong></span>
+                <span className="text-muted small">{pujaBookings.length} total</span>
+              </Card.Header>
+              <Card.Body className="p-0">
+                <PujaBookingsSection bookings={pujaBookings} loading={loadingPuja} error={errorPuja} />
+              </Card.Body>
+            </Card>
+          )}
         </Col>
         <Col lg={4}>
           <Card className="border-0 shadow-sm">
             <Card.Body>
               <h5 className="mb-3">Summary</h5>
               <div className="text-muted small mb-2">As of {activityAsOf}</div>
-              <div className="d-flex justify-content-between mb-2"><span>Orders</span><span>{orders.length}</span></div>
-              <div className="d-flex justify-content-between mb-2"><span>PanditJi bookings</span><span>{panditBookings.length}</span></div>
-              <div className="d-flex justify-content-between mb-3"><span>Puja bookings</span><span>{pujaBookings.length}</span></div>
-              <Link
-                to="/user/order"
-                className="d-flex align-items-center justify-content-center gap-2 w-100 py-2 mb-2 text-decoration-none border rounded"
-                style={{ color: "#475569", borderColor: "#e2e8f0", fontSize: "0.9rem" }}
-              >
-                <FaShoppingCart /> All orders
-              </Link>
-              <Link
-                to="/user/pandit/bookings"
-                className="d-flex align-items-center justify-content-center gap-2 w-100 py-2 mb-2 text-decoration-none border rounded"
-                style={{ color: "#475569", borderColor: "#e2e8f0", fontSize: "0.9rem" }}
-              >
-                <FaUserTie /> PanditJi bookings
-              </Link>
-              <Link
-                to="/user/puja/bookings"
-                className="d-flex align-items-center justify-content-center gap-2 w-100 py-2 text-decoration-none border rounded"
-                style={{ color: "#475569", borderColor: "#e2e8f0", fontSize: "0.9rem" }}
-              >
-                <FaPrayingHands /> Puja bookings
-              </Link>
+              {orders.length > 0 && (
+                <div className="d-flex justify-content-between mb-2"><span>Orders</span><span>{orders.length}</span></div>
+              )}
+              {panditBookings.length > 0 && (
+                <div className="d-flex justify-content-between mb-2"><span>PanditJi bookings</span><span>{panditBookings.length}</span></div>
+              )}
+              {pujaBookings.length > 0 && (
+                <div className="d-flex justify-content-between mb-3"><span>Puja bookings</span><span>{pujaBookings.length}</span></div>
+              )}
+              {orders.length > 0 && (
+                <Link
+                  to="/user/order"
+                  className="d-flex align-items-center justify-content-center gap-2 w-100 py-2 mb-2 text-decoration-none border rounded"
+                  style={{ color: "#475569", borderColor: "#e2e8f0", fontSize: "0.9rem" }}
+                >
+                  <FaShoppingCart /> All orders
+                </Link>
+              )}
+              {panditBookings.length > 0 && (
+                <Link
+                  to="/user/pandit/bookings"
+                  className="d-flex align-items-center justify-content-center gap-2 w-100 py-2 mb-2 text-decoration-none border rounded"
+                  style={{ color: "#475569", borderColor: "#e2e8f0", fontSize: "0.9rem" }}
+                >
+                  <FaUserTie /> PanditJi bookings
+                </Link>
+              )}
+              {pujaBookings.length > 0 && (
+                <Link
+                  to="/user/puja/bookings"
+                  className="d-flex align-items-center justify-content-center gap-2 w-100 py-2 text-decoration-none border rounded"
+                  style={{ color: "#475569", borderColor: "#e2e8f0", fontSize: "0.9rem" }}
+                >
+                  <FaPrayingHands /> Puja bookings
+                </Link>
+              )}
             </Card.Body>
           </Card>
+          <div className="mt-4">
+            <AdSlot size="sidebar" slotId="activity-sidebar" />
+          </div>
         </Col>
       </Row>
     </Container>

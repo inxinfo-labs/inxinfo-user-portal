@@ -62,7 +62,7 @@ const UploadProfilePic = () => {
       });
 
       await refreshAvatar();
-      setSuccess("Profile picture updated successfully!");
+      setSuccess("Profile picture updated successfully! Admin has been notified.");
       setFile(null);
       setPreview(null);
       

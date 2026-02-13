@@ -175,9 +175,9 @@ export default function Register({ defaultRegisterAs = "CUSTOMER", embedded = fa
 
         onSuccess?.();
         if (formData.registerAs === "PANDIT") {
-          navigate("/user/home", { state: { message: "You have applied as Pandit. Admin will approve you shortly." } });
+          navigate("/user/home", { state: { message: "You have applied as Pandit. Admin has been notified and will approve you shortly." } });
         } else {
-          navigate("/user/home");
+          navigate("/user/home", { state: { message: "Registration successful. Admin has been notified." } });
         }
       } else {
         setError("Registration succeeded but no token received. Please sign in.");

@@ -7,6 +7,7 @@ import { FaMapMarkerAlt, FaUser, FaEdit, FaExternalLinkAlt, FaPrayingHands, FaSh
 import { getDisplayNameForDashboard } from "../../utils/displayName";
 import { RITUAL_TYPES } from "../../constants";
 import RitualDetailModal from "../../components/RitualDetailModal";
+import AdSlot from "../../components/AdSlot";
 
 const OFFICE_LAT = 12.9716;
 const OFFICE_LNG = 77.5946;
@@ -303,6 +304,13 @@ export default function UserHome() {
               <p className="text-muted small mb-0">Manage your profile</p>
             </Card.Body>
           </Card>
+        </Col>
+      </Row>
+
+      {/* Advertisement - banner slot for partners / AdSense */}
+      <Row className="mb-4">
+        <Col>
+          <AdSlot size="banner" slotId="user-home-banner" className="mb-0" />
         </Col>
       </Row>
 
