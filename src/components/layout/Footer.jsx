@@ -21,6 +21,7 @@ const footerLinks = (admin) => ({
     ...(admin ? [{ label: "Documentation", path: "/docs" }] : []),
     { label: "Festivals & Calendar", path: "/calendar" },
     { label: "Blog", path: "/blog", pageModal: PAGE_MODAL_TYPES.BLOG },
+    { label: "Install app / QR code", path: "/install" },
     { label: "Support", path: "/contact", pageModal: PAGE_MODAL_TYPES.CONTACT },
   ],
   legal: [

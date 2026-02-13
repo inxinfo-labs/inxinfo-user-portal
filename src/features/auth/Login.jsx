@@ -19,6 +19,10 @@ export default function Login({ embedded = false, onSuccess }) {
   const [loading, setLoading] = useState(false);
   const [sendOtpLoading, setSendOtpLoading] = useState(false);
   const [error, setError] = useState("");
+  const [twoFactorStep, setTwoFactorStep] = useState(false);
+  const [twoFactorTempToken, setTwoFactorTempToken] = useState("");
+  const [twoFactorEmail, setTwoFactorEmail] = useState("");
+  const [twoFactorOtp, setTwoFactorOtp] = useState("");
   const navigate = useNavigate();
 
   const submitPassword = async (e) => {
@@ -33,7 +37,12 @@ export default function Login({ embedded = false, onSuccess }) {
     setError("");
     try {
       const res = await api.post("/auth/login", { username: u, password: p });
-      if (res.data?.accessToken) {
+      if (res.data?.requiresTwoFactor && res.data?.twoFactorTempToken) {
+        setTwoFactorStep(true);
+        setTwoFactorTempToken(res.data.twoFactorTempToken);
+        setTwoFactorEmail(res.data.email || "");
+        setTwoFactorOtp("");
+      } else if (res.data?.accessToken) {
         const userInfo = {
           role: res.data.role ?? "USER",
           userId: res.data.userId,
@@ -44,6 +53,36 @@ export default function Login({ embedded = false, onSuccess }) {
         navigate("/user/home");
       } else {
         setError("Invalid response from server. Please try again.");
+      }
+    } catch (err) {
+      setError(formatErrorForDisplay(getApiErrorDetails(err)));
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const submitTwoFactor = async (e) => {
+    e.preventDefault();
+    const code = (twoFactorOtp || "").trim();
+    if (!code || !twoFactorTempToken) {
+      setError("Enter the verification code sent to your email.");
+      return;
+    }
+    setLoading(true);
+    setError("");
+    try {
+      const res = await api.post("/auth/verify-2fa", { twoFactorTempToken: twoFactorTempToken, otp: code });
+      if (res.data?.accessToken) {
+        const userInfo = {
+          role: res.data.role ?? "USER",
+          userId: res.data.userId,
+          email: res.data.email,
+        };
+        login(res.data.accessToken, userInfo);
+        onSuccess?.();
+        navigate("/user/home");
+      } else {
+        setError("Verification failed. Please try again.");
       }
     } catch (err) {
       setError(formatErrorForDisplay(getApiErrorDetails(err)));
@@ -111,36 +150,63 @@ export default function Login({ embedded = false, onSuccess }) {
         {error && (
           <Alert variant="danger" className="mb-3 py-3" dismissible onClose={() => setError("")}>
             <small className="d-block" style={{ whiteSpace: "pre-line" }}>{error}</small>
-            <Link to="/auth/forgot-password" className="small fw-semibold mt-2 d-inline-block text-decoration-none" style={{ color: "var(--primary-600)" }}>
-              Reset password
-            </Link>
+            {!twoFactorStep && (
+              <Link to="/auth/forgot-password" className="small fw-semibold mt-2 d-inline-block text-decoration-none" style={{ color: "var(--primary-600)" }}>
+                Reset password
+              </Link>
+            )}
           </Alert>
         )}
-        <Form onSubmit={submitPassword}>
-          <Form.Group className="mb-3">
-            <Form.Label>Email, username or phone</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="you@example.com or +91 98765 43210"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              required
-            />
-          </Form.Group>
-          <Form.Group className="mb-3">
-            <Form.Label>Password</Form.Label>
-            <Form.Control
-              type="password"
-              placeholder="••••••••"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </Form.Group>
-          <Button type="submit" className="w-100" disabled={loading}>
-            {loading ? <Spinner size="sm" /> : "Login"}
-          </Button>
-        </Form>
+        {twoFactorStep ? (
+          <>
+            <p className="small text-muted mb-3">Enter the code sent to <strong>{twoFactorEmail}</strong>.</p>
+            <Form onSubmit={submitTwoFactor}>
+              <Form.Group className="mb-3">
+                <Form.Control
+                  type="text"
+                  placeholder="6-digit code"
+                  value={twoFactorOtp}
+                  onChange={(e) => setTwoFactorOtp(e.target.value.replace(/\D/g, "").slice(0, 6))}
+                  maxLength={6}
+                  required
+                  className="text-center"
+                />
+              </Form.Group>
+              <div className="d-flex gap-2">
+                <Button type="button" variant="outline-secondary" size="sm" onClick={() => { setTwoFactorStep(false); setTwoFactorTempToken(""); setError(""); }}>Back</Button>
+                <Button type="submit" className="flex-grow-1" disabled={loading || twoFactorOtp.length < 4}>
+                  {loading ? <Spinner size="sm" /> : "Verify"}
+                </Button>
+              </div>
+            </Form>
+          </>
+        ) : (
+          <Form onSubmit={submitPassword}>
+            <Form.Group className="mb-3">
+              <Form.Label>Email, username or phone</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="you@example.com or +91 98765 43210"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                required
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Password</Form.Label>
+              <Form.Control
+                type="password"
+                placeholder="••••••••"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </Form.Group>
+            <Button type="submit" className="w-100" disabled={loading}>
+              {loading ? <Spinner size="sm" /> : "Login"}
+            </Button>
+          </Form>
+        )}
         <p className="text-center mt-3 mb-0 small text-muted">
           Don&apos;t have an account?{" "}
           <button type="button" className="btn btn-link p-0 fw-semibold text-decoration-none" style={{ color: "var(--primary-600)" }} onClick={() => openAuth(AUTH_MODES.REGISTER)}>
@@ -232,16 +298,61 @@ export default function Login({ embedded = false, onSuccess }) {
               onClose={() => setError("")}
             >
               <small className="d-block" style={{ whiteSpace: "pre-line" }}>{error}</small>
-              <Link
-                to="/auth/forgot-password"
-                className="small fw-semibold mt-2 d-inline-block text-decoration-none"
-                style={{ color: "var(--primary-600)" }}
-              >
-                Reset password
-              </Link>
+              {!twoFactorStep && (
+                <Link
+                  to="/auth/forgot-password"
+                  className="small fw-semibold mt-2 d-inline-block text-decoration-none"
+                  style={{ color: "var(--primary-600)" }}
+                >
+                  Reset password
+                </Link>
+              )}
             </Alert>
           )}
 
+          {twoFactorStep ? (
+            <div className="mb-3">
+              <p className="small text-muted mb-3">
+                Two-factor authentication is enabled. Enter the code sent to <strong>{twoFactorEmail}</strong>.
+              </p>
+              <Form onSubmit={submitTwoFactor}>
+                <Form.Group className="mb-3">
+                  <Form.Label className="small fw-semibold text-secondary">Verification code</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="Enter 6-digit code"
+                    value={twoFactorOtp}
+                    onChange={(e) => setTwoFactorOtp(e.target.value.replace(/\D/g, "").slice(0, 6))}
+                    maxLength={6}
+                    required
+                    className="border-2 rounded-3 py-2 text-center"
+                    style={{ borderColor: "#e2e8f0", letterSpacing: "0.5em", fontSize: "1.25rem" }}
+                  />
+                </Form.Group>
+                <div className="d-flex gap-2">
+                  <Button
+                    type="button"
+                    variant="outline-secondary"
+                    className="rounded-3"
+                    onClick={() => { setTwoFactorStep(false); setTwoFactorTempToken(""); setError(""); }}
+                  >
+                    Back
+                  </Button>
+                  <Button
+                    type="submit"
+                    className="flex-grow-1 rounded-3 py-2 fw-semibold border-0"
+                    disabled={loading || twoFactorOtp.length < 4}
+                    style={{
+                      background: "linear-gradient(135deg, var(--primary-600) 0%, var(--primary-700) 100%)",
+                      fontSize: "1rem",
+                    }}
+                  >
+                    {loading ? <><Spinner animation="border" size="sm" className="me-2" /> Verifying...</> : "Verify and sign in"}
+                  </Button>
+                </div>
+              </Form>
+            </div>
+          ) : (
           <Tabs
             activeKey={activeTab}
             onSelect={(k) => {
@@ -393,6 +504,7 @@ export default function Login({ embedded = false, onSuccess }) {
               )}
             </Tab>
           </Tabs>
+          )}
 
           <p className="text-center mt-4 mb-0 small text-muted">
             Don’t have an account?{" "}

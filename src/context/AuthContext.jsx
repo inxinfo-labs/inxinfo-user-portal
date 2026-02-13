@@ -47,6 +47,16 @@ export const AuthProvider = ({ children }) => {
     }
   }, [token, logout]);
 
+  const refreshUser = useCallback(() => {
+    if (!token) return;
+    api.get("/user/me")
+      .then((res) => {
+        const data = res.data?.data ?? res.data;
+        setUser((prev) => ({ ...prev, ...data }));
+      })
+      .catch(() => {});
+  }, [token]);
+
   const loadAvatar = async () => {
     try {
       const res = await api.get("/user/profile-pic", {
@@ -74,7 +84,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ token, user, avatar, login, logout, refreshAvatar }}>
+    <AuthContext.Provider value={{ token, user, avatar, login, logout, refreshAvatar, refreshUser }}>
       {children}
     </AuthContext.Provider>
   );

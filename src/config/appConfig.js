@@ -34,6 +34,9 @@ export const AppConfig = Object.freeze({
 
   /** Contact page: fallback email when backend contact is unavailable */
   contactEmail: getEnv("REACT_APP_CONTACT_EMAIL", "satish.prasad@inxinfo.com"),
+
+  /** Public URL for QR code / install page (e.g. https://yoursite.com). Falls back to current origin. */
+  publicUrl: getEnv("REACT_APP_PUBLIC_URL", ""),
 });
 
 /** Validate required config at app load (e.g. in index or App). In production, apiBaseUrl should be set. */

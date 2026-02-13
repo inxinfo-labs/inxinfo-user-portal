@@ -11,6 +11,7 @@ const Contact = lazy(() => import("../pages/Contact"));
 const FestivalsCalendar = lazy(() => import("../pages/FestivalsCalendar"));
 const Docs = lazy(() => import("../pages/Docs"));
 const Blog = lazy(() => import("../pages/Blog"));
+const InstallApp = lazy(() => import("../pages/InstallApp"));
 const AuthRoutes = lazy(() => import("../features/auth/auth.routes"));
 const UserRoutes = lazy(() => import("../features/user/user.routes"));
 const PujaRoutes = lazy(() => import("../features/puja/puja.routes"));
@@ -30,6 +31,7 @@ export default function AppRoutes() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/calendar" element={<FestivalsCalendar />} />
           <Route path="/blog" element={<Blog />} />
+          <Route path="/install" element={<InstallApp />} />
           <Route path="/products/*" element={<ProductsRoutes />} />
           <Route path="/auth/*" element={<AuthRoutes />} />
         </Route>
