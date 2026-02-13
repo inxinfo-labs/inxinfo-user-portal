@@ -25,7 +25,7 @@ export const AuthProvider = ({ children }) => {
     setUnauthorizedHandler(logout);
   }, [logout]);
 
-  // fetch user info & avatar when token exists
+  // fetch user info & avatar when token exists (only request profile-pic when user has one to avoid 404)
   useEffect(() => {
     if (token) {
       const savedRole = localStorage.getItem(STORAGE_ROLE);
@@ -37,10 +37,13 @@ export const AuthProvider = ({ children }) => {
           const role = data?.role ?? savedRole;
           if (role) localStorage.setItem(STORAGE_ROLE, role);
           setUser((prev) => ({ ...prev, ...data, role: role ?? prev?.role }));
+          if (data?.profilePic) {
+            loadAvatar();
+          } else {
+            setAvatar(null);
+          }
         })
         .catch(() => logout());
-
-      loadAvatar();
     }
   }, [token, logout]);
 
@@ -56,7 +59,7 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  /** Call with token and optional user info from login/register (role, userId, email) so admin UI works before /user/me loads */
+  /** Call with token and optional user info from login/register (role, userId, email) so admin UI works before /user/me loads. Avatar loads after /user/me in useEffect. */
   const login = (newToken, userInfo = null) => {
     localStorage.setItem("accessToken", newToken);
     setToken(newToken);
@@ -64,7 +67,6 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem(STORAGE_ROLE, userInfo.role);
       setUser((prev) => ({ ...prev, ...userInfo }));
     }
-    loadAvatar();
   };
 
   const refreshAvatar = async () => {
