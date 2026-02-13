@@ -1,7 +1,7 @@
 import { Container, Row, Col, Card } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
-import { FaPrayingHands, FaShoppingCart, FaUserTie, FaBox } from "react-icons/fa";
+import { FaShoppingCart, FaUserTie, FaBox } from "react-icons/fa";
 import { useServiceModal, SERVICE_TYPES } from "../../context/ServiceModalContext";
 import { AuthContext } from "../../context/AuthContext";
 

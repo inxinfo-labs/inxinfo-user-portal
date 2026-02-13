@@ -5,7 +5,7 @@ import api from "../../services/api";
 import { AuthContext } from "../../context/AuthContext";
 import { useAuthModal, AUTH_MODES } from "../../context/AuthModalContext";
 import { getApiErrorMessage } from "../../utils/apiError";
-import { getGmailValidationError, isGmailEmail } from "../../utils/emailValidation";
+import { isGmailEmail } from "../../utils/emailValidation";
 import { Country, State, City } from "country-state-city";
 import {
   ApiCodeMessages,

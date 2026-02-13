@@ -4,8 +4,7 @@ import { useNavigate, Link } from "react-router-dom";
 import api from "../../services/api";
 import { AuthContext } from "../../context/AuthContext";
 import { useAuthModal, AUTH_MODES } from "../../context/AuthModalContext";
-import { getApiErrorMessage } from "../../utils/apiError";
-import { ApiCodeMessages } from "../../constants";
+import { getApiErrorDetails, formatErrorForDisplay } from "../../utils/apiError";
 import { FaEnvelope, FaLock, FaSignInAlt, FaLeaf, FaMobileAlt, FaKey } from "react-icons/fa";
 
 export default function Login({ embedded = false, onSuccess }) {
@@ -47,11 +46,7 @@ export default function Login({ embedded = false, onSuccess }) {
         setError("Invalid response from server. Please try again.");
       }
     } catch (err) {
-      const code = err.response?.data?.code;
-      const msg =
-        (code != null && ApiCodeMessages[code]) ||
-        getApiErrorMessage(err, "Invalid email/username or password. Please check and try again.");
-      setError(msg);
+      setError(formatErrorForDisplay(getApiErrorDetails(err)));
     } finally {
       setLoading(false);
     }
@@ -72,11 +67,7 @@ export default function Login({ embedded = false, onSuccess }) {
       setOtpCode("");
       setError("");
     } catch (err) {
-      const code = err.response?.data?.code;
-      const msg =
-        (code != null && ApiCodeMessages[code]) ||
-        getApiErrorMessage(err, "Could not send OTP. Check your email and that the server is running, or try signing in with password.");
-      setError(msg);
+      setError(formatErrorForDisplay(getApiErrorDetails(err)));
     } finally {
       setSendOtpLoading(false);
     }
@@ -107,11 +98,7 @@ export default function Login({ embedded = false, onSuccess }) {
         setError("Verification failed. Please try again.");
       }
     } catch (err) {
-      const code = err.response?.data?.code;
-      const msg =
-        (code != null && ApiCodeMessages[code]) ||
-        getApiErrorMessage(err, "Verification failed. Check the code or request a new OTP. Ensure the server is running.");
-      setError(msg);
+      setError(formatErrorForDisplay(getApiErrorDetails(err)));
     } finally {
       setLoading(false);
     }
@@ -123,7 +110,7 @@ export default function Login({ embedded = false, onSuccess }) {
         <h5 className="mb-4 fw-bold">Sign In</h5>
         {error && (
           <Alert variant="danger" className="mb-3 py-3" dismissible onClose={() => setError("")}>
-            <small className="d-block">{error}</small>
+            <small className="d-block" style={{ whiteSpace: "pre-line" }}>{error}</small>
             <Link to="/auth/forgot-password" className="small fw-semibold mt-2 d-inline-block text-decoration-none" style={{ color: "var(--primary-600)" }}>
               Reset password
             </Link>
@@ -244,7 +231,7 @@ export default function Login({ embedded = false, onSuccess }) {
               dismissible
               onClose={() => setError("")}
             >
-              <small className="d-block">{error}</small>
+              <small className="d-block" style={{ whiteSpace: "pre-line" }}>{error}</small>
               <Link
                 to="/auth/forgot-password"
                 className="small fw-semibold mt-2 d-inline-block text-decoration-none"

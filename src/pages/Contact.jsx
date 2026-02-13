@@ -17,12 +17,10 @@ import SendIcon from "@mui/icons-material/Send";
 import { FaLinkedin, FaGithub, FaTwitter } from "react-icons/fa";
 import emailjs from "@emailjs/browser";
 import api from "../services/api";
+import AppConfig from "../config/appConfig";
 
-const CONTACT_EMAIL = "satish.prasad@inxinfo.com";
-const EMAILJS_SERVICE = process.env.REACT_APP_EMAILJS_SERVICE_ID;
-const EMAILJS_TEMPLATE = process.env.REACT_APP_EMAILJS_TEMPLATE_ID;
-const EMAILJS_PUBLIC_KEY = process.env.REACT_APP_EMAILJS_PUBLIC_KEY;
-const EMAILJS_CONFIGURED = EMAILJS_SERVICE && EMAILJS_TEMPLATE && EMAILJS_PUBLIC_KEY;
+const EMAILJS_CONFIGURED =
+  AppConfig.emailJs.serviceId && AppConfig.emailJs.templateId && AppConfig.emailJs.publicKey;
 
 export default function Contact() {
   const [form, setForm] = useState({ name: "", email: "", subject: "", message: "" });
@@ -52,16 +50,16 @@ export default function Contact() {
     try {
       if (EMAILJS_CONFIGURED) {
         await emailjs.send(
-          EMAILJS_SERVICE,
-          EMAILJS_TEMPLATE,
+          AppConfig.emailJs.serviceId,
+          AppConfig.emailJs.templateId,
           {
-            to_email: CONTACT_EMAIL,
+            to_email: AppConfig.contactEmail,
             from_name: form.name.trim(),
             from_email: form.email.trim(),
             subject: form.subject?.trim() || "Contact from INXINFO Labs",
             message: form.message?.trim(),
           },
-          { publicKey: EMAILJS_PUBLIC_KEY }
+          { publicKey: AppConfig.emailJs.publicKey }
         );
       } else {
         await api.post("/contact", {
@@ -76,7 +74,7 @@ export default function Contact() {
       setErrors({});
     } catch (err) {
       setSubmitStatus("error");
-      setSubmitError(err.response?.data?.message || "Something went wrong. Please try again or email us directly at " + CONTACT_EMAIL);
+      setSubmitError(err.response?.data?.message || "Something went wrong. Please try again or email us directly at " + AppConfig.contactEmail);
     } finally {
       setSending(false);
     }
@@ -84,7 +82,7 @@ export default function Contact() {
 
   const copyEmail = async () => {
     try {
-      await navigator.clipboard.writeText(CONTACT_EMAIL);
+      await navigator.clipboard.writeText(AppConfig.contactEmail);
       setSubmitStatus("copied");
       setTimeout(() => setSubmitStatus(null), 2000);
     } catch {
@@ -93,7 +91,7 @@ export default function Contact() {
   };
 
   const contactItems = [
-    { icon: <EmailIcon />, title: "Email", content: CONTACT_EMAIL, href: `mailto:${CONTACT_EMAIL}` },
+    { icon: <EmailIcon />, title: "Email", content: AppConfig.contactEmail, href: `mailto:${AppConfig.contactEmail}` },
     { icon: <PhoneIcon />, title: "Mobile", content: "8050618092", href: "tel:8050618092" },
     { icon: <LocationOnIcon />, title: "Address", content: "23 and 30 Suloka Nilaya, Vishuvardhan Rd, Near RNSIT College, Bangalore – 560098", href: null },
   ];
@@ -160,12 +158,12 @@ export default function Contact() {
               </Typography>
               <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
                 {EMAILJS_CONFIGURED
-                  ? `Your message will be sent directly to ${CONTACT_EMAIL}. We will reply to the email you enter.`
-                  : `Your message will be sent to ${CONTACT_EMAIL}. Click "Send Message" to open your email app—you must then click Send in that app for us to receive it. Or copy our email below and send from Gmail.`}
+                  ? `Your message will be sent directly to ${AppConfig.contactEmail}. We will reply to the email you enter.`
+                  : `Your message will be sent to ${AppConfig.contactEmail}. Click "Send Message" to open your email app—you must then click Send in that app for us to receive it. Or copy our email below and send from Gmail.`}
               </Typography>
               {submitStatus === "sent" && (
                 <Alert severity="success" onClose={() => setSubmitStatus(null)} sx={{ mb: 2 }}>
-                  Message sent. We received it at {CONTACT_EMAIL} and will reply to you shortly.
+                  Message sent. We received it at {AppConfig.contactEmail} and will reply to you shortly.
                 </Alert>
               )}
               {submitStatus === "success" && (
@@ -180,7 +178,7 @@ export default function Contact() {
               )}
               {submitStatus === "error" && (
                 <Alert severity="error" onClose={() => { setSubmitStatus(null); setSubmitError(""); }} sx={{ mb: 2 }}>
-                  {submitError || `Something went wrong. Please try again or email us directly at ${CONTACT_EMAIL}.`}
+                  {submitError || `Something went wrong. Please try again or email us directly at ${AppConfig.contactEmail}.`}
                 </Alert>
               )}
               <Box sx={{ mb: 2, display: "flex", alignItems: "center", gap: 1, flexWrap: "wrap" }}>
@@ -188,7 +186,7 @@ export default function Contact() {
                   Or copy our email and send from your inbox:
                 </Typography>
                 <Button size="small" variant="outlined" onClick={copyEmail} sx={{ textTransform: "none" }}>
-                  {CONTACT_EMAIL} — Copy
+                  {AppConfig.contactEmail} — Copy
                 </Button>
               </Box>
               <Box component="form" onSubmit={submit}>

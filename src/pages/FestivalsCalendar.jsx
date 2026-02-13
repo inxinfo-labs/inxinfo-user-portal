@@ -1,13 +1,11 @@
 import { useState, useMemo } from "react";
 import { Container, Card, Row, Col, Badge, Form, Button, Modal } from "react-bootstrap";
-import { Link, useNavigate } from "react-router-dom";
-import { FESTIVALS, getUpcomingFestivals } from "../data/festivals";
-import { FaCalendarAlt, FaPrayingHands, FaUserTie, FaBox, FaShoppingCart, FaShareAlt } from "react-icons/fa";
+import { getUpcomingFestivals } from "../data/festivals";
+import { FaCalendarAlt, FaPrayingHands, FaUserTie, FaBox, FaShareAlt } from "react-icons/fa";
 import { useServiceModal, SERVICE_TYPES } from "../context/ServiceModalContext";
 
 export default function FestivalsCalendar() {
   const { openService } = useServiceModal();
-  const navigate = useNavigate();
   const [showPast, setShowPast] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [shareFeedback, setShareFeedback] = useState(null);

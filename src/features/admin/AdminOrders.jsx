@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Container, Card, Table, Alert, Spinner, Form } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import api from "../../services/api";
+import AppConfig from "../../config/appConfig";
 import { getApiErrorMessage } from "../../utils/apiError";
 import { ORDER_STATUS, ORDER_STATUS_LABELS } from "../../constants";
 import { FaArrowLeft } from "react-icons/fa";
@@ -20,10 +21,10 @@ export default function AdminOrders() {
       setList(Array.isArray(res.data?.data) ? res.data.data : res.data?.orders ?? []);
     } catch (err) {
       setList([]);
-      const base = typeof api.defaults?.baseURL === "string" ? api.defaults.baseURL : "";
+      const base = AppConfig.apiBaseUrl || "";
       setError(
         getApiErrorMessage(err, "Could not load orders. ") +
-        (base ? ` Backend: ${base}. Ensure it is running and REACT_APP_API_URL is correct.` : " Set REACT_APP_API_URL (e.g. https://your-backend.onrender.com/api) and ensure the backend is running.")
+        (base ? ` Backend: ${base}. Ensure it is running.` : " Set REACT_APP_API_URL in .env and ensure the backend is running.")
       );
     } finally {
       setLoading(false);
@@ -43,10 +44,10 @@ export default function AdminOrders() {
       await api.patch(`/admin/orders/${orderId}`, { orderStatus: toBackendStatus(newStatus) });
       fetchList();
     } catch (err) {
-      const base = typeof api.defaults?.baseURL === "string" ? api.defaults.baseURL : "";
+      const base = AppConfig.apiBaseUrl || "";
       setError(
         getApiErrorMessage(err, "Failed to update order status. ") +
-        (base ? ` Backend: ${base}. Check REACT_APP_API_URL and that the backend is running.` : " Check that the backend is running and REACT_APP_API_URL is set (e.g. https://your-backend.onrender.com/api).")
+        (base ? ` Backend: ${base}. Ensure it is running.` : " Set REACT_APP_API_URL in .env and ensure the backend is running.")
       );
     } finally {
       setUpdatingId(null);

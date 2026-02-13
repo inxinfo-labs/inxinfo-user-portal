@@ -3,7 +3,7 @@ import { Card, Row, Col, Button, Spinner, Alert } from "react-bootstrap";
 import { AuthContext } from "../../context/AuthContext";
 import { useUserModal } from "../../context/UserModalContext";
 import { useLocation, useNavigate } from "react-router-dom";
-import { FaMapMarkerAlt, FaUser, FaEdit, FaExternalLinkAlt, FaPrayingHands, FaShoppingCart, FaUserTie, FaSearch, FaCalendarAlt } from "react-icons/fa";
+import { FaMapMarkerAlt, FaUser, FaEdit, FaExternalLinkAlt, FaPrayingHands, FaShoppingCart, FaSearch, FaCalendarAlt } from "react-icons/fa";
 import { getDisplayNameForDashboard } from "../../utils/displayName";
 import { RITUAL_TYPES } from "../../constants";
 import RitualDetailModal from "../../components/RitualDetailModal";
