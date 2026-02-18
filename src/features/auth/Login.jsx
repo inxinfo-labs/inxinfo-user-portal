@@ -6,6 +6,7 @@ import { AuthContext } from "../../context/AuthContext";
 import { useAuthModal, AUTH_MODES } from "../../context/AuthModalContext";
 import { getApiErrorDetails, formatErrorForDisplay } from "../../utils/apiError";
 import { FaEnvelope, FaLock, FaSignInAlt, FaLeaf, FaMobileAlt, FaKey } from "react-icons/fa";
+import GoogleLoginBtn from "./GoogleLoginBtn";
 
 export default function Login({ embedded = false, onSuccess }) {
   const { login } = useContext(AuthContext);
@@ -505,6 +506,11 @@ export default function Login({ embedded = false, onSuccess }) {
             </Tab>
           </Tabs>
           )}
+
+          <div className="mt-4 pt-3 border-top" style={{ borderColor: "#e2e8f0 !important" }}>
+            <p className="text-center small text-muted mb-2">or sign in with</p>
+            <GoogleLoginBtn label="Sign in with Google" variant="outline" />
+          </div>
 
           <p className="text-center mt-4 mb-0 small text-muted">
             Don’t have an account?{" "}

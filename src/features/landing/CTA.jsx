@@ -33,7 +33,7 @@ export default function CTA({ onOpenModal }) {
             <h2 className="fw-bold mb-3" style={{ fontSize: "clamp(1.75rem, 4vw, 2.5rem)" }}>
               Book Your Puja &amp; Pandit Ji Today
             </h2>
-            <p className="lead mb-4" style={{ opacity: 0.95, fontSize: "1.25rem" }}>
+            <p className="lead mb-4" style={{ fontSize: "1.25rem", color: "rgba(255,255,255,1)", fontWeight: 500 }}>
               From festival pujas to Shradh, griha pravesh to weddings — traditional Hindu rituals 
               at your doorstep with experienced Pandit Ji and puja samagri.
             </p>
@@ -61,7 +61,7 @@ export default function CTA({ onOpenModal }) {
             </div>
             
             <div className="mt-5 pt-4" style={{ borderTop: "1px solid rgba(255,255,255,0.2)" }}>
-              <p className="small mb-0" style={{ opacity: 0.9 }}>
+              <p className="small mb-0" style={{ color: "rgba(255,255,255,0.95)" }}>
                 Trusted by 50+ enterprises • 100+ projects delivered • 24/7 support
               </p>
             </div>

@@ -132,8 +132,14 @@ export default function Contact() {
               <Typography variant="h6" fontWeight={700} gutterBottom>
                 Puja &amp; Pandit Ji Enquiries
               </Typography>
-              <Typography sx={{ opacity: 0.95, mb: 2 }}>
+              <Typography sx={{ mb: 2, color: "rgba(255,255,255,1)", fontWeight: 500, fontSize: "1rem", lineHeight: 1.6 }}>
                 Book traditional Hindu puja, Pandit Ji for ceremonies, or order puja samagri. We are here for all your ritual needs.
+              </Typography>
+              <Typography variant="subtitle2" fontWeight={600} sx={{ mb: 0.5, color: "rgba(255,255,255,0.95)" }}>
+                Email
+              </Typography>
+              <Typography component="a" href={`mailto:${AppConfig.contactEmail}`} sx={{ color: "white", textDecoration: "underline", "&:hover": { color: "rgba(255,255,255,0.9)" } }}>
+                {AppConfig.contactEmail}
               </Typography>
               <Typography variant="subtitle2" fontWeight={600} sx={{ mb: 1 }}>
                 We Can Help With:

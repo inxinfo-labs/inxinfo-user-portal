@@ -24,6 +24,7 @@ import {
   FaCamera,
   FaTimes,
 } from "react-icons/fa";
+import GoogleLoginBtn from "./GoogleLoginBtn";
 
 const ACCEPT_IMAGE = "image/jpeg,image/png,image/webp";
 const MAX_IMAGE_MB = 2;
@@ -66,6 +67,14 @@ export default function Register({ defaultRegisterAs = "CUSTOMER", embedded = fa
     });
     setError("");
   };
+
+  const digitsOnly = (s) => (s || "").replace(/\D/g, "");
+  const isMobileValid = (num) => {
+    const d = digitsOnly(num);
+    return d.length === 0 || d.length === 10;
+  };
+  const mobileError = formData.phoneNumber?.trim() && !isMobileValid(formData.phoneNumber);
+  const passwordMismatch = formData.confirmPassword && formData.password !== formData.confirmPassword;
 
   const countries = Country.getAllCountries();
   const defaultCountryFirst = [...countries].sort((a, b) =>
@@ -118,7 +127,11 @@ export default function Register({ defaultRegisterAs = "CUSTOMER", embedded = fa
       return;
     }
     if (formData.password !== formData.confirmPassword) {
-      setError("Passwords do not match.");
+      setError("Passwords do not match. Please re-enter your password and confirmation.");
+      return;
+    }
+    if (formData.phoneNumber?.trim() && !isMobileValid(formData.phoneNumber)) {
+      setError("Mobile number must be exactly 10 digits.");
       return;
     }
     if (!isStrongPassword(formData.password)) {
@@ -194,7 +207,7 @@ export default function Register({ defaultRegisterAs = "CUSTOMER", embedded = fa
   };
 
   const formContent = (
-        <div className="p-4 p-md-5">
+        <div className="p-4 p-md-5" style={{ fontFamily: "var(--bs-body-font-family)", fontSize: "1rem" }}>
           <div className="text-center mb-4">
             <div
               className="d-inline-flex align-items-center justify-content-center rounded-3 mb-3"
@@ -207,11 +220,11 @@ export default function Register({ defaultRegisterAs = "CUSTOMER", embedded = fa
             >
               <FaLeaf style={{ fontSize: "1.5rem" }} />
             </div>
-            <h1 className="h3 fw-bold mb-2" style={{ color: "var(--primary-700)" }}>
+            <h1 className="h4 fw-bold mb-2" style={{ color: "var(--primary-700)", letterSpacing: "-0.02em" }}>
               Create your account
             </h1>
-            <p className="text-muted small mb-0">
-              Join to book Puja services, orders & Pandit Ji
+            <p className="text-muted mb-0" style={{ fontSize: "0.9375rem" }}>
+              Join to book Puja services, orders &amp; Pandit Ji
             </p>
           </div>
 
@@ -388,13 +401,17 @@ export default function Register({ defaultRegisterAs = "CUSTOMER", embedded = fa
                     </Form.Select>
                     <Form.Control
                       type="tel"
-                      placeholder="98765 43210"
+                      placeholder="10-digit number"
                       value={formData.phoneNumber}
-                      onChange={(e) => setFormData((p) => ({ ...p, phoneNumber: e.target.value }))}
+                      onChange={(e) => setFormData((p) => ({ ...p, phoneNumber: e.target.value.replace(/\D/g, "").slice(0, 10) }))}
                       className="border-2 rounded-3 py-2"
-                      style={{ borderColor: "#e2e8f0" }}
+                      style={{ borderColor: mobileError ? "var(--bs-danger)" : "#e2e8f0" }}
+                      maxLength={10}
                     />
                   </div>
+                  {mobileError && (
+                    <Form.Text className="small text-danger d-block mt-1">Mobile must be exactly 10 digits.</Form.Text>
+                  )}
                 </Form.Group>
               </Col>
             </Row>
@@ -429,14 +446,17 @@ export default function Register({ defaultRegisterAs = "CUSTOMER", embedded = fa
                   <Form.Control
                     type="password"
                     name="confirmPassword"
-                    placeholder="••••••••"
+                    placeholder="Re-enter password"
                     value={formData.confirmPassword}
                     onChange={handleChange}
                     required
                     minLength={8}
                     className="border-2 rounded-3 py-2"
-                    style={{ borderColor: "#e2e8f0" }}
+                    style={{ borderColor: passwordMismatch ? "var(--bs-danger)" : "#e2e8f0" }}
                   />
+                  {passwordMismatch && (
+                    <Form.Text className="small text-danger d-block mt-1">Passwords do not match.</Form.Text>
+                  )}
                 </Form.Group>
               </Col>
             </Row>
@@ -571,6 +591,11 @@ export default function Register({ defaultRegisterAs = "CUSTOMER", embedded = fa
             </Button>
           </Form>
 
+          <div className="mt-4 pt-3 border-top" style={{ borderColor: "#e2e8f0 !important" }}>
+            <p className="text-center small text-muted mb-2">or register with</p>
+            <GoogleLoginBtn label="Sign up with Google" variant="outline" />
+          </div>
+
           <p className="text-center mt-4 mb-0 small text-muted">
             Already have an account?{" "}
             {embedded ? (
@@ -603,7 +628,7 @@ export default function Register({ defaultRegisterAs = "CUSTOMER", embedded = fa
     >
       <div style={{ position: "absolute", top: "10%", right: "8%", width: 220, height: 220, borderRadius: "50%", background: "rgba(255,255,255,0.08)" }} />
       <div style={{ position: "absolute", bottom: "20%", left: "5%", width: 180, height: 180, borderRadius: "50%", background: "rgba(255,255,255,0.06)" }} />
-      <div className="w-100 shadow-lg border-0 rounded-4 overflow-hidden" style={{ maxWidth: 640, background: "rgba(255, 255, 255, 0.98)", backdropFilter: "blur(20px)", boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255,255,255,0.5)" }}>
+      <div className="w-100 shadow-lg border-0 rounded-4 overflow-hidden" style={{ maxWidth: 640, background: "#ffffff", boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0,0,0,0.06)" }}>
         {formContent}
       </div>
       <style>{`

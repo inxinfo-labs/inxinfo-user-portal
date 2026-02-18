@@ -37,6 +37,9 @@ export const AppConfig = Object.freeze({
 
   /** Public URL for QR code / install page (e.g. https://yoursite.com). Falls back to current origin. */
   publicUrl: getEnv("REACT_APP_PUBLIC_URL", ""),
+
+  /** Google OAuth2 client ID for "Sign in with Google" (from Google Cloud Console). */
+  googleClientId: getEnv("REACT_APP_GOOGLE_CLIENT_ID", ""),
 });
 
 /** Validate required config at app load (e.g. in index or App). In production, apiBaseUrl should be set. */

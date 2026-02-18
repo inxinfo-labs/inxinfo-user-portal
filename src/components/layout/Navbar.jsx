@@ -48,18 +48,18 @@ export default function Navbar() {
         }}
       >
         <Container fluid="lg">
-          {/* Logo/Brand - clean block */}
+          {/* Logo/Brand - professional wordmark + optional logo image */}
           <BootstrapNavbar.Brand
             as={Link}
             to="/"
-            className="d-flex align-items-center text-decoration-none rounded-3 px-3 py-2"
+            className="d-flex align-items-center gap-2 text-decoration-none rounded-3 px-3 py-2"
             style={{
               fontWeight: 700,
-              fontSize: "1.5rem",
+              fontSize: "1.35rem",
               color: "var(--primary-700)",
               letterSpacing: "-0.02em",
               background: "var(--primary-50)",
-              transition: "background 0.2s ease",
+              transition: "background 0.2s ease, color 0.2s ease",
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.background = "var(--primary-100)";
@@ -69,21 +69,22 @@ export default function Navbar() {
             }}
           >
             <span
-              className="d-inline-flex align-items-center justify-content-center me-2"
+              className="d-flex align-items-center justify-content-center rounded-2 flex-shrink-0"
               style={{
-                width: 40,
-                height: 40,
-                borderRadius: "10px",
+                width: 42,
+                height: 42,
                 background: "var(--gradient-primary)",
                 color: "white",
                 fontWeight: 700,
-                fontSize: "1rem",
+                fontSize: "0.95rem",
+                boxShadow: "0 2px 8px rgba(234, 88, 12, 0.25)",
               }}
+              aria-hidden
             >
               IN
             </span>
-            <span style={{ color: "var(--primary-700)" }}>INXINFO</span>
-            <span className="ms-1 opacity-75" style={{ fontSize: "0.8rem", fontWeight: 600, color: "#64748b" }}>Labs</span>
+            <span style={{ color: "var(--primary-700)", fontWeight: 700, letterSpacing: "-0.02em" }}>INXINFO</span>
+            <span style={{ fontSize: "0.85rem", fontWeight: 600, color: "#64748b", letterSpacing: "0.02em" }}>Labs</span>
           </BootstrapNavbar.Brand>
 
           <BootstrapNavbar.Toggle

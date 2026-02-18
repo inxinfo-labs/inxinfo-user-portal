@@ -7,6 +7,7 @@ import Typography from "@mui/material/Typography";
 import MuiLink from "@mui/material/Link";
 import { FaLinkedin, FaGithub, FaTwitter, FaEnvelope } from "react-icons/fa";
 import { AuthContext } from "../../context/AuthContext";
+import AppConfig from "../../config/appConfig";
 import { usePageModal, PAGE_MODAL_TYPES } from "../../context/PageModalContext";
 import { isAdmin } from "../../utils/admin";
 import AdSlot from "../AdSlot";
@@ -98,7 +99,7 @@ export default function AppFooter() {
                 <MuiLink href="https://twitter.com" target="_blank" rel="noreferrer" sx={iconSx}>
                   <FaTwitter size={22} />
                 </MuiLink>
-                <MuiLink href="mailto:satish.prasad@inxinfo.com" sx={iconSx}>
+                <MuiLink href={`mailto:${AppConfig.contactEmail}`} sx={iconSx}>
                   <FaEnvelope size={22} />
                 </MuiLink>
               </Box>
@@ -158,8 +159,8 @@ export default function AppFooter() {
                 Contact
               </Typography>
             <Typography sx={{ color: "#cbd5e1", fontSize: "0.875rem" }}>
-              <MuiLink href="mailto:satish.prasad@inxinfo.com" sx={{ color: "#cbd5e1", "&:hover": { color: "#ff9933" } }}>
-                Email Us
+              <MuiLink href={`mailto:${AppConfig.contactEmail}`} sx={{ color: "#cbd5e1", "&:hover": { color: "#ff9933" } }}>
+                {AppConfig.contactEmail}
               </MuiLink>
             </Typography>
             <Typography sx={{ color: "#cbd5e1", fontSize: "0.875rem", mt: 1 }}>

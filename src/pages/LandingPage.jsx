@@ -48,7 +48,7 @@ export default function LandingPage() {
 
       <Modal open={modalOpen} onClose={() => setModalOpen(false)}>
         <h3 className="fw-bold mb-3" style={{ color: "var(--primary-700)" }}>Book Puja &amp; Pandit Ji</h3>
-        <p className="mb-4 text-muted">
+        <p className="mb-4" style={{ color: "#475569", fontSize: "1rem", lineHeight: 1.6, fontWeight: 500 }}>
           Get in touch to book traditional Hindu puja, Pandit Ji for your occasion, or order puja samagri.
           We are here for all your ritual needs.
         </p>

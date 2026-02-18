@@ -1,5 +1,6 @@
 import { useContext } from "react";
 import { BrowserRouter } from "react-router-dom";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 import { ThemeProvider as MuiThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import { AuthProvider } from "../context/AuthContext";
@@ -13,6 +14,7 @@ import { PageModalProvider } from "../context/PageModalContext";
 import { UserModalProvider } from "../context/UserModalContext";
 import { ThemeProvider, ThemeContext } from "../context/ThemeContext";
 import { lightTheme, darkTheme } from "../theme/muiTheme";
+import AppConfig from "../config/appConfig";
 
 function MuiThemeWrapper({ children }) {
   const { theme } = useContext(ThemeContext);
@@ -26,7 +28,8 @@ function MuiThemeWrapper({ children }) {
 }
 
 export default function Providers({ children }) {
-  return (
+  const googleClientId = AppConfig.googleClientId || "";
+  const app = (
     <ThemeProvider>
       <MuiThemeWrapper>
         <AuthProvider>
@@ -46,5 +49,12 @@ export default function Providers({ children }) {
         </AuthProvider>
       </MuiThemeWrapper>
     </ThemeProvider>
+  );
+  return googleClientId ? (
+    <GoogleOAuthProvider clientId={googleClientId}>
+      {app}
+    </GoogleOAuthProvider>
+  ) : (
+    app
   );
 }
