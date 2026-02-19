@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Row, Col, Card, Alert, Spinner, Badge } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import api from "../../services/api";
-import { FaBox, FaClipboardList, FaUserTie, FaPrayingHands, FaBook, FaExclamationTriangle, FaBell } from "react-icons/fa";
+import { FaBox, FaClipboardList, FaUserTie, FaPrayingHands, FaHistory, FaBook, FaExclamationTriangle, FaBell } from "react-icons/fa";
 
 export default function AdminDashboard() {
   const [recentOrders, setRecentOrders] = useState([]);
@@ -80,6 +80,20 @@ export default function AdminDashboard() {
               </div>
               <Card.Title className="h6 mb-0">Puja Services</Card.Title>
               <p className="small text-muted mb-0 mt-1">Add & manage puja types</p>
+            </Card.Body>
+          </Card>
+        </Col>
+        <Col md={6} lg={3}>
+          <Card as={Link} to="/user/admin/audit" className="border-0 shadow-sm h-100 text-decoration-none text-dark">
+            <Card.Body className="text-center py-4">
+              <div
+                className="rounded-circle d-inline-flex align-items-center justify-content-center mb-2"
+                style={{ width: 56, height: 56, background: "rgba(234, 88, 12, 0.15)", color: "var(--primary-600)" }}
+              >
+                <FaHistory size={28} />
+              </div>
+              <Card.Title className="h6 mb-0">Audit Trail</Card.Title>
+              <p className="small text-muted mb-0 mt-1">Track all changes by date &amp; user</p>
             </Card.Body>
           </Card>
         </Col>

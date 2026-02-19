@@ -3,6 +3,7 @@ import { Container, Card, Alert, Spinner, Badge, Table, Button, Row, Col } from 
 import { useParams, useNavigate } from "react-router-dom";
 import api from "../../services/api";
 import { getApiErrorMessage } from "../../utils/apiError";
+import AuditInfo from "../../components/AuditInfo";
 
 export default function OrderDetail() {
   const { id } = useParams();
@@ -124,9 +125,11 @@ export default function OrderDetail() {
                 <p className="text-muted small mb-0 mt-1">Use Mock for local testing when payment-service is not running.</p>
               </div>
             )}
-            <div className="mb-3">
-              <strong>Order Date &amp; Time:</strong> {order.createdAt ? new Date(order.createdAt).toLocaleString() : "—"}
-            </div>
+            {(order.createdAt || order.updatedAt) && (
+              <div className="mb-3">
+                <AuditInfo createdAt={order.createdAt} updatedAt={order.updatedAt} createdAtLabel="Order date" />
+              </div>
+            )}
             <div className="mb-3">
               <strong>Shipping Address:</strong> {order.shippingAddress}, {order.city}, {order.state} - {order.pincode}
             </div>

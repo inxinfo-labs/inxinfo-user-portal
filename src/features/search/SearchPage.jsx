@@ -55,6 +55,12 @@ function matchQuery(str, q) {
   return str.toLowerCase().includes((q || "").toLowerCase().trim());
 }
 
+function matchPrice(value, q) {
+  if (value == null || value === "") return false;
+  const str = String(value);
+  return str.includes(q) || str.replace(/\D/g, "").includes(q.replace(/\D/g, ""));
+}
+
 export default function SearchPage() {
   const [query, setQuery] = useState("");
   const [activeTab, setActiveTab] = useState("all");
@@ -68,7 +74,10 @@ export default function SearchPage() {
       (p) =>
         matchQuery(p.name, normalizedQuery) ||
         matchQuery(p.description, normalizedQuery) ||
-        matchQuery(p.category, normalizedQuery)
+        matchQuery(p.category, normalizedQuery) ||
+        matchQuery(p.ritualType, normalizedQuery) ||
+        matchPrice(p.price, normalizedQuery) ||
+        matchQuery(String(p.durationMinutes || ""), normalizedQuery)
     );
   }, [pujas, normalizedQuery]);
 
@@ -79,7 +88,10 @@ export default function SearchPage() {
         matchQuery(p.name, normalizedQuery) ||
         matchQuery(p.email, normalizedQuery) ||
         matchQuery(p.city, normalizedQuery) ||
+        matchQuery(p.state, normalizedQuery) ||
         matchQuery(p.bio, normalizedQuery) ||
+        matchPrice(p.hourlyRate, normalizedQuery) ||
+        matchQuery(String(p.experienceYears || ""), normalizedQuery) ||
         (Array.isArray(p.specializations) && p.specializations.some((s) => matchQuery(s, normalizedQuery)))
     );
   }, [pandits, normalizedQuery]);
@@ -125,7 +137,7 @@ export default function SearchPage() {
         </InputGroup.Text>
         <Form.Control
           type="search"
-          placeholder="Search puja, pandit, city, category..."
+          placeholder="Search by name, price, puja, pandit, city, ritual type, category..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           className="border-start-0"
@@ -153,34 +165,34 @@ export default function SearchPage() {
             <FaPrayingHands className="me-2 text-teal" />
             Puja Services ({filteredPujas.length})
           </h5>
-          <Row xs={1} md={2} lg={3} className="g-3">
+          <Row xs={1} md={2} lg={3} className="g-4">
             {filteredPujas.map((p) => (
-              <Col key={p.id}>
-                <Card className="h-100 border-0 shadow-sm" style={{ borderRadius: "1rem" }}>
-                  <Card.Body>
-                    {p.category && (
-                      <Badge bg="light" text="dark" className="mb-2">
-                        {p.category}
-                      </Badge>
-                    )}
-                    <Card.Title className="h6 fw-bold">{p.name}</Card.Title>
-                    {p.description && (
-                      <Card.Text className="small text-muted text-truncate" style={{ maxHeight: "2.5rem" }}>
-                        {p.description}
-                      </Card.Text>
-                    )}
-                    {p.price != null && (
-                      <p className="mb-2 small fw-semibold text-success">₹{p.price}</p>
-                    )}
-                    <Button
-                      as={Link}
-                      to={`/user/puja/${p.id}/book`}
-                      variant="outline-primary"
-                      size="sm"
-                      className="mt-1"
-                    >
-                      Book <FaArrowRight className="ms-1" />
-                    </Button>
+              <Col key={p.id} lg={4} md={6}>
+                <Card className="h-100 border-0 shadow-sm service-card" style={{ borderRadius: "1rem", minHeight: 460, overflow: "hidden" }}>
+                  {p.imageUrl ? (
+                    <Card.Img variant="top" src={p.imageUrl} style={{ borderTopLeftRadius: "1rem", borderTopRightRadius: "1rem" }} />
+                  ) : (
+                    <div className="card-img-placeholder d-flex align-items-center justify-content-center" style={{ background: "linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)", borderTopLeftRadius: "1rem", borderTopRightRadius: "1rem" }}>
+                      <FaPrayingHands className="text-muted" style={{ fontSize: "2.5rem", opacity: 0.5 }} />
+                    </div>
+                  )}
+                  <Card.Body className="p-4 d-flex flex-column">
+                    <div className="d-flex flex-wrap gap-1 mb-2">
+                      {p.ritualType && <Badge bg="primary">{p.ritualType}</Badge>}
+                      {p.category && <Badge bg="light" text="dark">{p.category}</Badge>}
+                    </div>
+                    <Card.Title className="h6 fw-bold mb-2">{p.name}</Card.Title>
+                    <div className="card-content mb-2">
+                    <Card.Text className="small text-muted mb-0">
+                      {p.description ? (p.description.length > 100 ? `${p.description.substring(0, 100)}...` : p.description) : "Traditional puja service"}
+                    </Card.Text>
+                    </div>
+                    <div className="card-actions d-flex justify-content-between align-items-center">
+                      <span className="fw-bold text-success">₹{p.price ?? "N/A"}</span>
+                      <Button as={Link} to={`/user/puja/${p.id}/book`} variant="primary" size="sm" style={{ borderRadius: "0.5rem" }}>
+                        Book <FaArrowRight className="ms-1" />
+                      </Button>
+                    </div>
                   </Card.Body>
                 </Card>
               </Col>
@@ -195,34 +207,34 @@ export default function SearchPage() {
             <FaUserTie className="me-2 text-teal" />
             Pandits ({filteredPandits.length})
           </h5>
-          <Row xs={1} md={2} lg={3} className="g-3">
+          <Row xs={1} md={2} lg={3} className="g-4">
             {filteredPandits.map((p) => (
-              <Col key={p.id}>
-                <Card className="h-100 border-0 shadow-sm" style={{ borderRadius: "1rem" }}>
-                  <Card.Body>
-                    {p.city && (
-                      <Badge bg="light" text="dark" className="mb-2">
-                        {p.city}
-                      </Badge>
-                    )}
-                    <Card.Title className="h6 fw-bold">{p.name}</Card.Title>
-                    {p.bio && (
-                      <Card.Text className="small text-muted text-truncate" style={{ maxHeight: "2.5rem" }}>
-                        {p.bio}
-                      </Card.Text>
-                    )}
-                    {p.hourlyRate != null && (
-                      <p className="mb-2 small fw-semibold text-success">₹{p.hourlyRate}/hr</p>
-                    )}
-                    <Button
-                      as={Link}
-                      to={`/user/pandit/${p.id}/book`}
-                      variant="outline-primary"
-                      size="sm"
-                      className="mt-1"
-                    >
-                      Book <FaArrowRight className="ms-1" />
-                    </Button>
+              <Col key={p.id} lg={4} md={6}>
+                <Card className="h-100 border-0 shadow-sm service-card" style={{ borderRadius: "1rem", minHeight: 460, overflow: "hidden" }}>
+                  {p.profileImageUrl ? (
+                    <Card.Img variant="top" src={p.profileImageUrl} style={{ borderTopLeftRadius: "1rem", borderTopRightRadius: "1rem" }} />
+                  ) : (
+                    <div className="card-img-placeholder d-flex align-items-center justify-content-center" style={{ background: "linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)", borderTopLeftRadius: "1rem", borderTopRightRadius: "1rem" }}>
+                      <FaUserTie className="text-muted" style={{ fontSize: "2.5rem", opacity: 0.5 }} />
+                    </div>
+                  )}
+                  <Card.Body className="p-4 d-flex flex-column">
+                    <div className="d-flex flex-wrap gap-1 mb-2">
+                      {p.city && <Badge bg="primary">{p.city}</Badge>}
+                      {p.status === "AVAILABLE" && <Badge bg="success">Available</Badge>}
+                    </div>
+                    <Card.Title className="h6 fw-bold mb-2">{p.name}</Card.Title>
+                    <div className="card-content mb-2">
+                    <Card.Text className="small text-muted mb-0">
+                      {p.bio ? (p.bio.length > 100 ? `${p.bio.substring(0, 100)}...` : p.bio) : "Experienced pandit for your ceremonies"}
+                    </Card.Text>
+                    </div>
+                    <div className="card-actions d-flex justify-content-between align-items-center">
+                      <span className="fw-bold text-success">₹{p.hourlyRate ?? "N/A"}/hr</span>
+                      <Button as={Link} to={`/user/pandit/${p.id}/book`} variant="primary" size="sm" style={{ borderRadius: "0.5rem" }}>
+                        Book <FaArrowRight className="ms-1" />
+                      </Button>
+                    </div>
                   </Card.Body>
                 </Card>
               </Col>

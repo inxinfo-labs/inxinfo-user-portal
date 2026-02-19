@@ -4,6 +4,7 @@ import AdminProducts from "./AdminProducts";
 import AdminOrders from "./AdminOrders";
 import AdminPandit from "./AdminPandit";
 import AdminPuja from "./AdminPuja";
+import AdminAudit from "./AdminAudit";
 
 export default function AdminRoutes() {
   return (
@@ -13,6 +14,7 @@ export default function AdminRoutes() {
       <Route path="orders" element={<AdminOrders />} />
       <Route path="pandit" element={<AdminPandit />} />
       <Route path="puja" element={<AdminPuja />} />
+      <Route path="audit" element={<AdminAudit />} />
     </Routes>
   );
 }

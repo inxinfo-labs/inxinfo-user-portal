@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Container, Row, Col, Card, Button, Spinner, Alert, Form, Badge } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import api from "../../services/api";
-import { FaMapMarkerAlt, FaStar, FaRupeeSign, FaArrowRight } from "react-icons/fa";
+import { FaMapMarkerAlt, FaRupeeSign, FaArrowRight, FaUserTie } from "react-icons/fa";
 
 export default function PanditList() {
   const [pandits, setPandits] = useState([]);
@@ -100,7 +100,14 @@ export default function PanditList() {
         <Row className="g-4">
           {pandits.map((pandit) => (
             <Col lg={4} md={6} key={pandit.id}>
-              <Card className="h-100 border-0 shadow-sm" style={{ transition: "all 0.3s ease" }}
+              <Card
+                className="h-100 border-0 shadow-sm service-card"
+                style={{
+                  transition: "all 0.3s ease",
+                  borderRadius: "1rem",
+                  overflow: "hidden",
+                  minHeight: 460,
+                }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.transform = "translateY(-4px)";
                   e.currentTarget.style.boxShadow = "0 10px 25px rgba(0, 0, 0, 0.1)";
@@ -110,87 +117,80 @@ export default function PanditList() {
                   e.currentTarget.style.boxShadow = "0 1px 3px rgba(0, 0, 0, 0.1)";
                 }}
               >
-                {pandit.profileImageUrl && (
-                  <Card.Img 
-                    variant="top" 
-                    src={pandit.profileImageUrl} 
-                    style={{ 
-                      height: "220px", 
-                      objectFit: "cover",
-                      borderTopLeftRadius: "1rem",
-                      borderTopRightRadius: "1rem"
-                    }} 
+                {pandit.profileImageUrl ? (
+                  <Card.Img
+                    variant="top"
+                    src={pandit.profileImageUrl}
+                    style={{ borderTopLeftRadius: "1rem", borderTopRightRadius: "1rem" }}
                   />
+                ) : (
+                  <div
+                    className="card-img-placeholder d-flex align-items-center justify-content-center"
+                    style={{
+                      background: "linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)",
+                      borderTopLeftRadius: "1rem",
+                      borderTopRightRadius: "1rem",
+                    }}
+                  >
+                    <FaUserTie className="text-muted" style={{ fontSize: "2.5rem", opacity: 0.5 }} />
+                  </div>
                 )}
-                <Card.Body className="p-4">
-                  <div className="d-flex justify-content-between align-items-start mb-3">
-                    <Card.Title className="fw-bold mb-0" style={{ fontSize: "1.25rem", color: "#111827" }}>
-                      {pandit.name}
-                    </Card.Title>
-                    {pandit.status === "AVAILABLE" && (
-                      <Badge bg="success">Available</Badge>
-                    )}
+                <Card.Body className="p-4 d-flex flex-column">
+                  <div className="d-flex flex-wrap gap-1 mb-2">
+                    {pandit.city && <Badge bg="primary">{pandit.city}</Badge>}
+                    {pandit.status === "AVAILABLE" && <Badge bg="success">Available</Badge>}
                   </div>
-
-                  {pandit.bio && (
-                    <Card.Text className="text-muted mb-3" style={{ minHeight: "40px" }}>
-                      {pandit.bio.length > 80 ? `${pandit.bio.substring(0, 80)}...` : pandit.bio}
+                  <Card.Title className="fw-bold mb-2" style={{ fontSize: "1.1rem", color: "#111827" }}>
+                    {pandit.name}
+                  </Card.Title>
+                  <div className="card-content mb-2">
+                    <Card.Text className="text-muted small mb-0">
+                      {pandit.bio
+                        ? pandit.bio.length > 100
+                          ? `${pandit.bio.substring(0, 100)}...`
+                          : pandit.bio
+                        : "Experienced pandit for your ceremonies"}
                     </Card.Text>
-                  )}
-
-                  <div className="mb-3">
-                    <div className="d-flex align-items-center mb-2">
-                      <FaMapMarkerAlt className="me-2 text-primary" />
-                      <span className="text-muted">
-                        {pandit.city}, {pandit.state}
-                      </span>
-                    </div>
-                    <div className="d-flex align-items-center mb-2">
-                      <FaStar className="me-2 text-warning" />
-                      <span className="text-muted">
-                        {pandit.experienceYears || 0} years experience
-                      </span>
-                    </div>
-                    <div className="d-flex align-items-center">
-                      <FaRupeeSign className="me-2 text-primary" />
-                      <span className="fw-bold text-primary" style={{ fontSize: "1.25rem" }}>
-                        {pandit.hourlyRate || "N/A"}
-                      </span>
-                      <span className="text-muted ms-1">/hour</span>
-                    </div>
                   </div>
-
+                  <div className="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-1">
+                    <span className="fw-bold text-primary">₹{pandit.hourlyRate ?? "N/A"}/hr</span>
+                    <span className="text-muted small">
+                      <FaMapMarkerAlt className="me-1" />
+                      {pandit.city || "—"}
+                      {pandit.experienceYears != null && ` · ${pandit.experienceYears} yrs`}
+                    </span>
+                  </div>
                   {pandit.specializations && pandit.specializations.length > 0 && (
-                    <div className="mb-3">
-                      <small className="text-muted d-block mb-2">Specializations:</small>
-                      <div className="d-flex flex-wrap gap-2">
+                    <div className="mb-2">
+                      <div className="d-flex flex-wrap gap-1">
                         {pandit.specializations.slice(0, 3).map((spec, idx) => (
-                          <Badge key={idx} bg="secondary" style={{ fontSize: "0.75rem" }}>
+                          <Badge key={idx} bg="secondary" style={{ fontSize: "0.7rem" }}>
                             {spec}
                           </Badge>
                         ))}
                         {pandit.specializations.length > 3 && (
-                          <Badge bg="secondary" style={{ fontSize: "0.75rem" }}>
-                            +{pandit.specializations.length - 3} more
+                          <Badge bg="secondary" style={{ fontSize: "0.7rem" }}>
+                            +{pandit.specializations.length - 3}
                           </Badge>
                         )}
                       </div>
                     </div>
                   )}
-
-                  <Button 
-                    variant="primary" 
-                    className="w-100 fw-semibold"
-                    onClick={() => navigate(`/user/pandit/${pandit.id}/book`)}
-                    style={{
-                      background: "var(--gradient-primary)",
-                      border: "none",
-                      borderRadius: "0.75rem",
-                      padding: "0.75rem"
-                    }}
-                  >
-                    Book PanditJi <FaArrowRight className="ms-2" />
-                  </Button>
+                  <div className="card-actions">
+                    <Button
+                      variant="primary"
+                      size="sm"
+                      className="w-100"
+                      onClick={() => navigate(`/user/pandit/${pandit.id}/book`)}
+                      style={{
+                        background: "var(--gradient-primary)",
+                        border: "none",
+                        borderRadius: "0.5rem",
+                      }}
+                    >
+                      Book PanditJi <FaArrowRight className="ms-1" />
+                    </Button>
+                  </div>
                 </Card.Body>
               </Card>
             </Col>

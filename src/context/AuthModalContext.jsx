@@ -6,6 +6,7 @@ export const AUTH_MODES = {
   LOGIN: "login",
   REGISTER: "register",
   REGISTER_PANDIT: "register-pandit",
+  FORGOT_PASSWORD: "forgot-password",
 };
 
 export function AuthModalProvider({ children }) {

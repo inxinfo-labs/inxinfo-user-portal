@@ -2,9 +2,11 @@ import { useState } from "react";
 import { Card, Form, Button, Alert } from "react-bootstrap";
 import api from "../../services/api";
 import { getApiErrorMessage } from "../../utils/apiError";
+import { useAuthModal, AUTH_MODES } from "../../context/AuthModalContext";
 import { FaLock, FaSave } from "react-icons/fa";
 
 export default function ChangePassword() {
+  const { openAuth } = useAuthModal();
   const [form, setForm] = useState({ oldPassword: "", newPassword: "", confirmPassword: "" });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -135,8 +137,16 @@ export default function ChangePassword() {
           </Button>
         </Form>
         <p className="text-muted small mt-3 mb-0">
-          Forgot your current password? Use{" "}
-          <a href="/auth/forgot-password">Forgot password</a> on the login page to receive a reset link.
+          Forgot your current password?{" "}
+          <button
+            type="button"
+            className="btn btn-link p-0 text-decoration-none"
+            style={{ color: "var(--primary-600)" }}
+            onClick={() => openAuth(AUTH_MODES.FORGOT_PASSWORD)}
+          >
+            Forgot password
+          </button>
+          {" "}to receive a reset link.
         </p>
       </Card.Body>
     </Card>

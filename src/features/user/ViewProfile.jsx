@@ -3,6 +3,7 @@ import { useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import { getDisplayName } from "../../utils/displayName";
 import { FaUser, FaEnvelope, FaCalendarAlt, FaVenusMars, FaMapMarkerAlt, FaPhone, FaGlobe, FaExternalLinkAlt, FaLink } from "react-icons/fa";
+import AuditInfo from "../../components/AuditInfo";
 
 const ViewProfile = () => {
   const { user, avatar } = useContext(AuthContext);
@@ -213,6 +214,12 @@ const ViewProfile = () => {
                     </div>
                   </ListGroup.Item>
                 )}
+
+                {(user.createdAt || user.updatedAt) && (
+                  <ListGroup.Item className="border-0 px-0 py-3">
+                    <AuditInfo createdAt={user.createdAt} updatedAt={user.updatedAt} />
+                  </ListGroup.Item>
+                )}
               </ListGroup>
             </Card.Body>
           </Card>
@@ -290,7 +297,6 @@ const ViewProfile = () => {
                   </ListGroup.Item>
                 )}
 
-                {/* Website Link - if you add website field to user model */}
                 {user.website && (
                   <ListGroup.Item 
                     className="border-0 px-0 py-3"

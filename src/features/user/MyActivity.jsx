@@ -2,8 +2,11 @@ import { useEffect, useState } from "react";
 import { Container, Card, Table, Badge, Spinner, Alert, Button, Row, Col } from "react-bootstrap";
 import { useNavigate, Link } from "react-router-dom";
 import api from "../../services/api";
-import { FaUserTie, FaPrayingHands, FaShoppingCart, FaRupeeSign, FaArrowLeft, FaEye } from "react-icons/fa";
+import { FaUserTie, FaPrayingHands, FaShoppingCart, FaRupeeSign, FaArrowLeft, FaEye, FaHistory } from "react-icons/fa";
 import AdSlot from "../../components/AdSlot";
+
+const actionColors = { CREATE: "success", UPDATE: "info", DELETE: "danger" };
+const entityLabels = { ORDER: "Order", PUJA_BOOKING: "Puja", PANDIT_BOOKING: "Pandit booking", ITEM: "Product", PUJA_TYPE: "Puja service", PANDIT: "Pandit", USER: "Profile" };
 
 const LIMIT = 5;
 
@@ -75,6 +78,27 @@ function PujaBookingsSection({ bookings, loading, error }) {
   );
 }
 
+function ChangeHistorySection({ logs, loading, error }) {
+  if (loading) return <div className="text-center py-4"><Spinner animation="border" size="sm" /></div>;
+  if (error) return <Alert variant="danger" className="mb-0 small">{error}</Alert>;
+  if (!logs?.length) return <p className="text-muted mb-0 small">No changes recorded yet.</p>;
+  return (
+    <Table responsive className="mb-0 small">
+      <thead><tr><th>When</th><th>Action</th><th>What</th><th>Summary</th></tr></thead>
+      <tbody>
+        {logs.slice(0, 10).map((l) => (
+          <tr key={l.id}>
+            <td className="text-nowrap">{l.changedAt ? new Date(l.changedAt).toLocaleString() : "—"}</td>
+            <td><Badge bg={actionColors[l.action] || "secondary"}>{l.action}</Badge></td>
+            <td>{entityLabels[l.entityType] || l.entityType} #{l.entityId}</td>
+            <td className="text-muted">{l.summary || "—"}</td>
+          </tr>
+        ))}
+      </tbody>
+    </Table>
+  );
+}
+
 function OrdersSection({ orders, loading, error }) {
   const navigate = useNavigate();
   const statusVariant = (s) => ({ PENDING: "warning", CONFIRMED: "success", PROCESSING: "info", SHIPPED: "primary", DELIVERED: "success", CANCELLED: "danger", REFUNDED: "secondary" }[s] || "secondary");
@@ -120,12 +144,22 @@ export default function MyActivity() {
   const [panditBookings, setPanditBookings] = useState([]);
   const [pujaBookings, setPujaBookings] = useState([]);
   const [orders, setOrders] = useState([]);
+  const [changeLogs, setChangeLogs] = useState([]);
   const [loadingPandit, setLoadingPandit] = useState(true);
   const [loadingPuja, setLoadingPuja] = useState(true);
   const [loadingOrders, setLoadingOrders] = useState(true);
+  const [loadingChanges, setLoadingChanges] = useState(true);
   const [errorPandit, setErrorPandit] = useState(null);
   const [errorPuja, setErrorPuja] = useState(null);
   const [errorOrders, setErrorOrders] = useState(null);
+  const [errorChanges, setErrorChanges] = useState(null);
+
+  useEffect(() => {
+    api.get("/audit/user", { params: { page: 0, size: 20 } })
+      .then((r) => setChangeLogs(r.data?.data ?? r.data ?? []))
+      .catch(() => setErrorChanges("Change history unavailable"))
+      .finally(() => setLoadingChanges(false));
+  }, []);
 
   useEffect(() => {
     api.get("/pandit/bookings").then((r) => {
@@ -150,9 +184,11 @@ export default function MyActivity() {
   const hasNoActivity =
     allLoaded &&
     (!orders?.length && !panditBookings?.length && !pujaBookings?.length);
+  const allLoadedWithChanges = allLoaded && !loadingChanges;
 
+  const shouldRedirect = hasNoActivity && !loadingChanges && !changeLogs?.length;
   useEffect(() => {
-    if (hasNoActivity) {
+    if (shouldRedirect) {
       navigate("/user/home", {
         replace: true,
         state: {
@@ -161,11 +197,11 @@ export default function MyActivity() {
         },
       });
     }
-  }, [hasNoActivity, navigate]);
+  }, [shouldRedirect, navigate]);
 
   const activityAsOf = new Date().toLocaleString();
 
-  if (hasNoActivity) {
+  if (shouldRedirect) {
     return (
       <Container className="my-4 text-center py-5">
         <Spinner animation="border" size="sm" />
@@ -221,6 +257,18 @@ export default function MyActivity() {
               </Card.Header>
               <Card.Body className="p-0">
                 <PujaBookingsSection bookings={pujaBookings} loading={loadingPuja} error={errorPuja} />
+              </Card.Body>
+            </Card>
+          )}
+
+          {allLoadedWithChanges && (
+            <Card className="mb-4 border-0 shadow-sm">
+              <Card.Header className="bg-white d-flex align-items-center justify-content-between flex-wrap">
+                <span><FaHistory className="me-2 text-primary" /><strong>Change history</strong></span>
+                <span className="text-muted small">Your orders, bookings &amp; updates</span>
+              </Card.Header>
+              <Card.Body className="p-0">
+                <ChangeHistorySection logs={changeLogs} loading={loadingChanges} error={errorChanges} />
               </Card.Body>
             </Card>
           )}

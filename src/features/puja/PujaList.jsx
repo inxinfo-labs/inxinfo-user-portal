@@ -3,7 +3,7 @@ import { Container, Row, Col, Card, Button, Spinner, Alert, Badge } from "react-
 import { useNavigate } from "react-router-dom";
 import api from "../../services/api";
 import { useCart } from "../../context/CartContext";
-import { FaClock, FaRupeeSign, FaArrowRight, FaShoppingCart } from "react-icons/fa";
+import { FaClock, FaRupeeSign, FaArrowRight, FaShoppingCart, FaPrayingHands } from "react-icons/fa";
 
 export default function PujaList() {
   const { addPuja } = useCart();
@@ -67,7 +67,14 @@ export default function PujaList() {
         <Row className="g-4">
           {pujas.map((puja) => (
             <Col lg={4} md={6} key={puja.id}>
-              <Card className="h-100 border-0 shadow-sm" style={{ transition: "all 0.3s ease" }}
+              <Card
+                className="h-100 border-0 shadow-sm service-card"
+                style={{
+                  transition: "all 0.3s ease",
+                  borderRadius: "1rem",
+                  overflow: "hidden",
+                  minHeight: 460,
+                }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.transform = "translateY(-4px)";
                   e.currentTarget.style.boxShadow = "0 10px 25px rgba(0, 0, 0, 0.1)";
@@ -77,66 +84,66 @@ export default function PujaList() {
                   e.currentTarget.style.boxShadow = "0 1px 3px rgba(0, 0, 0, 0.1)";
                 }}
               >
-                {puja.imageUrl && (
-                  <Card.Img 
-                    variant="top" 
-                    src={puja.imageUrl} 
-                    style={{ 
-                      height: "220px", 
-                      objectFit: "cover",
-                      borderTopLeftRadius: "1rem",
-                      borderTopRightRadius: "1rem"
-                    }} 
+                {puja.imageUrl ? (
+                  <Card.Img
+                    variant="top"
+                    src={puja.imageUrl}
+                    style={{ borderTopLeftRadius: "1rem", borderTopRightRadius: "1rem" }}
                   />
+                ) : (
+                  <div
+                    className="card-img-placeholder d-flex align-items-center justify-content-center"
+                    style={{
+                      background: "linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)",
+                      borderTopLeftRadius: "1rem",
+                      borderTopRightRadius: "1rem",
+                    }}
+                  >
+                    <FaPrayingHands className="text-muted" style={{ fontSize: "2.5rem", opacity: 0.5 }} />
+                  </div>
                 )}
-                <Card.Body className="p-4">
-                  <div className="d-flex justify-content-between align-items-start mb-3">
-                    <Card.Title className="fw-bold mb-0" style={{ fontSize: "1.25rem", color: "#111827" }}>
-                      {puja.name}
-                    </Card.Title>
-                    {puja.category && (
-                      <Badge bg="primary" className="ms-2">
-                        {puja.category}
-                      </Badge>
-                    )}
+                <Card.Body className="p-4 d-flex flex-column">
+                  <div className="d-flex flex-wrap gap-1 mb-2">
+                    {puja.ritualType && <Badge bg="primary">{puja.ritualType}</Badge>}
+                    {puja.category && <Badge bg="light" text="dark">{puja.category}</Badge>}
                   </div>
-                  
-                  <Card.Text className="text-muted mb-4" style={{ minHeight: "60px" }}>
-                    {puja.description || "Traditional puja service"}
-                  </Card.Text>
-
-                  <div className="d-flex justify-content-between align-items-center mb-4">
-                    <div className="d-flex align-items-center text-primary fw-bold" style={{ fontSize: "1.5rem" }}>
-                      <FaRupeeSign className="me-1" style={{ fontSize: "1.25rem" }} />
-                      {puja.price || "N/A"}
-                    </div>
-                    <div className="d-flex align-items-center text-muted">
-                      <FaClock className="me-2" />
-                      <span>{puja.durationMinutes || 60} min</span>
-                    </div>
+                  <Card.Title className="fw-bold mb-2" style={{ fontSize: "1.1rem", color: "#111827" }}>
+                    {puja.name}
+                  </Card.Title>
+                  <div className="card-content mb-2">
+                    <Card.Text className="text-muted small mb-0">
+                      {puja.description
+                        ? puja.description.length > 100
+                          ? `${puja.description.substring(0, 100)}...`
+                          : puja.description
+                        : "Traditional puja service"}
+                    </Card.Text>
                   </div>
-
-                  <div className="d-flex gap-2">
+                  <div className="d-flex justify-content-between align-items-center mb-2">
+                    <span className="fw-bold text-primary">₹{puja.price ?? "N/A"}</span>
+                    <span className="text-muted small">
+                      <FaClock className="me-1" />
+                      {puja.durationMinutes || 60} min
+                    </span>
+                  </div>
+                  <div className="card-actions d-flex gap-2">
                     <Button
                       variant="outline-primary"
-                      className="flex-grow-1 fw-semibold"
-                      style={{ borderRadius: "0.75rem", padding: "0.75rem" }}
+                      size="sm"
+                      className="flex-grow-1"
+                      style={{ borderRadius: "0.5rem" }}
                       onClick={() => addPuja(puja)}
                     >
                       <FaShoppingCart className="me-1" /> Add to cart
                     </Button>
-                    <Button 
-                      variant="primary" 
-                      className="flex-grow-1 fw-semibold"
+                    <Button
+                      variant="primary"
+                      size="sm"
+                      className="flex-grow-1"
                       onClick={() => navigate(`/user/puja/${puja.id}/book`)}
-                      style={{
-                        background: "var(--gradient-primary)",
-                        border: "none",
-                        borderRadius: "0.75rem",
-                        padding: "0.75rem"
-                      }}
+                      style={{ background: "var(--gradient-primary)", border: "none", borderRadius: "0.5rem" }}
                     >
-                      Book Now <FaArrowRight className="ms-2" />
+                      Book <FaArrowRight className="ms-1" />
                     </Button>
                   </div>
                 </Card.Body>

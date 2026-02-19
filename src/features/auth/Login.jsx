@@ -152,9 +152,14 @@ export default function Login({ embedded = false, onSuccess }) {
           <Alert variant="danger" className="mb-3 py-3" dismissible onClose={() => setError("")}>
             <small className="d-block" style={{ whiteSpace: "pre-line" }}>{error}</small>
             {!twoFactorStep && (
-              <Link to="/auth/forgot-password" className="small fw-semibold mt-2 d-inline-block text-decoration-none" style={{ color: "var(--primary-600)" }}>
+              <button
+                type="button"
+                className="btn btn-link p-0 small fw-semibold mt-2 text-decoration-none"
+                style={{ color: "var(--primary-600)" }}
+                onClick={() => openAuth(AUTH_MODES.FORGOT_PASSWORD)}
+              >
                 Reset password
-              </Link>
+              </button>
             )}
           </Alert>
         )}
@@ -300,13 +305,14 @@ export default function Login({ embedded = false, onSuccess }) {
             >
               <small className="d-block" style={{ whiteSpace: "pre-line" }}>{error}</small>
               {!twoFactorStep && (
-                <Link
-                  to="/auth/forgot-password"
-                  className="small fw-semibold mt-2 d-inline-block text-decoration-none"
+                <button
+                  type="button"
+                  className="btn btn-link p-0 small fw-semibold mt-2 text-decoration-none"
                   style={{ color: "var(--primary-600)" }}
+                  onClick={() => openAuth(AUTH_MODES.FORGOT_PASSWORD)}
                 >
                   Reset password
-                </Link>
+                </button>
               )}
             </Alert>
           )}
@@ -396,9 +402,14 @@ export default function Login({ embedded = false, onSuccess }) {
                     style={{ borderColor: "#e2e8f0" }}
                   />
                   <div className="d-flex justify-content-end mt-1">
-                    <Link to="/auth/forgot-password" className="small text-decoration-none" style={{ color: "var(--primary-600)" }}>
+                    <button
+                      type="button"
+                      className="btn btn-link p-0 small text-decoration-none"
+                      style={{ color: "var(--primary-600)" }}
+                      onClick={() => openAuth(AUTH_MODES.FORGOT_PASSWORD)}
+                    >
                       Forgot password?
-                    </Link>
+                    </button>
                   </div>
                 </Form.Group>
                 <Button

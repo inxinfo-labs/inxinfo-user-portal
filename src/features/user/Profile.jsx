@@ -2,9 +2,11 @@ import { useState, useContext } from "react";
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
 import Typography from "@mui/material/Typography";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import IconButton from "@mui/material/IconButton";
+import CloseIcon from "@mui/icons-material/Close";
 import { AuthContext } from "../../context/AuthContext";
 import ViewProfile from "./ViewProfile";
 import UpdateProfile from "./UpdateProfile";
@@ -19,16 +21,16 @@ import SecurityIcon from "@mui/icons-material/Security";
 import CircularProgress from "@mui/material/CircularProgress";
 
 const tabs = [
-  { key: "view", label: "View Profile", icon: <PersonIcon /> },
-  { key: "edit", label: "Edit Profile", icon: <EditIcon /> },
-  { key: "pic", label: "Profile Picture", icon: <PhotoCameraIcon /> },
-  { key: "password", label: "Change password", icon: <LockIcon /> },
-  { key: "security", label: "Security (2FA)", icon: <SecurityIcon /> },
+  { key: "view", label: "View Profile", icon: <PersonIcon />, content: ViewProfile },
+  { key: "edit", label: "Edit Profile", icon: <EditIcon />, content: UpdateProfile },
+  { key: "pic", label: "Profile Picture", icon: <PhotoCameraIcon />, content: UploadProfilePic },
+  { key: "password", label: "Change password", icon: <LockIcon />, content: ChangePassword },
+  { key: "security", label: "Security (2FA)", icon: <SecurityIcon />, content: TwoFactorSettings },
 ];
 
 export default function Profile() {
   const { user } = useContext(AuthContext);
-  const [activeTab, setActiveTab] = useState(0);
+  const [openModal, setOpenModal] = useState(null);
 
   if (!user) {
     return (
@@ -37,6 +39,9 @@ export default function Profile() {
       </Box>
     );
   }
+
+  const handleOpen = (key) => setOpenModal(key);
+  const handleClose = () => setOpenModal(null);
 
   return (
     <Box>
@@ -47,44 +52,78 @@ export default function Profile() {
         Manage your profile information and preferences
       </Typography>
 
-      <Card variant="outlined" sx={{ overflow: "hidden" }}>
-        <Tabs
-          value={activeTab}
-          onChange={(_, v) => setActiveTab(v)}
-          variant="scrollable"
-          scrollButtons="auto"
-          sx={{
-            borderBottom: 1,
-            borderColor: "divider",
-            bgcolor: "action.hover",
-            "& .MuiTab-root": { fontWeight: 600 },
-            "& .Mui-selected": { color: "primary.main", bgcolor: "background.paper", fontWeight: 700 },
-            "& .MuiTabs-indicator": { height: 3, borderRadius: "3px 3px 0 0", bgcolor: "primary.main" },
-            "& .MuiTab-root:focus-visible": { outline: "2px solid", outlineColor: "primary.main", outlineOffset: 2 },
-          }}
-        >
-          {tabs.map((t, idx) => (
-            <Tab
-              key={t.key}
-              label={t.label}
-              icon={t.icon}
-              iconPosition="start"
-              sx={{
-                "&:hover": { bgcolor: "action.selected" },
-                "&:focus": { bgcolor: "action.selected" },
-                "&.Mui-selected": { bgcolor: "background.paper" },
-              }}
-            />
-          ))}
-        </Tabs>
-        <CardContent sx={{ p: 3 }}>
-          {activeTab === 0 && <ViewProfile />}
-          {activeTab === 1 && <UpdateProfile />}
-          {activeTab === 2 && <UploadProfilePic />}
-          {activeTab === 3 && <ChangePassword />}
-          {activeTab === 4 && <TwoFactorSettings />}
+      <Card variant="outlined">
+        <CardContent sx={{ p: 2 }}>
+          <Box display="flex" flexWrap="wrap" gap={2}>
+            {tabs.map((t) => (
+              <Card
+                key={t.key}
+                variant="outlined"
+                sx={{
+                  flex: "1 1 160px",
+                  minWidth: 140,
+                  cursor: "pointer",
+                  transition: "all 0.2s",
+                  "&:hover": {
+                    bgcolor: "action.hover",
+                    borderColor: "primary.main",
+                    boxShadow: 1,
+                  },
+                }}
+                onClick={() => handleOpen(t.key)}
+              >
+                <CardContent sx={{ display: "flex", alignItems: "center", gap: 1.5, py: 2 }}>
+                  <Box sx={{ color: "primary.main" }}>{t.icon}</Box>
+                  <Typography variant="subtitle1" fontWeight={600}>
+                    {t.label}
+                  </Typography>
+                </CardContent>
+              </Card>
+            ))}
+          </Box>
         </CardContent>
       </Card>
+
+      {openModal && (() => {
+        const tab = tabs.find((t) => t.key === openModal);
+        if (!tab) return null;
+        const Content = tab.content;
+        return (
+          <Dialog
+            open
+            onClose={handleClose}
+            maxWidth="md"
+            fullWidth
+            PaperProps={{
+              sx: {
+                borderRadius: 2,
+                maxHeight: "90vh",
+              },
+            }}
+          >
+            <DialogTitle
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                borderBottom: 1,
+                borderColor: "divider",
+                py: 2,
+              }}
+            >
+              <Typography variant="h6" fontWeight={600}>
+                {tab.label}
+              </Typography>
+              <IconButton aria-label="close" onClick={handleClose} size="small">
+                <CloseIcon />
+              </IconButton>
+            </DialogTitle>
+            <Box sx={{ p: 3, overflow: "auto" }}>
+              <Content />
+            </Box>
+          </Dialog>
+        );
+      })()}
     </Box>
   );
 }

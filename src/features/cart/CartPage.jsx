@@ -55,11 +55,9 @@ export default function CartPage() {
           <Button
             variant="outline-secondary"
             onClick={() => navigate("/user/activity")}
-            className="d-flex align-items-center justify-content-center gap-2 my-activity-btn"
+            className="d-flex align-items-center justify-content-center gap-1 my-activity-btn"
           >
-            <span className="my-activity-icon">
-              <FaCalendarAlt />
-            </span>
+            <span className="my-activity-icon"><FaCalendarAlt /></span>
             <span>My Activity</span>
           </Button>
         </div>
@@ -150,7 +148,7 @@ export default function CartPage() {
               </Button>
               <Link
                 to="/user/activity"
-                className="d-flex align-items-center justify-content-center gap-2 w-100 py-2 text-decoration-none border rounded-3 my-activity-link"
+                className="d-flex align-items-center justify-content-center gap-1 w-100 py-2 text-decoration-none border rounded-3 my-activity-link"
                 style={{ color: "#475569", borderColor: "#e2e8f0", fontSize: "0.9rem" }}
               >
                 <span className="my-activity-icon"><FaCalendarAlt /></span>

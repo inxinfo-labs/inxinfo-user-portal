@@ -129,10 +129,39 @@ html {
   border-color: rgba(234, 88, 12, 0.35) !important;
 }
 
-/* My Activity: icon in circle, no gap between icon and text */
+/* Service cards (Puja, Pandit) - same shape */
+.service-card {
+  display: flex;
+  flex-direction: column;
+}
+.service-card .card-img-top,
+.service-card .card-img-placeholder {
+  height: 180px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+.service-card .card-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+.service-card .card-body .card-content {
+  flex: 1;
+  min-height: 80px;
+}
+.service-card .card-body .card-actions {
+  margin-top: auto;
+  padding-top: 1rem;
+}
+
+/* My Activity: icon and text aligned, compact spacing */
 .my-activity-btn,
 .my-activity-link {
-  gap: 0.5rem !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.375rem !important;
 }
 .my-activity-icon {
   display: inline-flex;

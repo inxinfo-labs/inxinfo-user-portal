@@ -6,7 +6,7 @@ import { getApiErrorMessage } from "../../utils/apiError";
 import { getGmailValidationError } from "../../utils/emailValidation";
 import { FaEnvelope, FaLeaf } from "react-icons/fa";
 
-export default function ForgotPassword() {
+export default function ForgotPassword({ embedded = false, onBackToLogin }) {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -37,6 +37,37 @@ export default function ForgotPassword() {
   };
 
   if (sent) {
+    if (embedded && onBackToLogin) {
+      return (
+        <div className="text-center">
+          <div
+            className="d-inline-flex align-items-center justify-content-center rounded-3 mb-3"
+            style={{
+              width: 56,
+              height: 56,
+              background: "linear-gradient(135deg, var(--primary-600) 0%, var(--primary-700) 100%)",
+              color: "white",
+            }}
+          >
+            <FaEnvelope style={{ fontSize: "1.5rem" }} />
+          </div>
+          <h3 className="h5 fw-bold mb-2" style={{ color: "var(--primary-700)" }}>
+            Check your email
+          </h3>
+          <p className="text-muted small mb-4">
+            If an account exists for <strong>{email}</strong>, we&apos;ve sent a password reset link. Check your inbox and spam folder.
+          </p>
+          <Button
+            variant="primary"
+            className="rounded-3"
+            onClick={onBackToLogin}
+            style={{ background: "linear-gradient(135deg, var(--primary-600) 0%, var(--primary-700) 100%)", border: "none" }}
+          >
+            Back to sign in
+          </Button>
+        </div>
+      );
+    }
     return (
       <div
         className="min-vh-100 d-flex align-items-center justify-content-center p-3"
@@ -76,6 +107,59 @@ export default function ForgotPassword() {
             Back to sign in
           </Button>
         </div>
+      </div>
+    );
+  }
+
+  if (embedded && onBackToLogin) {
+    return (
+      <div>
+        <p className="text-muted small mb-4">
+          Enter your Gmail address and we&apos;ll send you a link to reset your password.
+        </p>
+        {error && (
+          <Alert variant="danger" className="py-2 mb-3 rounded-3" dismissible onClose={() => setError("")}>
+            <small>{error}</small>
+          </Alert>
+        )}
+        <Form onSubmit={handleSubmit}>
+          <Form.Group className="mb-4">
+            <Form.Label className="small fw-semibold text-secondary">
+              <FaEnvelope className="me-1" style={{ color: "var(--primary-600)" }} /> Gmail address
+            </Form.Label>
+            <Form.Control
+              type="email"
+              placeholder="you@gmail.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className="border-2 rounded-3 py-2"
+              style={{ borderColor: "#e2e8f0" }}
+            />
+          </Form.Group>
+          <Button
+            type="submit"
+            className="w-100 rounded-3 py-2 fw-semibold border-0 mb-3"
+            disabled={loading}
+            style={{ background: "linear-gradient(135deg, var(--primary-600) 0%, var(--primary-700) 100%)", fontSize: "1rem" }}
+          >
+            {loading ? (
+              <>
+                <Spinner animation="border" size="sm" className="me-2" /> Sending...
+              </>
+            ) : (
+              "Send reset link"
+            )}
+          </Button>
+          <button
+            type="button"
+            className="btn btn-link w-100 text-decoration-none small p-0"
+            style={{ color: "var(--primary-600)" }}
+            onClick={onBackToLogin}
+          >
+            Back to sign in
+          </button>
+        </Form>
       </div>
     );
   }

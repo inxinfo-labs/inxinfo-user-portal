@@ -65,40 +65,60 @@ export default function ProductsList() {
         <Row className="g-4">
           {items.map((item) => (
             <Col xs={12} sm={6} lg={4} key={item.id ?? item._id}>
-              <Card className="h-100 border-0 shadow-sm overflow-hidden" style={{ borderRadius: "12px" }}>
+              <Card
+                className="h-100 border-0 shadow-sm service-card"
+                style={{
+                  borderRadius: "1rem",
+                  overflow: "hidden",
+                  minHeight: 460,
+                  transition: "all 0.3s ease",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = "translateY(-4px)";
+                  e.currentTarget.style.boxShadow = "0 10px 25px rgba(0, 0, 0, 0.1)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = "translateY(0)";
+                  e.currentTarget.style.boxShadow = "0 1px 3px rgba(0, 0, 0, 0.1)";
+                }}
+              >
                 <div
-                  className="d-flex align-items-center justify-content-center text-white"
+                  className="card-img-placeholder d-flex align-items-center justify-content-center text-white"
                   style={{
-                    height: 140,
+                    height: 180,
                     background: "linear-gradient(135deg, var(--primary-500) 0%, var(--primary-700) 100%)",
+                    borderTopLeftRadius: "1rem",
+                    borderTopRightRadius: "1rem",
                   }}
                 >
-                  <FaBox style={{ fontSize: "3rem", opacity: 0.9 }} />
+                  <FaBox style={{ fontSize: "2.5rem", opacity: 0.9 }} />
                 </div>
                 <Card.Body className="d-flex flex-column p-4">
-                  <div className="mb-2">
+                  <div className="d-flex flex-wrap gap-1 mb-2">
                     {item.productCategory && (
-                      <Badge bg="light" text="dark" className="mb-2 me-1">{item.productCategory}</Badge>
+                      <Badge bg="primary">{item.productCategory}</Badge>
                     )}
-                    <Card.Title className="fw-bold mb-2" style={{ fontSize: "1.1rem", lineHeight: 1.3 }}>
-                      {item.name}
-                    </Card.Title>
                   </div>
-                  {item.description && (
-                    <Card.Text className="text-muted small flex-grow-1" style={{ minHeight: "2.5rem" }}>
-                      {item.description.length > 120 ? `${item.description.slice(0, 120)}...` : item.description}
+                  <Card.Title className="fw-bold mb-2" style={{ fontSize: "1.1rem", color: "#111827" }}>
+                    {item.name}
+                  </Card.Title>
+                  <div className="card-content mb-2">
+                    <Card.Text className="text-muted small mb-0">
+                      {item.description
+                        ? item.description.length > 100
+                          ? `${item.description.slice(0, 100)}...`
+                          : item.description
+                        : "Puja samagri and ritual items"}
                     </Card.Text>
-                  )}
-                  <div className="d-flex align-items-center justify-content-between mt-3 pt-3 border-top">
-                    <span className="fw-bold text-primary" style={{ fontSize: "1.2rem" }}>
-                      <FaRupeeSign /> {item.price}
-                    </span>
+                  </div>
+                  <div className="card-actions d-flex align-items-center justify-content-between pt-2">
+                    <span className="fw-bold text-primary">₹{item.price ?? "N/A"}</span>
                     {token ? (
                       <div className="d-flex gap-2">
                         <Button
                           variant="outline-primary"
                           size="sm"
-                          style={{ borderRadius: "8px" }}
+                          style={{ borderRadius: "0.5rem" }}
                           onClick={() => addProduct(item)}
                         >
                           <FaShoppingCart className="me-1" /> Cart
@@ -106,7 +126,7 @@ export default function ProductsList() {
                         <Button
                           variant="primary"
                           size="sm"
-                          style={{ borderRadius: "8px", background: "var(--gradient-primary)", border: "none" }}
+                          style={{ borderRadius: "0.5rem", background: "var(--gradient-primary)", border: "none" }}
                           as={Link}
                           to="/user/order/create"
                           state={{ addItemId: item.id ?? item._id, addItemName: item.name, addItemPrice: item.price }}
@@ -118,7 +138,7 @@ export default function ProductsList() {
                       <Button
                         variant="outline-primary"
                         size="sm"
-                        style={{ borderRadius: "8px" }}
+                        style={{ borderRadius: "0.5rem" }}
                         as={Link}
                         to="/auth/login"
                       >

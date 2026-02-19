@@ -1,13 +1,20 @@
 import { useAuthModal, AUTH_MODES } from "../context/AuthModalContext";
 import Login from "../features/auth/Login";
 import Register from "../features/auth/Register";
-import { FaLeaf, FaUserTie, FaUserPlus } from "react-icons/fa";
+import ForgotPassword from "../features/auth/ForgotPassword";
+import { FaLeaf, FaUserTie, FaUserPlus, FaEnvelope } from "react-icons/fa";
 
 const config = {
   [AUTH_MODES.LOGIN]: {
     title: "Sign In",
     subtitle: "Welcome back",
     icon: <FaUserPlus size={24} />,
+    gradient: "var(--gradient-primary)",
+  },
+  [AUTH_MODES.FORGOT_PASSWORD]: {
+    title: "Forgot password?",
+    subtitle: "We'll send you a reset link",
+    icon: <FaEnvelope size={24} />,
     gradient: "var(--gradient-primary)",
   },
   [AUTH_MODES.REGISTER]: {
@@ -25,7 +32,7 @@ const config = {
 };
 
 export default function AuthModal() {
-  const { open, mode, closeAuth } = useAuthModal();
+  const { open, mode, closeAuth, openAuth } = useAuthModal();
 
   if (!open || !mode) return null;
 
@@ -134,6 +141,12 @@ export default function AuthModal() {
         >
           {mode === AUTH_MODES.LOGIN && (
             <Login embedded onSuccess={closeAuth} />
+          )}
+          {mode === AUTH_MODES.FORGOT_PASSWORD && (
+            <ForgotPassword
+              embedded
+              onBackToLogin={() => openAuth(AUTH_MODES.LOGIN)}
+            />
           )}
           {(mode === AUTH_MODES.REGISTER || mode === AUTH_MODES.REGISTER_PANDIT) && (
             <Register
