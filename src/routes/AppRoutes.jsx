@@ -41,6 +41,7 @@ export default function AppRoutes() {
           <Route path="/user/puja/*" element={<PujaRoutes />} />
           <Route path="/user/order/*" element={<OrderRoutes />} />
           <Route path="/user/pandit/*" element={<PanditRoutes />} />
+          <Route path="/user/products/*" element={<ProductsRoutes />} />
           {/* Admin: only for role ADMIN */}
           <Route path="/user/admin/*" element={<AdminRoute><AdminRoutes /></AdminRoute>} />
           <Route path="/user/*" element={<UserRoutes />} />

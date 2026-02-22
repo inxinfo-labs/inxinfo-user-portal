@@ -54,9 +54,9 @@ const featureData = [
 
 export default function Features() {
   return (
-    <section className="py-5" style={{ background: "#f8fafc" }}>
+    <section className="py-4" style={{ background: "#f8fafc" }}>
       <Container>
-        <div className="text-center mb-5">
+        <div className="text-center mb-4">
           <h2 className="fw-bold mb-3">Why Choose Us for Puja &amp; Pandit Ji?</h2>
           <p className="lead text-muted" style={{ maxWidth: "600px", margin: "0 auto" }}>
             Traditional Hindu rituals, experienced Pandit Ji, and puja samagri — all for your sacred occasions
@@ -65,7 +65,7 @@ export default function Features() {
         
         <Row className="g-4">
           {featureData.map((f, i) => (
-            <Col md={6} lg={3} key={i}>
+            <Col xs={12} sm={6} lg={3} key={i}>
               <Card 
                 className="shadow-sm text-center p-4 h-100 border-0"
                 style={{ 

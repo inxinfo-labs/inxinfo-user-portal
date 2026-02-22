@@ -18,7 +18,7 @@ const services = [
     title: "Products",
     description: "Browse puja samagri, idols & more. Anyone can view; sign in to order",
     serviceType: SERVICE_TYPES.PRODUCTS,
-    path: "/products",
+    path: "/user/products",
     icon: <FaBox />,
     color: "var(--primary-600)",
   },
@@ -40,13 +40,15 @@ export default function LandingServices() {
   const handleServiceClick = (s) => {
     if (token && s.path) {
       navigate(s.path);
+    } else if (s.serviceType === SERVICE_TYPES.PRODUCTS) {
+      navigate("/products");
     } else {
       openService(s.serviceType);
     }
   };
 
   return (
-    <section id="our-services" className="py-4" style={{ background: "#fff" }}>
+    <section id="our-services" className="py-3" style={{ background: "#fff" }}>
       <Container>
         <div className="text-center mb-4">
           <h2 className="fw-bold mb-3">Our Puja &amp; Ritual Services</h2>
@@ -56,7 +58,7 @@ export default function LandingServices() {
         </div>
         <Row className="g-4">
           {services.map((s, i) => (
-            <Col md={6} lg={4} key={i} className="text-center">
+            <Col xs={12} sm={6} lg={4} key={i} className="text-center">
               <Card
                 role="button"
                 tabIndex={0}

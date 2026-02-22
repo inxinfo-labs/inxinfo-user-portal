@@ -1,16 +1,28 @@
 import { useContext } from "react";
 import { Link } from "react-router-dom";
-import Box from "@mui/material/Box";
-import Container from "@mui/material/Container";
-import Grid from "@mui/material/Grid";
-import Typography from "@mui/material/Typography";
-import MuiLink from "@mui/material/Link";
-import { FaLinkedin, FaGithub, FaTwitter, FaEnvelope } from "react-icons/fa";
+import { Row, Col, Container } from "react-bootstrap";
 import { AuthContext } from "../../context/AuthContext";
 import AppConfig from "../../config/appConfig";
 import { usePageModal, PAGE_MODAL_TYPES } from "../../context/PageModalContext";
 import { isAdmin } from "../../utils/admin";
-import AdSlot from "../AdSlot";
+
+const IconMail = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+    <rect x="2" y="4" width="20" height="16" rx="2" />
+    <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+  </svg>
+);
+const IconPhone = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+  </svg>
+);
+const IconLocation = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+    <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
+    <circle cx="12" cy="10" r="3" />
+  </svg>
+);
 
 const footerLinks = (admin) => ({
   company: [
@@ -22,13 +34,12 @@ const footerLinks = (admin) => ({
     ...(admin ? [{ label: "Documentation", path: "/docs" }] : []),
     { label: "Festivals & Calendar", path: "/calendar" },
     { label: "Blog", path: "/blog", pageModal: PAGE_MODAL_TYPES.BLOG },
-    { label: "Install app / QR code", path: "/install" },
+    { label: "Install App", path: "/install" },
     { label: "Support", path: "/contact", pageModal: PAGE_MODAL_TYPES.CONTACT },
   ],
   legal: [
     { label: "Privacy Policy", path: "#" },
     { label: "Terms of Service", path: "#" },
-    { label: "Cookie Policy", path: "#" },
   ],
 });
 
@@ -39,146 +50,97 @@ export default function AppFooter() {
   const links = footerLinks(admin);
   const currentYear = new Date().getFullYear();
 
-  const linkSx = {
-    color: "#cbd5e1",
-    textDecoration: "none",
-    fontSize: "0.9375rem",
-    "&:hover": { color: "#ff9933" },
-  };
-
-  const iconSx = {
-    color: "#94a3b8",
-    "&:hover": { color: "#ff9933" },
-    transition: "color 0.2s ease",
+  const renderLink = (link) => {
+    if (link.pageModal) {
+      return (
+        <button
+          type="button"
+          className="footer-link"
+          onClick={() => openPage(link.pageModal)}
+        >
+          {link.label}
+        </button>
+      );
+    }
+    return (
+      <Link to={link.path} className="footer-link">
+        {link.label}
+      </Link>
+    );
   };
 
   return (
-    <Box component="footer" role="contentinfo" sx={{ mt: "auto", zIndex: 10 }}>
-      {/* Ritual / festival accent strip */}
-      <Box
-        sx={{
-          height: 4,
-          background: "linear-gradient(90deg, #ff9933 0%, #ff9933 33.33%, #ffffff 33.33%, #ffffff 66.66%, #b91c1c 66.66%, #b91c1c 100%)",
-        }}
-      />
-      <Box
-        sx={{
-          py: 4,
-          px: 2,
-          background: "linear-gradient(180deg, #0f172a 0%, #1e293b 50%, #0f172a 100%)",
-          color: "#e2e8f0",
-        }}
-      >
-        <Container maxWidth="lg">
-          <Grid container spacing={4} sx={{ mb: 3 }}>
-            <Grid item xs={12} md={4}>
-              <Typography
-                variant="h6"
-                sx={{
-                  fontWeight: 800,
-                  background: "linear-gradient(135deg, #fff 0%, #ff9933 100%)",
-                  backgroundClip: "text",
-                  WebkitBackgroundClip: "text",
-                  color: "transparent",
-                  mb: 2,
-                  letterSpacing: "-0.02em",
-                }}
-              >
-                INXINFO Labs
-              </Typography>
-              <Typography sx={{ color: "#cbd5e1", lineHeight: 1.75, mb: 2, fontSize: "0.9375rem" }}>
+    <footer className="app-footer" role="contentinfo">
+      <div className="footer-accent-bar" aria-hidden />
+      <div className="footer-main">
+        <Container>
+          <Row className="footer-grid">
+            <Col xs={12} lg={4} className="footer-brand-col">
+              <Link to="/" className="footer-logo-link">
+                <span className="footer-logo">INXINFO</span>
+                <span className="footer-logo-suffix">Labs</span>
+              </Link>
+              <p className="footer-tagline">
                 Book Hindu puja, Pandit Ji, and puja samagri for all your rituals. Traditional ceremonies at your doorstep.
-              </Typography>
-              <Box sx={{ display: "flex", gap: 1.5 }}>
-                <MuiLink href="https://linkedin.com" target="_blank" rel="noreferrer" sx={iconSx}>
-                  <FaLinkedin size={22} />
-                </MuiLink>
-                <MuiLink href="https://github.com" target="_blank" rel="noreferrer" sx={iconSx}>
-                  <FaGithub size={22} />
-                </MuiLink>
-                <MuiLink href="https://twitter.com" target="_blank" rel="noreferrer" sx={iconSx}>
-                  <FaTwitter size={22} />
-                </MuiLink>
-                <MuiLink href={`mailto:${AppConfig.contactEmail}`} sx={iconSx}>
-                  <FaEnvelope size={22} />
-                </MuiLink>
-              </Box>
-            </Grid>
-            <Grid item xs={6} md={2}>
-              <Typography variant="subtitle2" sx={{ fontWeight: 700, color: "#ff9933", mb: 1.5, textTransform: "uppercase", letterSpacing: "0.05em", fontSize: "0.75rem" }}>
-                Company
-              </Typography>
-            {links.company.map((link) => (
-              <Box key={link.path + link.label} sx={{ mb: 1 }}>
-                {link.pageModal ? (
-                  <Typography component="button" type="button" onClick={() => openPage(link.pageModal)} sx={{ ...linkSx, border: 0, background: "none", cursor: "pointer", padding: 0 }}>
-                    {link.label}
-                  </Typography>
-                ) : (
-                  <Link to={link.path} style={{ textDecoration: "none" }}>
-                    <Typography sx={linkSx}>{link.label}</Typography>
-                  </Link>
-                )}
-              </Box>
-            ))}
-          </Grid>
-          <Grid item xs={6} md={2}>
-              <Typography variant="subtitle2" sx={{ fontWeight: 700, color: "#ff9933", mb: 1.5, textTransform: "uppercase", letterSpacing: "0.05em", fontSize: "0.75rem" }}>
-                Resources
-              </Typography>
-            {links.resources.map((link) => (
-              <Box key={link.path + link.label} sx={{ mb: 1 }}>
-                {link.pageModal ? (
-                  <Typography component="button" type="button" onClick={() => openPage(link.pageModal)} sx={{ ...linkSx, border: 0, background: "none", cursor: "pointer", padding: 0 }}>
-                    {link.label}
-                  </Typography>
-                ) : link.path.startsWith("/") ? (
-                  <Link to={link.path} style={{ textDecoration: "none" }}>
-                    <Typography sx={linkSx}>{link.label}</Typography>
-                  </Link>
-                ) : (
-                  <MuiLink href={link.path} sx={linkSx}>{link.label}</MuiLink>
-                )}
-              </Box>
-            ))}
-          </Grid>
-          <Grid item xs={6} md={2}>
-              <Typography variant="subtitle2" sx={{ fontWeight: 700, color: "#ff9933", mb: 1.5, textTransform: "uppercase", letterSpacing: "0.05em", fontSize: "0.75rem" }}>
-                Legal
-              </Typography>
-            {links.legal.map((link) => (
-              <Box key={link.path} sx={{ mb: 1 }}>
-                <Link to={link.path} style={{ textDecoration: "none" }}>
-                  <Typography sx={linkSx}>{link.label}</Typography>
-                </Link>
-              </Box>
-            ))}
-          </Grid>
-          <Grid item xs={6} md={2}>
-              <Typography variant="subtitle2" sx={{ fontWeight: 700, color: "#ff9933", mb: 1.5, textTransform: "uppercase", letterSpacing: "0.05em", fontSize: "0.75rem" }}>
-                Contact
-              </Typography>
-            <Typography sx={{ color: "#cbd5e1", fontSize: "0.875rem" }}>
-              <MuiLink href={`mailto:${AppConfig.contactEmail}`} sx={{ color: "#cbd5e1", "&:hover": { color: "#ff9933" } }}>
-                {AppConfig.contactEmail}
-              </MuiLink>
-            </Typography>
-            <Typography sx={{ color: "#cbd5e1", fontSize: "0.875rem", mt: 1 }}>
-              23 and 30 Suloka Nilaya, Vishuvardhan Rd, Near RNSIT College, Bangalore – 560098
-            </Typography>
-            <Typography sx={{ color: "#cbd5e1", fontSize: "0.875rem" }}>📞 8050618092</Typography>
-          </Grid>
-        </Grid>
-        <Box sx={{ borderTop: "1px solid rgba(255, 153, 51, 0.2)", pt: 3, textAlign: "center" }}>
-            <Box sx={{ mb: 3, display: "flex", justifyContent: "center" }}>
-              <AdSlot size="banner" slotId="footer-banner" />
-            </Box>
-            <Typography variant="body2" sx={{ color: "#94a3b8", fontSize: "0.875rem" }}>
-              © {currentYear} INXINFO Labs. All rights reserved. • v1.0.0
-            </Typography>
-          </Box>
+              </p>
+              <div className="footer-contact-list">
+                <a href={`mailto:${AppConfig.contactEmail}`} className="footer-contact-item">
+                  <IconMail />
+                  {AppConfig.contactEmail}
+                </a>
+                <a href="tel:8050618092" className="footer-contact-item">
+                  <IconPhone />
+                  8050618092
+                </a>
+                <div className="footer-contact-item footer-address">
+                  <IconLocation />
+                  <span>23 and 30 Suloka Nilaya, Vishuvardhan Rd, Near RNSIT College, Bangalore – 560098</span>
+                </div>
+              </div>
+            </Col>
+            <Col xs={6} sm={4} lg={2} className="footer-nav-col">
+              <h6 className="footer-nav-heading">Company</h6>
+              <ul className="footer-nav-list">
+                {links.company.map((link) => (
+                  <li key={link.label}>{renderLink(link)}</li>
+                ))}
+              </ul>
+            </Col>
+            <Col xs={6} sm={4} lg={2} className="footer-nav-col">
+              <h6 className="footer-nav-heading">Resources</h6>
+              <ul className="footer-nav-list">
+                {links.resources.map((link) => (
+                  <li key={link.label}>{renderLink(link)}</li>
+                ))}
+              </ul>
+            </Col>
+            <Col xs={6} sm={4} lg={2} className="footer-nav-col">
+              <h6 className="footer-nav-heading">Legal</h6>
+              <ul className="footer-nav-list">
+                {links.legal.map((link) => (
+                  <li key={link.label}>
+                    <Link to={link.path} className="footer-link">{link.label}</Link>
+                  </li>
+                ))}
+              </ul>
+            </Col>
+          </Row>
         </Container>
-      </Box>
-    </Box>
+      </div>
+      <div className="footer-bar">
+        <Container>
+          <div className="footer-bar-inner">
+            <span className="footer-copyright">© {currentYear} INXINFO Labs. All rights reserved.</span>
+            <div className="footer-legal-links">
+              {links.legal.map((link) => (
+                <Link key={link.label} to={link.path} className="footer-legal-link">
+                  {link.label}
+                </Link>
+              ))}
+            </div>
+          </div>
+        </Container>
+      </div>
+    </footer>
   );
 }

@@ -43,7 +43,7 @@ export default function CartPage() {
         <h2 className="mb-4">Cart</h2>
         <Alert variant="info">Your cart is empty. Add products, puja services, or book a PanditJi.</Alert>
         <div className="d-flex flex-wrap gap-2">
-          <Button variant="primary" onClick={() => navigate("/products")}>
+          <Button variant="primary" onClick={() => navigate("/user/products")}>
             <FaShoppingBag className="me-2" /> Browse Products
           </Button>
           <Button variant="outline-primary" onClick={() => navigate("/user/puja")}>

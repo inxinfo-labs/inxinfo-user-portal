@@ -7,7 +7,7 @@ export default function PromoBanner() {
   const { openService } = useServiceModal();
 
   return (
-    <section className="py-4 py-md-5" style={{ background: "var(--bg-secondary, #f8fafc)" }}>
+    <section className="py-3 py-md-4" style={{ background: "var(--bg-secondary, #f8fafc)" }}>
       <Container>
         <div
           className="rounded-4 overflow-hidden shadow-sm border-0 d-block text-decoration-none position-relative"

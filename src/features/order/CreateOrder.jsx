@@ -156,7 +156,7 @@ export default function CreateOrder() {
     <Container className="my-5">
       <h2 className="mb-4">Create Order</h2>
       <p className="text-muted mb-3">
-        <Link to="/products">Browse products</Link> or add puja services below.
+        <Link to="/user/products">Browse products</Link> or add puja services below.
       </p>
       {error && <Alert variant="danger">{error}</Alert>}
       <Row>

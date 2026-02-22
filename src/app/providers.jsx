@@ -5,6 +5,7 @@ import { ThemeProvider as MuiThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import { AuthProvider } from "../context/AuthContext";
 import { CartProvider } from "../context/CartContext";
+import { SidebarProvider } from "../context/SidebarContext";
 // eslint-disable-next-line no-unused-vars -- used as JSX <AuthModalProvider>
 import { AuthModalProvider } from "../context/AuthModalContext";
 import { ServiceModalProvider } from "../context/ServiceModalContext";
@@ -39,7 +40,9 @@ export default function Providers({ children }) {
               <AuthModalProvider>
                 <PageModalProvider>
                   <UserModalProvider>
-                    {children}
+                    <SidebarProvider>
+                      {children}
+                    </SidebarProvider>
                   </UserModalProvider>
                 </PageModalProvider>
               </AuthModalProvider>

@@ -15,7 +15,7 @@ const sections = [
     key: "order",
     title: "Order Items",
     description: "Buy puja samagri, idols, incense, and other products. Add to cart or create an order.",
-    path: "/products",
+    path: "/user/products",
     icon: FaBox,
     color: "linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)",
   },

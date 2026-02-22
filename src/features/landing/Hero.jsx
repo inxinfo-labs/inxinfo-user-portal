@@ -5,13 +5,13 @@ export default function Hero({ onOpenModal }) {
   return (
     <section 
       id="home" 
-      className="hero-section py-5"
+      className="hero-section py-4"
       style={{
         background: "var(--gradient-hero)",
         color: "#ffffff",
         position: "relative",
         overflow: "hidden",
-        minHeight: "55vh",
+        minHeight: "clamp(320px, 45vh, 500px)",
         display: "flex",
         alignItems: "center"
       }}
@@ -23,8 +23,8 @@ export default function Hero({ onOpenModal }) {
       />
       
       <Container style={{ position: "relative", zIndex: 1 }}>
-        <Row className="align-items-center">
-          <Col md={7} className="fade-in-up hero-content">
+        <Row className="align-items-center g-3 g-md-4">
+          <Col xs={12} md={7} className="fade-in-up hero-content order-2 order-md-1">
             <div className="mb-4">
               <span 
                 className="badge px-3 py-2 mb-3 hero-badge"
@@ -71,7 +71,7 @@ export default function Hero({ onOpenModal }) {
             </div>
 
             {/* Stats */}
-            <div className="row mt-5 pt-4 hero-stats">
+            <div className="row mt-4 pt-3 hero-stats">
               <div className="col-md-4 mb-3 mb-md-0">
                 <div className="fw-bold hero-stat-value">100+</div>
                 <div className="hero-stat-label">Pujas Booked</div>
@@ -87,9 +87,9 @@ export default function Hero({ onOpenModal }) {
             </div>
           </Col>
           
-          <Col md={5} className="text-center fade-in-up">
+          <Col xs={12} md={5} className="text-center fade-in-up order-1 order-md-2">
             <div className="hero-card">
-              <div style={{ fontSize: "5rem" }}>🪔</div>
+              <div style={{ fontSize: "clamp(3rem, 8vw, 5rem)" }}>🪔</div>
               <h4 className="mt-3 mb-2 hero-card-title">Puja at Your Doorstep</h4>
               <p className="hero-card-desc mb-0">
                 Book traditional puja, get samagri, and experienced Pandit Ji for every occasion
